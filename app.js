@@ -61,13 +61,35 @@ async function chargerRaretes() {
   }
 }
 
+function erreurAffichee(texte) {
+  $("login").hidden = false;
+  $("app").hidden = true;
+  $("login-msg").textContent = texte;
+  $("login-msg").className = "msg ko";
+}
+
 async function init() {
   chargerExtensions();
   chargerRaretes();
-  const { data } = await db.auth.getSession();
-  afficher(data.session);
-  db.auth.onAuthStateChange((_evt, session) => afficher(session));
+  try {
+    // getSession peut rester bloquée si la session stockée est abîmée : on abandonne au bout de 6 s
+    const { data } = await Promise.race([
+      db.auth.getSession(),
+      new Promise((_, rejet) => setTimeout(() => rejet(new Error("délai dépassé")), 6000)),
+    ]);
+    await afficher(data.session);
+    db.auth.onAuthStateChange((_evt, session) => afficher(session));
+  } catch (err) {
+    erreurAffichee("Session illisible (" + err.message + "). Reconnectez-vous.");
+    try { await db.auth.signOut({ scope: "local" }); } catch {}
+    db.auth.onAuthStateChange((_evt, session) => afficher(session));
+  }
 }
+
+window.addEventListener("error", (e) => erreurAffichee("Erreur : " + e.message));
+window.addEventListener("unhandledrejection", (e) =>
+  erreurAffichee("Erreur : " + (e.reason && e.reason.message ? e.reason.message : e.reason))
+);
 
 async function afficher(session) {
   $("login").hidden = !!session;
