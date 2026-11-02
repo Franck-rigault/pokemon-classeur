@@ -3,6 +3,7 @@ import { $, db, h, chargerReferentiels, message, essayer } from "./api.js";
 import { S, evenements } from "./etat.js";
 import * as D from "./donnees.js";
 import { vueExtensions } from "./vue-extensions.js";
+import { vueRecherche } from "./vue-recherche.js";
 import { vueCartes } from "./vue-cartes.js";
 import { vueWishlist } from "./vue-wishlist.js";
 import { vueDashboard } from "./vue-dashboard.js";
@@ -13,9 +14,10 @@ import { ouvrirPartage } from "./partage.js";
 import { exporterCsv } from "./export.js";
 
 const JETON_PARTAGE = new URLSearchParams(location.search).get("partage");
-const VUES = { extensions: vueExtensions, cartes: vueCartes, wishlist: vueWishlist, dashboard: vueDashboard, classeur: vueClasseur };
+const VUES = { extensions: vueExtensions, recherche: vueRecherche, cartes: vueCartes, wishlist: vueWishlist, dashboard: vueDashboard, classeur: vueClasseur };
 const ONGLETS = [
   ["extensions", "📚 Extensions"],
+  ["recherche", "🔎 Rechercher"],
   ["cartes", "🃏 Mes cartes"],
   ["wishlist", "❤ Wishlist"],
   ["dashboard", "📊 Tableau de bord"],

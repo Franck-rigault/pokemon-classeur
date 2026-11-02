@@ -356,6 +356,11 @@ dialog.modal::backdrop { background: rgba(5, 6, 20, 0.75); backdrop-filter: blur
 dialog.modal[open] { display: flex; flex-direction: column; }
 dialog.modal.petit { width: min(520px, 94vw); }
 
+/* Les éléments d'une fenêtre ne se compressent pas (sinon les textes se chevauchent) ; seules les listes défilent */
+dialog.modal { max-height: 92vh; max-height: 92dvh; }
+dialog.modal > * { flex-shrink: 0; }
+dialog.modal > .grille, dialog.modal > .dash-contenu { flex-shrink: 1; min-height: 0; }
+
 .picker-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 .picker-head h2 { font-family: "Lilita One", system-ui, sans-serif; font-weight: 400; color: var(--yellow); letter-spacing: 1px; }
 .picker-actions { display: flex; gap: 8px; }
@@ -410,11 +415,11 @@ dialog.modal.petit { width: min(520px, 94vw); }
 
 .aide { margin: 4px 0 8px; color: var(--muted); font-size: 0.9rem; }
 
+/* Le cadre prend exactement la forme de l'image de la caméra (largeur et ratio réglés par scan.js),
+   pour que le guide en pointillés coïncide avec la zone réellement lue */
 .scan-cadre {
   position: relative;
   width: 100%;
-  max-height: 52vh;
-  margin: 0 auto;
   background: #000;
   border-radius: 14px;
   overflow: hidden;
@@ -447,11 +452,14 @@ dialog.modal.petit { width: min(520px, 94vw); }
 .scan-manuel summary { cursor: pointer; color: var(--muted); }
 .scan-manuel form { margin-top: 8px; }
 
-#scan-resultat.grille { max-height: 42vh; }
 #scan-resultat.confirmation { grid-template-columns: minmax(150px, 220px) 1fr; align-items: center; }
 .scan-confirm-actions { display: grid; gap: 10px; align-content: center; }
 
-dialog#scan { max-height: 96vh; overflow: auto; }
+/* La fenêtre du scanner défile en entier */
+dialog#scan[open] { display: block; overflow: auto; }
+dialog#scan .grille { overflow: visible; }
+#scan-info { margin: 8px 0; line-height: 1.35; }
+.scan-cadre { margin-left: auto; margin-right: auto; }
 
 /* ---------- Classeur ---------- */
 

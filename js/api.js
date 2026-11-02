@@ -127,6 +127,39 @@ export async function cartesParNom(nom) {
   return liste;
 }
 
+const cacheRecherches = new Map(); // texte -> cartes
+
+// Recherche libre par nom : toutes les cartes dont le nom contient le texte, de la plus récente à la plus ancienne.
+// TCGdex est sensible aux accents : on essaie aussi l'orthographe exacte d'un Pokémon connu et « Énergie ».
+export async function chercherCartes(texte) {
+  const q = texte.trim();
+  if (q.length < 2) return [];
+  if (cacheRecherches.has(q)) return cacheRecherches.get(q);
+
+  const nq = normalise(q);
+  const essais = [q];
+  const pokemon = S.pokemon.find((p) => normalise(p.nom) === nq || normalise(p.nom).startsWith(nq));
+  if (pokemon && !essais.includes(pokemon.nom)) essais.push(pokemon.nom);
+  if (nq.startsWith("energie")) essais.push("Énergie" + q.slice(7));
+
+  let brutes = [];
+  for (const essai of essais) {
+    brutes = await jsonTcgdex("/cards?name=" + encodeURIComponent(essai));
+    if (brutes.length) break;
+  }
+  // Les extensions numériques (Pocket) ont des identifiants commençant par une majuscule : on les écarte
+  const liste = brutes
+    .map((k) => ({ id: k.id, localId: k.localId, name: k.name, image: k.image || null, set_id: idExtDe(k.id) }))
+    .filter((k) => S.extParId.has(k.set_id) || !/^[A-Z]/.test(k.set_id))
+    .sort(
+      (a, b) =>
+        (S.ordreExt.get(a.set_id) ?? 9999) - (S.ordreExt.get(b.set_id) ?? 9999) ||
+        (parseInt(a.localId) || 0) - (parseInt(b.localId) || 0)
+    );
+  cacheRecherches.set(q, liste);
+  return liste;
+}
+
 // Variantes proposées pour une carte, d'après ses informations TCGdex
 export function variantesDe(d) {
   const v = (d && d.variants) || {};

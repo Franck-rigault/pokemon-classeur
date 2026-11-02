@@ -1,5 +1,5 @@
 // Scanner de cartes : caméra (ou photo) -> lecture du texte (OCR) -> carte exacte TCGdex -> collection.
-import { $, h, normalise, echapper, euros, essayer, message, cartesDExtension, cartesParNom, detailCarte, variantesDe, imageCarte, libelleExt, ETATS, prixDe, fermerAuFond } from "./api.js";
+import { $, h, normalise, echapper, euros, essayer, message, cartesDExtension, cartesParNom, chercherCartes, detailCarte, variantesDe, imageCarte, libelleExt, ETATS, prixDe, fermerAuFond } from "./api.js";
 import { S } from "./etat.js";
 import * as D from "./donnees.js";
 
@@ -183,7 +183,14 @@ async function analyser(carte) {
     if (!numero) numero = trouverNumero(texteComplet);
     if (!ext) ext = trouverExtension(texteBas + " " + texteComplet, numero);
   }
-  return { nom, numero, ext, lu: [texteNom, texteBas, texteComplet].join(" ").replace(/\s+/g, " ").trim() };
+  return { nom, numero, ext, texteNom, lu: [texteNom, texteBas, texteComplet].join(" ").replace(/\s+/g, " ").trim() };
+}
+
+// Mot le plus probable du nom de la carte quand aucun Pokémon n'est reconnu (Dresseur, Énergie…)
+const MOTS_INUTILES = new Set(["base", "niveau", "stade", "phase", "objet", "dresseur", "soutien", "pokemon", "outil", "supporter"]);
+function devinerNom(texte) {
+  const mots = normalise(texte).split(/[^\p{L}]+/u).filter((m) => m.length >= 4 && !MOTS_INUTILES.has(m));
+  return mots.length ? mots[0] : null;
 }
 
 // ---------- Recherche de la carte exacte ----------
@@ -201,7 +208,8 @@ function tuile(k, auClic) {
 }
 
 // Détermine les cartes candidates à partir de l'extension et/ou du nom, et du numéro lu
-async function candidates({ nom, numero, ext }) {
+async function candidates(recherche) {
+  const { nom, numero, ext } = recherche;
   const num = numero ? numero.num : null;
 
   if (ext && num) {
@@ -235,15 +243,32 @@ async function candidates({ nom, numero, ext }) {
       }
     }));
     trouvees.sort((a, b) => (S.ordreExt.get(a.set_id) ?? 9999) - (S.ordreExt.get(b.set_id) ?? 9999));
-    return { liste: trouvees, toutes: null, sure: false };
+    if (trouvees.length) return { liste: trouvees, toutes: null, sure: false };
+  }
+
+  // Dernier recours : chercher le mot le plus probable du nom lu (ex. « Énergie »), puis filtrer par numéro
+  const devine = recherche.texteNom ? devinerNom(recherche.texteNom) : null;
+  if (devine) {
+    let liste = await chercherCartes(devine);
+    if (num) {
+      const memeNumero = liste.filter((k) => parseInt(k.localId, 10) === num);
+      if (memeNumero.length) liste = memeNumero;
+    }
+    return { liste: liste.slice(0, 60), toutes: null, sure: false, devine };
   }
   return { liste: [], toutes: null, sure: false };
+}
+
+// Ferme le scanner et ouvre la recherche par nom
+function versRecherche(texte) {
+  $("scan").close();
+  location.hash = "#/recherche/" + encodeURIComponent(texte || "");
 }
 
 async function rechercher(recherche) {
   viderResultats();
   info("Recherche de la carte…");
-  const { liste, toutes } = await candidates(recherche);
+  const { liste, toutes, devine } = await candidates(recherche);
   const zone = $("scan-resultat");
 
   if (liste.length === 1) {
@@ -251,7 +276,12 @@ async function rechercher(recherche) {
     return afficherConfirmation(liste[0], toutes);
   }
   if (liste.length > 1) {
-    info(liste.length + " cartes correspondent : touchez la vôtre.");
+    info(
+      devine
+        ? "Nom lu approximativement (« " + devine + " ») : " + liste.length + " cartes proposées, touchez la vôtre, ou utilisez la recherche par nom."
+        : liste.length + " cartes correspondent : touchez la vôtre."
+    );
+    if (devine) zone.append(h("button", { type: "button", class: "ghost pleine-ligne", onclick: () => versRecherche(devine) }, "🔎 Voir toutes les cartes « " + devine + " »"));
     return zone.append(...liste.map((k) => tuile(k, confirmer(toutes))));
   }
   if (toutes && toutes.length) {
@@ -320,7 +350,10 @@ function ajusterGuide() {
   const vw = video.videoWidth, vh = video.videoHeight;
   if (!vw || !vh) return;
   const gw = Math.min(0.95, (HAUTEUR_GUIDE * vh * RATIO_CARTE) / vw);
-  $("scan-cadre").style.aspectRatio = vw + " / " + vh;
+  const cadre = $("scan-cadre");
+  cadre.style.aspectRatio = vw + " / " + vh;
+  // hauteur limitée à 55 % de l'écran : on réduit la largeur pour garder le même ratio que la caméra
+  cadre.style.width = "min(100%, " + 55 * (vw / vh) + "vh)";
   const g = $("scan-guide");
   g.style.left = ((1 - gw) / 2) * 100 + "%";
   g.style.width = gw * 100 + "%";
@@ -367,7 +400,8 @@ async function lancerAnalyse(carteCanvas) {
     $("scan-num").value = lecture.numero ? lecture.numero.num + "/" + lecture.numero.total : "";
     $("scan-ext").value = lecture.ext ? lecture.ext.code : "";
     if (!lecture.nom && !lecture.ext && !lecture.numero) {
-      info("Carte non reconnue (reflet, image floue ?). Texte lu : « " + lecture.lu.slice(0, 90) + " ». Saisissez le nom ou le code d'extension ci-dessous.", "ko");
+      info("Carte non reconnue : approchez-la pour qu'elle remplisse le cadre, évitez les reflets, ou cherchez-la par son nom.", "ko");
+      $("scan-resultat").append(h("button", { type: "button", onclick: () => versRecherche(devinerNom(lecture.texteNom) || "") }, "🔎 Chercher par nom"));
       $("scan-manuel").parentElement.open = true;
       return;
     }

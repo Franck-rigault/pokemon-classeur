@@ -5,7 +5,7 @@ const CACHE = "classeur-v2";
 const COQUILLE = [
   "./", "index.html", "style.css", "config.js", "favicon.svg", "manifest.json", "extensions.json", "pokemon.json",
   "js/main.js", "js/api.js", "js/etat.js", "js/donnees.js", "js/dialogue-carte.js", "js/scan.js", "js/partage.js",
-  "js/export.js", "js/vue-extensions.js", "js/vue-cartes.js", "js/vue-wishlist.js", "js/vue-dashboard.js", "js/vue-classeur.js",
+  "js/export.js", "js/vue-extensions.js", "js/vue-recherche.js", "js/vue-cartes.js", "js/vue-wishlist.js", "js/vue-dashboard.js", "js/vue-classeur.js",
 ];
 
 self.addEventListener("install", (e) => {
