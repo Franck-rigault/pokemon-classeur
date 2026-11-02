@@ -10,7 +10,6 @@ import { vueDashboard } from "./vue-dashboard.js";
 import { vueClasseur } from "./vue-classeur.js";
 import { vueClasseurs } from "./vue-classeurs.js";
 import { vueProduits } from "./vue-produits.js";
-import { vueBoosters } from "./vue-boosters.js";
 import { ouvrirImport } from "./import.js";
 import "./dialogue-carte.js";
 import { ouvrirScan } from "./scan.js";
@@ -20,7 +19,7 @@ import { exporterCsv } from "./export.js";
 const JETON_PARTAGE = new URLSearchParams(location.search).get("partage");
 const VUES = {
   extensions: vueExtensions, recherche: vueRecherche, cartes: vueCartes, wishlist: vueWishlist,
-  classeurs: vueClasseurs, scelles: vueProduits, boosters: vueBoosters, dashboard: vueDashboard, classeur: vueClasseur,
+  classeurs: vueClasseurs, scelles: vueProduits, dashboard: vueDashboard, classeur: vueClasseur,
 };
 const ONGLETS = [
   ["extensions", "📚 Extensions"],
@@ -29,12 +28,11 @@ const ONGLETS = [
   ["wishlist", "❤ Wishlist"],
   ["classeurs", "📘 Mes classeurs"],
   ["scelles", "📦 Scellés"],
-  ["boosters", "🎁 Boosters"],
   ["dashboard", "📊 Tableau de bord"],
   ["classeur", "📒 Classeur Pokémon"],
 ];
 // Sections privées : réservées à son propre compte (ni collection de l'autre, ni lien de partage)
-const PRIVEES = new Set(["classeurs", "scelles", "boosters"]);
+const PRIVEES = new Set(["classeurs", "scelles"]);
 
 let demarre = false;
 let vueCourante = null;
@@ -88,7 +86,7 @@ async function afficherVue() {
 
 window.addEventListener("hashchange", () => { if (!$("app").hidden) afficherVue(); });
 
-for (const nom of ["collection", "souhaits", "produits", "ouvertures", "classeurs", "classeur_cases"]) {
+for (const nom of ["collection", "souhaits", "produits", "classeurs", "classeur_cases"]) {
   evenements.addEventListener(nom, () => {
     if (vueCourante && vueCourante.rafraichir) vueCourante.rafraichir();
     if (!S.lectureSeule && !S.partage) D.planifierInstantane();
@@ -114,7 +112,7 @@ async function choisirCible(id) {
   onglets();
   await afficherVue();
   if (!S.lectureSeule) {
-    S.extraCharge = false; // les données privées (scellés, boosters, classeurs) se rechargent à la demande
+    S.extraCharge = false; // les données privées (scellés, classeurs) se rechargent à la demande
     D.enregistrerInstantane();
     D.completerDetails();
   }

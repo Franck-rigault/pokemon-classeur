@@ -78,7 +78,6 @@ export const vueDashboard = {
       const valeurAchetees = somme(achetees, (c) => Number(c.valeur || 0) * c.quantite);
       const investiScelles = somme(S.produits, (p) => Number(p.prix_achat || 0) * p.quantite);
       const valeurScelles = somme(S.produits, (p) => Number(p.valeur || 0) * p.quantite);
-      const coutBoosters = somme(S.ouvertures, (o) => Number(o.cout || 0));
       const plusValue = valeurAchetees - investiCartes;
       const gain = (c) => (Number(c.valeur || 0) - Number(c.prix_achat)) * c.quantite;
       const gains = [...achetees].sort((a, b) => gain(b) - gain(a));
@@ -95,7 +94,7 @@ export const vueDashboard = {
             [euros(investiCartes), "Investi dans les cartes (" + achetees.length + " lignes avec prix d'achat)"],
             [euros(valeurAchetees), "Valeur actuelle de ces cartes"],
             [(plusValue >= 0 ? "+" : "") + euros(plusValue), "Plus-value sur ces cartes"],
-            [euros(investiScelles + coutBoosters), "Investi en scellés et boosters"],
+            [euros(investiScelles), "Investi en produits scellés"],
           ].map(([v, l]) => h("div", { class: "dash-tuile" }, h("span", {}, v), h("small", {}, l)))
         ),
         S.produits.length ? h("p", { class: "muted" }, "Produits scellés : " + euros(valeurScelles) + " de valeur actuelle pour " + euros(investiScelles) + " investis.") : null,

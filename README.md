@@ -1,7 +1,7 @@
 # Classeur Pokémon
 
 Gestionnaire de collection de cartes Pokémon (cartes françaises) : plusieurs comptes, collection complète par extension,
-wishlist, scanner, prix Cardmarket, classeurs virtuels, produits scellés, journal de boosters.
+wishlist, scanner, prix Cardmarket, classeurs virtuels, produits scellés.
 Application statique (HTML/CSS/JS, sans outil de build) + Supabase, hébergée sur GitHub Pages.
 Les données des cartes viennent de [TCGdex](https://tcgdex.dev).
 
@@ -22,11 +22,10 @@ Les données des cartes viennent de [TCGdex](https://tcgdex.dev).
 **Au-delà des cartes**
 - **Mes classeurs** : classeurs virtuels à pages de cases (3×3 par défaut), glisser-déposer pour déplacer ou échanger.
 - **Scellés** : coffrets, displays, boosters avec prix d'achat, valeur et rangement.
-- **Boosters** : journal d'ouverture avec cartes obtenues, coût, valeur et statistiques par rareté.
 - **Tableau de bord** : valeur, extensions les plus avancées, raretés, plus chères, **rentabilité** (achat / valeur), courbe de valeur.
 
 **Comptes et données**
-- Plusieurs comptes : chacun a sa collection ; on peut consulter celle de l'autre en lecture seule. Classeurs virtuels, scellés et boosters restent privés.
+- Plusieurs comptes : chacun a sa collection ; on peut consulter celle de l'autre en lecture seule. Classeurs virtuels et scellés restent privés.
 - **Classeur Pokémon** (compte propriétaire uniquement) : une ligne par Pokémon, synchronisé avec la collection.
 - **Import CSV** (export de cette appli ou d'une autre), **export CSV**, **lien de partage** en lecture seule, **application installable** (PWA).
 

@@ -568,11 +568,11 @@ body.partage .hors-partage { display: none !important; }
 .filtres-plus summary { cursor: pointer; color: var(--muted); font-weight: 600; }
 .filtres-plus .filtres { margin-top: 8px; }
 
-/* ---------- Scellés et boosters ---------- */
+/* ---------- Scellés ---------- */
 
-.produits, .ouvertures { display: grid; gap: 10px; }
+.produits { display: grid; gap: 10px; }
 
-.produit, .ouverture { display: grid; gap: 8px; padding: 12px; background: var(--panel); border: 2px solid var(--line); border-radius: 14px; }
+.produit { display: grid; gap: 8px; padding: 12px; background: var(--panel); border: 2px solid var(--line); border-radius: 14px; }
 .produit-tete { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; justify-content: space-between; }
 .produit-champs { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .produit-champs input { width: 120px; }

@@ -1,5 +1,5 @@
 -- Mise à jour n°4 : rangement, cartes gradées, détails de cartes (filtres), produits scellés,
--- journal d'ouverture de boosters, classeurs virtuels.
+-- classeurs virtuels.
 -- À coller dans Supabase > SQL Editor > Run. Peut être relancé sans risque.
 -- Prérequis : schema.sql, schema-v2.sql et schema-v3.sql déjà lancés.
 
@@ -38,19 +38,6 @@ create table if not exists produits (
   created_at timestamptz not null default now()
 );
 
--- ---------- Journal d'ouverture de boosters ----------
-create table if not exists ouvertures (
-  id bigint generated always as identity primary key,
-  user_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
-  set_id text not null,
-  date date not null default current_date,
-  nb_boosters int not null default 1 check (nb_boosters >= 1),
-  cout numeric(10,2),                        -- coût total des boosters ouverts
-  cartes jsonb not null default '[]',        -- [{ id, nom, rarete, valeur, qte }]
-  notes text,
-  created_at timestamptz not null default now()
-);
-
 -- ---------- Classeurs virtuels ----------
 create table if not exists classeurs (
   id bigint generated always as identity primary key,
@@ -82,7 +69,7 @@ create table if not exists classeur_cases (
 do $$
 declare t text;
 begin
-  foreach t in array array['produits', 'ouvertures', 'classeurs', 'classeur_cases'] loop
+  foreach t in array array['produits', 'classeurs', 'classeur_cases'] loop
     execute format('alter table %I enable row level security', t);
     execute format('drop policy if exists "proprietaire" on %I', t);
     execute format(

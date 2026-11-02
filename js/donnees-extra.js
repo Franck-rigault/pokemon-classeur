@@ -1,4 +1,4 @@
-// Données privées du compte : produits scellés, journal d'ouverture de boosters, classeurs virtuels.
+// Données privées du compte : produits scellés, classeurs virtuels.
 import { stockage } from "./donnees.js";
 import { S, emettre } from "./etat.js";
 
@@ -10,18 +10,17 @@ export async function chargerExtra(force = false) {
   if (S.extraCharge && !force) return;
   ecriture();
   const id = S.moi.id;
-  const [produits, ouvertures, classeurs, cases] = await Promise.all([
+  const [produits, classeurs, cases] = await Promise.all([
     stockage.lister("produits", id, [["created_at", false]]),
-    stockage.lister("ouvertures", id, [["date", false], ["id", false]]),
     stockage.lister("classeurs", id, [["id", true]]),
     stockage.lister("classeur_cases", id, [["id", true]]),
   ]);
-  Object.assign(S, { produits, ouvertures, classeurs, cases, extraCharge: true });
-  for (const nom of ["produits", "ouvertures", "classeurs", "classeur_cases"]) emettre(nom);
+  Object.assign(S, { produits, classeurs, cases, extraCharge: true });
+  for (const nom of ["produits", "classeurs", "classeur_cases"]) emettre(nom);
 }
 
 // Clé de S correspondant à chaque table
-const CLES = { produits: "produits", ouvertures: "ouvertures", classeurs: "classeurs", classeur_cases: "cases" };
+const CLES = { produits: "produits", classeurs: "classeurs", classeur_cases: "cases" };
 
 export async function ajouterLigne(table, champs) {
   ecriture();

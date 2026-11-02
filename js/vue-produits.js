@@ -4,8 +4,6 @@ import { S } from "./etat.js";
 import { chargerExtra, ajouterLigne, majLigne, supprimerLigne } from "./donnees-extra.js";
 
 const TYPES = ["Booster", "Display", "Coffret", "ETB", "Deck", "Autre"];
-// Nombre de boosters habituellement contenus, proposé à l'ouverture (modifiable)
-const BOOSTERS_PAR_TYPE = { Booster: 1, Display: 36, ETB: 9, Coffret: 4 };
 
 let redessiner = null;
 
@@ -90,18 +88,9 @@ export const vueProduits = {
           champ("prix_achat", { type: "number", min: "0", step: "0.01", placeholder: "Achat €", title: "Prix d'achat (unité)" }),
           champ("valeur", { type: "number", min: "0", step: "0.01", placeholder: "Valeur €", title: "Valeur actuelle (unité)" }),
           champ("emplacement", { type: "text", list: "emplacements", placeholder: "📍 Rangement", autocomplete: "off" }),
-          p.type in BOOSTERS_PAR_TYPE
-            ? h("button", { type: "button", title: "Ouvrir ce produit et noter les cartes obtenues", onclick: () => ouvrir(p) }, "🎁 Ouvrir 1")
-            : null,
           h("button", { type: "button", class: "ghost danger", title: "Supprimer", onclick: () => confirm("Supprimer " + p.nom + " ?") && essayer(() => supprimerLigne("produits", p)) }, "🗑")
         )
       );
-    }
-
-    // Prépare le journal des boosters avec les informations du produit
-    function ouvrir(p) {
-      S.brouillonOuverture = { produitId: p.id, set_id: p.set_id, nb: BOOSTERS_PAR_TYPE[p.type] || 1, cout: p.prix_achat, nom: p.nom };
-      location.hash = "#/boosters";
     }
 
     conteneur.replaceChildren(stats, formulaire, liste);
