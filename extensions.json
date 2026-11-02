@@ -1,0 +1,746 @@
+[
+  {
+    "value": "30C",
+    "label": "Collection Classique 30ᵉ Anniversaire (2026)"
+  },
+  {
+    "value": "PBL",
+    "label": "Nuit Noire (2026)"
+  },
+  {
+    "value": "CRI",
+    "label": "Chaos Ascendant (2026)"
+  },
+  {
+    "value": "POR",
+    "label": "Équilibre Parfait (2026)"
+  },
+  {
+    "value": "ASC",
+    "label": "Héros Transcendants (2026)"
+  },
+  {
+    "value": "PFL",
+    "label": "Flammes Fantasmagoriques (2025)"
+  },
+  {
+    "value": "MEG",
+    "label": "Méga-Évolution (2025)"
+  },
+  {
+    "value": "MEP",
+    "label": "MEP Black Star Promos (2025)"
+  },
+  {
+    "value": "MEE",
+    "label": "Méga-Évolution Énergie (2025)"
+  },
+  {
+    "value": "BLK",
+    "label": "Foudre Noire (2025)"
+  },
+  {
+    "value": "WHT",
+    "label": "Flamme Blanche (2025)"
+  },
+  {
+    "value": "DRI",
+    "label": "Rivalités Destinées (2025)"
+  },
+  {
+    "value": "JTG",
+    "label": "Aventures Ensemble (2025)"
+  },
+  {
+    "value": "PRE",
+    "label": "Évolutions Prismatiques (2025)"
+  },
+  {
+    "value": "MCD24",
+    "label": "Collection McDonald's 2024 (2024)"
+  },
+  {
+    "value": "SSP",
+    "label": "Étincelles Déferlantes (2024)"
+  },
+  {
+    "value": "SCR",
+    "label": "Couronne Stellaire (2024)"
+  },
+  {
+    "value": "SFA",
+    "label": "Fable Nébuleuse (2024)"
+  },
+  {
+    "value": "TWM",
+    "label": "Mascarade Crépusculaire (2024)"
+  },
+  {
+    "value": "TEF",
+    "label": "Forces Temporelles (2024)"
+  },
+  {
+    "value": "PAF",
+    "label": "Destinées de Paldea (2024)"
+  },
+  {
+    "value": "PAR",
+    "label": "Faille Paradoxe (2023)"
+  },
+  {
+    "value": "MEW",
+    "label": "151 (2023)"
+  },
+  {
+    "value": "OBF",
+    "label": "Flammes Obsidiennes (2023)"
+  },
+  {
+    "value": "MCD23",
+    "label": "Collection McDonald's 2023 (2023)"
+  },
+  {
+    "value": "PAL",
+    "label": "Évolutions à Paldea (2023)"
+  },
+  {
+    "value": "SVP",
+    "label": "SVP Black Star Promos (2023)"
+  },
+  {
+    "value": "SVI",
+    "label": "Écarlate et Violet (2023)"
+  },
+  {
+    "value": "SVE",
+    "label": "Écarlate et Violet Énergie (2023)"
+  },
+  {
+    "value": "CRZ",
+    "label": "Zénith Suprême (2023)"
+  },
+  {
+    "value": "CRZ:GG",
+    "label": "Zénith Suprême Galerie Galaroise (2023)"
+  },
+  {
+    "value": "SIT",
+    "label": "Tempête Argentée (2022)"
+  },
+  {
+    "value": "SIT:TG",
+    "label": "Tempête Argentée Galerie de Dresseurs (2022)"
+  },
+  {
+    "value": "LOR:TG",
+    "label": "Origine Perdue Galerie de Dresseurs (2022)"
+  },
+  {
+    "value": "LOR",
+    "label": "Origine Perdue (2022)"
+  },
+  {
+    "value": "MCD22",
+    "label": "Collection McDonald's 2022 (2022)"
+  },
+  {
+    "value": "PGO",
+    "label": "Pokémon GO (2022)"
+  },
+  {
+    "value": "ASR",
+    "label": "Astres Radieux (2022)"
+  },
+  {
+    "value": "ASR:TG",
+    "label": "Astres Radieux Galerie de Dresseurs (2022)"
+  },
+  {
+    "value": "BRS:TG",
+    "label": "Stars Étincelantes Galerie de Dresseurs (2022)"
+  },
+  {
+    "value": "BRS",
+    "label": "Stars Étincelantes (2022)"
+  },
+  {
+    "value": "FST",
+    "label": "Poing de Fusion (2021)"
+  },
+  {
+    "value": "CEL:CC",
+    "label": "Célébrations Collection Classique (2021)"
+  },
+  {
+    "value": "CEL",
+    "label": "Célébrations (2021)"
+  },
+  {
+    "value": "EVS",
+    "label": "Évolution Céleste (2021)"
+  },
+  {
+    "value": "CRE",
+    "label": "Règne de Glace (2021)"
+  },
+  {
+    "value": "BST",
+    "label": "Styles de combat (2021)"
+  },
+  {
+    "value": "SHF",
+    "label": "Destinées Radieuses (2021)"
+  },
+  {
+    "value": "SHF:SV",
+    "label": "Destinées Radieuses Coffre Étincelant (2021)"
+  },
+  {
+    "value": "MCD21",
+    "label": "Collection McDonald's 2021 (2021)"
+  },
+  {
+    "value": "VIV",
+    "label": "Voltage Éclatant (2020)"
+  },
+  {
+    "value": "CPA",
+    "label": "La Voie du Maître (2020)"
+  },
+  {
+    "value": "DAA",
+    "label": "Ténèbres Embrasées (2020)"
+  },
+  {
+    "value": "RCL",
+    "label": "Clash des Rebelles (2020)"
+  },
+  {
+    "value": "SSH",
+    "label": "Épée et Bouclier (2020)"
+  },
+  {
+    "value": "Promo SWSH",
+    "label": "Promo SWSH (2019)"
+  },
+  {
+    "value": "CEC",
+    "label": "Éclipse Cosmique (2019)"
+  },
+  {
+    "value": "Collection McDonald's 2019",
+    "label": "Collection McDonald's 2019 (2019)"
+  },
+  {
+    "value": "Destinées Occultes Coffre Étincelant",
+    "label": "Destinées Occultes Coffre Étincelant (2019)"
+  },
+  {
+    "value": "HIF",
+    "label": "Destinées Occultes (2019)"
+  },
+  {
+    "value": "UNM",
+    "label": "Harmonie des Esprits (2019)"
+  },
+  {
+    "value": "UNB",
+    "label": "Alliance Infaillible (2019)"
+  },
+  {
+    "value": "DET",
+    "label": "Détective Pikachu (2019)"
+  },
+  {
+    "value": "TEU",
+    "label": "Duo de Choc (2019)"
+  },
+  {
+    "value": "LOT",
+    "label": "Tonnerre Perdu (2018)"
+  },
+  {
+    "value": "DRM",
+    "label": "Majesté Des Dragons (2018)"
+  },
+  {
+    "value": "CES",
+    "label": "Tempête Céleste (2018)"
+  },
+  {
+    "value": "Collection McDonald's 2018",
+    "label": "Collection McDonald's 2018 (2018)"
+  },
+  {
+    "value": "FLI",
+    "label": "Lumière Interdite (2018)"
+  },
+  {
+    "value": "UPR",
+    "label": "Ultra-Prisme (2018)"
+  },
+  {
+    "value": "CIN",
+    "label": "Invasion Carmin (2017)"
+  },
+  {
+    "value": "SLG",
+    "label": "Légendes Brillantes (2017)"
+  },
+  {
+    "value": "BUS",
+    "label": "Ombres Ardentes (2017)"
+  },
+  {
+    "value": "MCD17",
+    "label": "Collection McDonald's 2017 (2017)"
+  },
+  {
+    "value": "GRI",
+    "label": "Gardiens Ascendants (2017)"
+  },
+  {
+    "value": "TK10A",
+    "label": "SM Kit du dresseur (Raichu d'Alola) (2017)"
+  },
+  {
+    "value": "TK10L",
+    "label": "SM Kit du dresseur (Lougarox) (2017)"
+  },
+  {
+    "value": "SMP",
+    "label": "Promo SM (2017)"
+  },
+  {
+    "value": "SUM",
+    "label": "Soleil et Lune (2017)"
+  },
+  {
+    "value": "EVO",
+    "label": "Évolutions (2016)"
+  },
+  {
+    "value": "MCD16",
+    "label": "Collection McDonald's 2016 (2016)"
+  },
+  {
+    "value": "STS",
+    "label": "Offensive Vapeur (2016)"
+  },
+  {
+    "value": "FCO",
+    "label": "Impact des Destins (2016)"
+  },
+  {
+    "value": "TK9S",
+    "label": "XY Kit du dresseur (Suicune) (2016)"
+  },
+  {
+    "value": "TK9P",
+    "label": "XY Kit du dresseur (Pikachu Libre) (2016)"
+  },
+  {
+    "value": "GEN",
+    "label": "Générations (2016)"
+  },
+  {
+    "value": "BKP",
+    "label": "Rupture Turbo (2016)"
+  },
+  {
+    "value": "MCD15",
+    "label": "Collection McDonald's 2015 (2015)"
+  },
+  {
+    "value": "BKT",
+    "label": "Impulsion Turbo (2015)"
+  },
+  {
+    "value": "AOR",
+    "label": "Origines Antiques (2015)"
+  },
+  {
+    "value": "ROS",
+    "label": "Ciel Rugissant (2015)"
+  },
+  {
+    "value": "TK8A",
+    "label": "XY Kit du dresseur (Latias) (2015)"
+  },
+  {
+    "value": "TK8O",
+    "label": "XY Kit du dresseur (Latios) (2015)"
+  },
+  {
+    "value": "DCR",
+    "label": "Double Danger (2015)"
+  },
+  {
+    "value": "PRC",
+    "label": "Primo-Choc (2015)"
+  },
+  {
+    "value": "PHF",
+    "label": "Vigueur Spectrale (2014)"
+  },
+  {
+    "value": "TK7B",
+    "label": "XY Kit du dresseur (Grodoudou) (2014)"
+  },
+  {
+    "value": "TK7A",
+    "label": "XY Kit du dresseur (Scalproie) (2014)"
+  },
+  {
+    "value": "FFI",
+    "label": "Poings Furieux (2014)"
+  },
+  {
+    "value": "MCD14",
+    "label": "Collection McDonald's 2014 (2014)"
+  },
+  {
+    "value": "FLF",
+    "label": "Étincelles (2014)"
+  },
+  {
+    "value": "TK6N",
+    "label": "XY Kit du dresseur (Bruyverne) (2014)"
+  },
+  {
+    "value": "TK6S",
+    "label": "XY Kit du dresseur (Nymphali) (2014)"
+  },
+  {
+    "value": "XY",
+    "label": "XY (2014)"
+  },
+  {
+    "value": "carte alternative A Jaune",
+    "label": "carte alternative A Jaune (2014)"
+  },
+  {
+    "value": "KSS",
+    "label": "Bienvenue à Kalos (2013)"
+  },
+  {
+    "value": "Radiant Collection",
+    "label": "Radiant Collection (2013)"
+  },
+  {
+    "value": "Collection McDonald's 2013",
+    "label": "Collection McDonald's 2013 (2013)"
+  },
+  {
+    "value": "XYP",
+    "label": "Promo XY (2013)"
+  },
+  {
+    "value": "PLB",
+    "label": "Explosion Plasma (2013)"
+  },
+  {
+    "value": "PLF",
+    "label": "Glaciation Plasma (2013)"
+  },
+  {
+    "value": "PLS",
+    "label": "Tempète Plasma (2013)"
+  },
+  {
+    "value": "BCR",
+    "label": "Frontières Franchies (2012)"
+  },
+  {
+    "value": "DRV",
+    "label": "Coffre des Dragons (2012)"
+  },
+  {
+    "value": "DRX",
+    "label": "Dragons Éxaltés (2012)"
+  },
+  {
+    "value": "MCD12",
+    "label": "Collection McDonald's 2012 (2012)"
+  },
+  {
+    "value": "DEX",
+    "label": "Explorateurs Obscurs (2012)"
+  },
+  {
+    "value": "NXD",
+    "label": "Destinées Futures (2012)"
+  },
+  {
+    "value": "NVI",
+    "label": "Nobles Victoires (2011)"
+  },
+  {
+    "value": "TK5Z",
+    "label": "BW Kit du dresseur (Zoroark) (2011)"
+  },
+  {
+    "value": "TK5E",
+    "label": "BW Kit du dresseur (Minitaupe) (2011)"
+  },
+  {
+    "value": "EP",
+    "label": "Pouvoirs Émergents (2011)"
+  },
+  {
+    "value": "MCD11",
+    "label": "Collection McDonald's 2011 (2011)"
+  },
+  {
+    "value": "BWP",
+    "label": "Promo BW (2011)"
+  },
+  {
+    "value": "BLW",
+    "label": "Noir & Blanc (2011)"
+  },
+  {
+    "value": "COL",
+    "label": "L'appel des Légendes (2011)"
+  },
+  {
+    "value": "TRI",
+    "label": "Triomphant (2010)"
+  },
+  {
+    "value": "UND",
+    "label": "Indomptable (2010)"
+  },
+  {
+    "value": "UL",
+    "label": "Déchaînement (2010)"
+  },
+  {
+    "value": "TK4R",
+    "label": "HS Kit du dresseur (Raichu) (2010)"
+  },
+  {
+    "value": "TK4G",
+    "label": "HS Kit du dresseur (Léviator) (2010)"
+  },
+  {
+    "value": "Promo HGSS",
+    "label": "Promo HGSS (2010)"
+  },
+  {
+    "value": "HS",
+    "label": "HeartGold SoulSilver (2010)"
+  },
+  {
+    "value": "SV",
+    "label": "Vainqueurs Suprêmes (2009)"
+  },
+  {
+    "value": "RR",
+    "label": "Rivaux Émergeants (2009)"
+  },
+  {
+    "value": "P9",
+    "label": "POP Série 9 (2009)"
+  },
+  {
+    "value": "PL",
+    "label": "Platine (2009)"
+  },
+  {
+    "value": "SF",
+    "label": "Tempête (2008)"
+  },
+  {
+    "value": "LA",
+    "label": "Éveil des Légendes (2008)"
+  },
+  {
+    "value": "MD",
+    "label": "Aube Majestueuse (2008)"
+  },
+  {
+    "value": "P7",
+    "label": "POP Série 7 (2008)"
+  },
+  {
+    "value": "GE",
+    "label": "Duels au Sommets (2008)"
+  },
+  {
+    "value": "SW",
+    "label": "Merveilles Secrètes (2007)"
+  },
+  {
+    "value": "TK3M",
+    "label": "DP Kit dresseur (Manaphy) (2007)"
+  },
+  {
+    "value": "TK3L",
+    "label": "DP Kit dresseur (Lucario) (2007)"
+  },
+  {
+    "value": "MT",
+    "label": "Trésors Mystérieux (2007)"
+  },
+  {
+    "value": "DP",
+    "label": "Diamant & Perle (2007)"
+  },
+  {
+    "value": "Promo DP",
+    "label": "Promo DP (2007)"
+  },
+  {
+    "value": "PK",
+    "label": "EX Gardiens du Pouvoir (2007)"
+  },
+  {
+    "value": "DF",
+    "label": "EX Île des Dragons (2006)"
+  },
+  {
+    "value": "CG",
+    "label": "EX Gardiens de Cristal (2006)"
+  },
+  {
+    "value": "P4",
+    "label": "POP Série 4 (2006)"
+  },
+  {
+    "value": "HP",
+    "label": "EX Fantômes Holon (2006)"
+  },
+  {
+    "value": "P3",
+    "label": "POP Série 3 (2006)"
+  },
+  {
+    "value": "TK2P",
+    "label": "EX Kit dresseur (Positi) (2006)"
+  },
+  {
+    "value": "TK2M",
+    "label": "EX Kit dresseur (Négapi) (2006)"
+  },
+  {
+    "value": "LM",
+    "label": "EX Créateurs de légendes (2006)"
+  },
+  {
+    "value": "DS",
+    "label": "EX Espèces Delta (2005)"
+  },
+  {
+    "value": "EX Forces Cachées Collection Zarbi",
+    "label": "EX Forces Cachées Collection Zarbi (2005)"
+  },
+  {
+    "value": "UF",
+    "label": "EX Forces Cachées (2005)"
+  },
+  {
+    "value": "P2",
+    "label": "POP Série 2 (2005)"
+  },
+  {
+    "value": "EM",
+    "label": "EX Émeraude (2005)"
+  },
+  {
+    "value": "DX",
+    "label": "EX Deoxys (2005)"
+  },
+  {
+    "value": "RG",
+    "label": "EX Rouge Feu & Vert Feuille (2004)"
+  },
+  {
+    "value": "P1",
+    "label": "POP Série 1 (2004)"
+  },
+  {
+    "value": "TK1O",
+    "label": "EX Kit dresseur (Latios) (2004)"
+  },
+  {
+    "value": "TK1A",
+    "label": "EX Kit dresseur (Latias) (2004)"
+  },
+  {
+    "value": "HL",
+    "label": "EX Légendes Oubliées (2004)"
+  },
+  {
+    "value": "MA",
+    "label": "EX Team Magma vs Team Aqua (2004)"
+  },
+  {
+    "value": "DR",
+    "label": "EX Dragon (2003)"
+  },
+  {
+    "value": "Promo Nintendo",
+    "label": "Promo Nintendo (2003)"
+  },
+  {
+    "value": "SS",
+    "label": "EX Tempête de sable (2003)"
+  },
+  {
+    "value": "RS",
+    "label": "EX Rubis & Saphir (2003)"
+  },
+  {
+    "value": "AQ",
+    "label": "Aquapolis (2003)"
+  },
+  {
+    "value": "EX",
+    "label": "Expedition (2002)"
+  },
+  {
+    "value": "N4",
+    "label": "Neo Destiny (2002)"
+  },
+  {
+    "value": "N3",
+    "label": "Neo Revelation (2001)"
+  },
+  {
+    "value": "N2",
+    "label": "Neo Discovery (2001)"
+  },
+  {
+    "value": "N1",
+    "label": "Neo Genesis (2000)"
+  },
+  {
+    "value": "RO",
+    "label": "Team Rocket (2000)"
+  },
+  {
+    "value": "Cartes Jumbo",
+    "label": "Cartes Jumbo (2000)"
+  },
+  {
+    "value": "FO",
+    "label": "Fossile (1999)"
+  },
+  {
+    "value": "W Promotional",
+    "label": "W Promotional (1999)"
+  },
+  {
+    "value": "Wizards Black Star Promos",
+    "label": "Wizards Black Star Promos (1999)"
+  },
+  {
+    "value": "JU",
+    "label": "Jungle (1999)"
+  },
+  {
+    "value": "BS",
+    "label": "Set de Base (1999)"
+  }
+]

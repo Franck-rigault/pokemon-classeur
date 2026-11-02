@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Classeur Pokémon</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <section id="login" class="login" hidden>
+    <form id="login-form">
+      <h1>Classeur Pokémon</h1>
+      <input id="email" type="email" placeholder="E-mail" autocomplete="username" required>
+      <input id="password" type="password" placeholder="Mot de passe" autocomplete="current-password" required>
+      <button type="submit">Se connecter</button>
+      <p id="login-msg" class="msg"></p>
+    </form>
+  </section>
+
+  <section id="app" hidden>
+    <header class="top">
+      <div class="row">
+        <h1>Classeur Pokémon</h1>
+        <button id="logout" type="button" class="ghost">Déconnexion</button>
+      </div>
+
+      <div class="stats">
+        <div><span id="stat-possedes">0</span><small>Possédés</small></div>
+        <div><span id="stat-wl-nb">0</span><small>Wishlist à trouver</small></div>
+        <div><span id="stat-wl-val">0 €</span><small>Valeur wishlist à trouver</small></div>
+        <div><span id="stat-total-val">0 €</span><small>Valeur possédée</small></div>
+      </div>
+
+      <div class="row tools">
+        <input id="wish-input" type="text" placeholder="Nom à ajouter à la wishlist, puis Entrée" autocomplete="off">
+        <input id="filter-input" type="search" placeholder="Filtrer par nom ou n°" autocomplete="off">
+        <select id="filter-select">
+          <option value="all">Tous</option>
+          <option value="possede">Possédés</option>
+          <option value="manquant">Manquants</option>
+          <option value="wishlist">Wishlist</option>
+          <option value="wishlist-manquant">Wishlist non possédés</option>
+        </select>
+        <button id="add-toggle" type="button" class="ghost">+ Ajouter</button>
+      </div>
+      <p id="msg" class="msg"></p>
+
+      <form id="add-form" class="row tools" hidden>
+        <input id="add-numero" type="number" min="0" placeholder="N°">
+        <input id="add-nom" type="text" placeholder="Nom" required>
+        <input id="add-extension" type="text" list="extensions" placeholder="Extension" autocomplete="off">
+        <input id="add-numero-carte" type="text" placeholder="N° carte">
+        <input id="add-rarete" type="text" list="raretes" placeholder="Rareté" autocomplete="off">
+        <input id="add-valeur" type="number" min="0" step="0.01" placeholder="Valeur €">
+        <button type="submit">Enregistrer</button>
+      </form>
+    </header>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>N°</th>
+            <th>Nom</th>
+            <th>Possédé</th>
+            <th>Extension</th>
+            <th>N° carte</th>
+            <th>Rareté</th>
+            <th>Valeur (€)</th>
+            <th>Wishlist</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <datalist id="extensions"></datalist>
+  <datalist id="raretes"></datalist>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
