@@ -2,6 +2,9 @@ const db = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
 
 const $ = (id) => document.getElementById(id);
 const PAGE = 1000;
+// Artwork officiel, un fichier par numéro de Pokédex (hébergé par PokeAPI)
+const ARTWORK_URL =
+  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
 
 let cartes = [];
 
@@ -136,7 +139,20 @@ function dessiner() {
     const tdNum = document.createElement("td");
     tdNum.textContent = c.numero ?? "";
 
+    const tdArt = document.createElement("td");
+    tdArt.className = "art";
+    if (c.numero) {
+      const img = document.createElement("img");
+      img.className = "art-img";
+      img.loading = "lazy";
+      img.alt = c.nom;
+      img.src = ARTWORK_URL + c.numero + ".png";
+      img.addEventListener("error", () => img.remove());
+      tdArt.append(img);
+    }
+
     const tdNom = document.createElement("td");
+    tdNom.className = "nom";
     tdNom.textContent = c.nom;
 
     const tdPos = document.createElement("td");
@@ -200,11 +216,12 @@ function dessiner() {
     const tdWl = document.createElement("td");
     const cbWl = document.createElement("input");
     cbWl.type = "checkbox";
+    cbWl.className = "wl";
     cbWl.checked = c.wishlist;
     cbWl.addEventListener("change", () => maj(c, { wishlist: cbWl.checked }));
     tdWl.append(cbWl);
 
-    tr.append(tdNum, tdNom, tdPos, ...tdInfos, tdVal, tdWl);
+    tr.append(tdNum, tdArt, tdNom, tdPos, ...tdInfos, tdVal, tdWl);
     corps.append(tr);
   }
 
