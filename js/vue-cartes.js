@@ -1,5 +1,5 @@
 // Vue « Mes cartes » : toute la collection à plat, avec recherche, filtres et tri.
-import { h, normalise, imageCarte, essayer, euros, libelleExt, ETATS, VARIANTES } from "./api.js";
+import { h, boutonCardmarket, normalise, imageCarte, essayer, euros, libelleExt, ETATS, VARIANTES } from "./api.js";
 import { S } from "./etat.js";
 import * as D from "./donnees.js";
 import { ouvrirCarte } from "./dialogue-carte.js";
@@ -104,7 +104,7 @@ export const vueCartes = {
           l.quantite > 1 ? h("span", { class: "badge-qte" }, "×" + l.quantite) : null
         ),
         h("div", { class: "tuile-info" },
-          h("b", { title: l.nom }, l.nom),
+          h("div", { class: "ligne-nom" }, h("b", { title: l.nom }, l.nom), boutonCardmarket(l.nom, l.set_id, l.local_id)),
           h("span", { class: "num" }, [ext ? ext.code || ext.nom : l.set_id, "n° " + l.local_id].join(" · ")),
           h("span", { class: "num" }, [l.variante !== "Normale" ? l.variante : null, l.grade_societe ? l.grade_societe + " " + (l.grade_note ?? "") : l.etat !== "Neuf" ? l.etat : null, l.rarete].filter(Boolean).join(" · ")),
           l.emplacement ? h("span", { class: "num", title: "Rangement" }, "📍 " + l.emplacement) : null,

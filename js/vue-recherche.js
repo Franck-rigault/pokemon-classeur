@@ -1,5 +1,5 @@
 // Vue « Rechercher » : toutes les cartes qui existent pour un nom (Pokémon, Dresseur, Énergie…).
-import { h, chercherCartes, imageCarte, libelleExt, essayer } from "./api.js";
+import { h, boutonCardmarket, chercherCartes, imageCarte, libelleExt, essayer } from "./api.js";
 import { S } from "./etat.js";
 import * as D from "./donnees.js";
 import { ouvrirCarte } from "./dialogue-carte.js";
@@ -76,7 +76,7 @@ export const vueRecherche = {
           qte > 1 ? h("span", { class: "badge-qte" }, "×" + qte) : null
         ),
         h("div", { class: "tuile-info" },
-          h("b", { title: k.name }, k.name),
+          h("div", { class: "ligne-nom" }, h("b", { title: k.name }, k.name), boutonCardmarket(k.name, k.set_id, k.localId)),
           h("span", { class: "num" }, libelleExt(k.set_id) + " · n° " + k.localId)
         ),
         actions

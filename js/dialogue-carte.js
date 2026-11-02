@@ -1,6 +1,6 @@
 // Fenêtre de détail d'une carte : image, prix, exemplaires possédés (rangement, gradation),
 // ajout (quantité, état, variante), wishlist.
-import { $, h, detailCarte, imageCarte, variantesDe, euros, essayer, message, ETATS, lienCardmarket, libelleExt } from "./api.js";
+import { $, h, boutonCardmarket, detailCarte, imageCarte, variantesDe, euros, essayer, message, ETATS, lienCardmarket, libelleExt } from "./api.js";
 import { S, evenements } from "./etat.js";
 import * as D from "./donnees.js";
 
@@ -139,7 +139,7 @@ function dessiner() {
         ? ["Prix moyen (30 jours) : ", h("b", {}, euros(prix)), cm.trend != null ? " · tendance " + euros(cm.trend) : "", cm.low != null ? " · le plus bas " + euros(cm.low) : ""]
         : "Pas de prix disponible pour cette carte."
     ),
-    h("a", { class: "lien", href: lienCardmarket(d.name, ext && ext.code, d.localId), target: "_blank", rel: "noopener" }, "🛒 Voir sur Cardmarket"),
+    boutonCardmarket(d.name, d.set.id, d.localId, "Acheter sur Cardmarket"),
     blocExemplaires(d)
   );
   if (!S.lectureSeule) {

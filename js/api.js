@@ -208,6 +208,20 @@ export const lienCardmarket = (nom, extension, localId) =>
   "https://www.cardmarket.com/fr/Pokemon/Products/Search?searchString=" +
   encodeURIComponent([nom, extension, localId].filter(Boolean).join(" "));
 
+// Bouton « Acheter sur Cardmarket » (icône du site) ; `etiquette` ajoute un texte à côté de l'icône
+export function boutonCardmarket(nom, setId, localId, etiquette = "") {
+  const ext = S.extParId.get(setId);
+  return h("a", {
+    class: "btn-cm" + (etiquette ? " avec-texte" : ""),
+    href: lienCardmarket(nom, ext && ext.code, localId),
+    target: "_blank",
+    rel: "noopener noreferrer",
+    title: "Acheter « " + nom + " » sur Cardmarket",
+    "aria-label": "Acheter " + nom + " sur Cardmarket",
+    onclick: (e) => e.stopPropagation(),
+  }, h("img", { src: "cardmarket.png", alt: "", width: 22, height: 22 }), etiquette ? h("span", {}, etiquette) : null);
+}
+
 const cacheRecherches = new Map(); // texte -> cartes
 
 // Recherche libre par nom : toutes les cartes dont le nom contient le texte, de la plus récente à la plus ancienne.

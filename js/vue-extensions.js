@@ -1,5 +1,5 @@
 // Vue « Extensions » : liste des extensions par série avec progression, puis grille des cartes d'une extension.
-import { $, h, normalise, cartesDExtension, detailsExtension, lireCacheExtension, detailCarte, lienCardmarket, imageCarte, essayer, message, annee, euros } from "./api.js";
+import { $, h, boutonCardmarket, normalise, cartesDExtension, detailsExtension, lireCacheExtension, detailCarte, lienCardmarket, imageCarte, essayer, message, annee, euros } from "./api.js";
 import { S } from "./etat.js";
 import * as D from "./donnees.js";
 import { ouvrirCarte } from "./dialogue-carte.js";
@@ -273,7 +273,7 @@ async function monterDetail(conteneur, setId) {
           k.image ? h("img", { src: imageCarte(k.image), alt: "", loading: "lazy" }) : h("span", { class: "sans-image" }),
           h("span", { class: "achat-nom" }, h("b", {}, k.name), h("small", { class: "muted" }, " n° " + k.localId + (d.rarete ? " · " + d.rarete : "") + (dejaSouhaitees.has(k.id) ? " · ❤" : ""))),
           h("span", { class: "achat-prix" }, d.prix != null ? euros(d.prix) : "—"),
-          h("a", { href: lienCardmarket(k.name, ext && ext.code, k.localId), target: "_blank", rel: "noopener", title: "Chercher sur Cardmarket", onclick: (e) => e.stopPropagation() }, "🛒")
+          boutonCardmarket(k.name, k.set_id, k.localId)
         );
       }));
       majTotal();
@@ -368,7 +368,7 @@ function tuile(k, qte, voeu, principale, d, master, variantesPossedees) {
     ),
     h("div", { class: "tuile-info" },
       h("span", { class: "num" }, "n° " + k.localId + (principale ? "" : " ✦")),
-      h("b", { title: k.name }, k.name),
+      h("div", { class: "ligne-nom" }, h("b", { title: k.name }, k.name), boutonCardmarket(k.name, k.set_id, k.localId)),
       d && d.rarete ? h("span", { class: "num" }, d.rarete) : null,
       d && d.prix != null ? h("span", { class: "prix" }, euros(d.prix)) : null
     ),

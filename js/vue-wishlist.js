@@ -1,5 +1,5 @@
 // Vue « Wishlist » : les cartes recherchées (une ligne par carte précise).
-import { h, imageCarte, essayer, euros, message, libelleExt, detailCarte } from "./api.js";
+import { h, boutonCardmarket, imageCarte, essayer, euros, message, libelleExt, detailCarte } from "./api.js";
 import { S } from "./etat.js";
 import * as D from "./donnees.js";
 import { ouvrirCarte } from "./dialogue-carte.js";
@@ -32,7 +32,7 @@ export const vueWishlist = {
           x.image ? h("img", { loading: "lazy", alt: x.nom, src: imageCarte(x.image), onerror: (ev) => ev.target.replaceWith(h("div", { class: "sans-image" }, "Pas d'image")) }) : h("div", { class: "sans-image" }, "Pas d'image")
         ),
         h("div", { class: "tuile-info" },
-          h("b", { title: x.nom }, x.nom),
+          h("div", { class: "ligne-nom" }, h("b", { title: x.nom }, x.nom), boutonCardmarket(x.nom, x.set_id, x.local_id)),
           h("span", { class: "num" }, libelleExt(x.set_id) + " · n° " + x.local_id),
           x.rarete ? h("span", { class: "num" }, x.rarete) : null,
           x.valeur != null ? h("span", { class: "prix" }, euros(x.valeur)) : null

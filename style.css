@@ -623,6 +623,31 @@ body.partage .hors-partage { display: none !important; }
 
 .scan-continu { margin: 8px 0 0; font-size: 0.85rem; color: var(--muted); font-weight: 400; align-items: flex-start; }
 
+/* ---------- Bouton Cardmarket ---------- */
+
+.ligne-nom { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-width: 0; }
+.ligne-nom b { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.btn-cm {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px;
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  line-height: 0;
+  text-decoration: none;
+  transition: transform 0.1s, border-color 0.15s;
+}
+
+.btn-cm:hover { border-color: var(--yellow); transform: translateY(-1px); }
+.btn-cm img { display: block; width: 22px; height: 22px; }
+
+.btn-cm.avec-texte { justify-self: start; padding: 5px 12px 5px 6px; line-height: 1.2; color: #0b2a5b; font-weight: 700; }
+.btn-cm.avec-texte img { width: 26px; height: 26px; }
+
 /* ---------- Mobile ---------- */
 
 @media (max-width: 700px) {
