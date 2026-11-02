@@ -548,6 +548,12 @@ body.partage .hors-partage { display: none !important; }
 
 @media (max-width: 700px) {
   .top { position: static; padding: 10px 12px 8px; }
+
+  /* Boutons de l'en-tête sur une seule ligne ; le menu s'ouvre en pleine largeur, toujours visible à l'écran */
+  .row-btn { width: 100%; flex-wrap: nowrap; position: relative; }
+  #cible-select { flex: 1; min-width: 0; max-width: none; }
+  .menu { position: static; }
+  .menu-liste { position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 50; min-width: 0; }
   .logo-main { font-size: 1.6rem; -webkit-text-stroke-width: 5px; }
   .logo-ball { width: 36px; height: 36px; }
   .vue { padding: 12px 10px 60px; }
