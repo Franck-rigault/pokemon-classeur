@@ -46,104 +46,34 @@
           <div class="logo-text"><span class="logo-main">Pokémon</span><span class="logo-sub">Classeur</span></div>
         </div>
         <div class="row-btn">
-          <button id="btn-scan" type="button" class="scan edit-only">📷 Scanner une carte</button>
-          <button id="logout" type="button" class="ghost edit-only">Déconnexion</button>
+          <select id="cible-select" aria-label="Collection affichée" hidden></select>
+          <button id="btn-scan" type="button" class="scan edit-only">📷 Scanner</button>
+          <details id="menu" class="menu">
+            <summary aria-label="Menu">☰</summary>
+            <div class="menu-liste">
+              <button id="btn-prix" type="button" class="ghost edit-only">💶 Actualiser les prix</button>
+              <button id="btn-partage" type="button" class="ghost edit-only hors-partage">🔗 Partager ma collection</button>
+              <button id="btn-export" type="button" class="ghost">⬇ Exporter (CSV)</button>
+              <button id="logout" type="button" class="ghost hors-partage">Déconnexion</button>
+            </div>
+          </details>
         </div>
       </div>
-
-      <p class="lecture-banner">👀 Collection partagée en lecture seule</p>
-      <p class="print-titre">Ma wishlist Pokémon</p>
-
-      <div class="stats">
-        <div><span id="stat-possedes">0</span><small>Possédés</small></div>
-        <div><span id="stat-wl-nb">0</span><small>Wishlist à trouver</small></div>
-        <div><span id="stat-wl-val">0 €</span><small>Valeur wishlist à trouver</small></div>
-        <div><span id="stat-total-val">0 €</span><small>Valeur possédée</small></div>
-      </div>
-
-      <div class="row tools edit-only">
-        <input id="wish-input" type="text" placeholder="Nom à ajouter à la wishlist, puis Entrée" autocomplete="off">
-        <button id="add-toggle" type="button" class="ghost">+ Ajouter un Pokémon</button>
-      </div>
-
-      <div class="row tools">
-        <input id="filter-input" type="search" placeholder="Rechercher un nom ou un n°" autocomplete="off">
-        <button id="outils-toggle" type="button" class="ghost">⚙ Filtres et outils</button>
-      </div>
-
-      <div id="outils" class="outils">
-        <div class="row tools">
-          <select id="filter-select" aria-label="Afficher">
-            <option value="all">Tous</option>
-            <option value="possede">Possédés</option>
-            <option value="manquant">Manquants</option>
-            <option value="wishlist">Wishlist</option>
-            <option value="wishlist-manquant">Wishlist non possédés</option>
-          </select>
-          <select id="tri-select" aria-label="Trier par">
-            <option value="numero">Tri : n° Pokédex</option>
-            <option value="nom">Tri : nom A → Z</option>
-            <option value="valeur">Tri : valeur décroissante</option>
-            <option value="extension">Tri : extension</option>
-          </select>
-          <select id="gen-select" aria-label="Génération"><option value="">Toutes les générations</option></select>
-          <select id="ext-select" aria-label="Extension"><option value="">Toutes les extensions</option></select>
-          <select id="rar-select" aria-label="Rareté"><option value="">Toutes les raretés</option></select>
-        </div>
-        <div class="row tools">
-          <button id="btn-dash" type="button" class="ghost">📊 Tableau de bord</button>
-          <button id="btn-prix" type="button" class="ghost edit-only">💶 Actualiser les prix</button>
-          <button id="btn-partage" type="button" class="ghost edit-only">🔗 Partager</button>
-          <button id="btn-export" type="button" class="ghost">⬇ Exporter (CSV)</button>
-          <button id="btn-print" type="button" class="ghost">🖨 Imprimer la wishlist</button>
-        </div>
-      </div>
-
+      <p id="bandeau" class="lecture-banner" hidden></p>
+      <nav id="onglets" class="onglets" aria-label="Sections"></nav>
       <p id="msg" class="msg"></p>
-
-      <form id="add-form" class="row tools" hidden>
-        <input id="add-numero" type="number" min="0" placeholder="N°">
-        <input id="add-nom" type="text" placeholder="Nom" required>
-        <input id="add-extension" type="text" list="extensions" placeholder="Extension" autocomplete="off">
-        <input id="add-numero-carte" type="text" placeholder="N° carte">
-        <input id="add-rarete" type="text" list="raretes" placeholder="Rareté" autocomplete="off">
-        <input id="add-valeur" type="number" min="0" step="0.01" placeholder="Valeur €">
-        <button type="submit">Enregistrer</button>
-      </form>
     </header>
 
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>N°</th>
-            <th>Image</th>
-            <th>Nom</th>
-            <th>Carte</th>
-            <th>Possédé</th>
-            <th>Extension</th>
-            <th>N° carte</th>
-            <th>Rareté</th>
-            <th>Valeur (€)</th>
-            <th>Wishlist</th>
-          </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
-    </div>
+    <main id="vue" class="vue"></main>
   </section>
 
-  <!-- Choix d'une carte pour un Pokémon -->
-  <dialog id="picker" class="modal">
+  <!-- Détail d'une carte -->
+  <dialog id="carte" class="modal">
     <div class="picker-head">
-      <h2 id="picker-titre">Cartes</h2>
-      <div class="picker-actions">
-        <button id="picker-clear" type="button" class="ghost">Retirer la carte</button>
-        <button id="picker-close" type="button" class="ghost" aria-label="Fermer">✕</button>
-      </div>
+      <span></span>
+      <button id="carte-close" type="button" class="ghost" aria-label="Fermer">✕</button>
     </div>
-    <p id="picker-info" class="msg"></p>
-    <div id="picker-grille" class="grille"></div>
+    <div id="carte-contenu" class="dash-contenu"></div>
   </dialog>
 
   <!-- Scanner -->
@@ -167,21 +97,13 @@
     <details class="scan-manuel">
       <summary>Corriger ou saisir à la main</summary>
       <form id="scan-manuel" class="row tools">
-        <input id="scan-nom" type="text" list="noms-pokemon" placeholder="Nom du Pokémon" autocomplete="off" required>
+        <input id="scan-nom" type="text" list="noms-pokemon" placeholder="Nom de la carte" autocomplete="off">
         <input id="scan-num" type="text" placeholder="N° (ex. 018/091)" autocomplete="off">
+        <input id="scan-ext" type="text" placeholder="Code extension (ex. PAF)" autocomplete="off">
         <button type="submit">Rechercher</button>
       </form>
     </details>
     <div id="scan-resultat" class="grille"></div>
-  </dialog>
-
-  <!-- Tableau de bord -->
-  <dialog id="dash" class="modal">
-    <div class="picker-head">
-      <h2>Tableau de bord</h2>
-      <button id="dash-close" type="button" class="ghost" aria-label="Fermer">✕</button>
-    </div>
-    <div id="dash-contenu" class="dash-contenu"></div>
   </dialog>
 
   <!-- Partage -->
@@ -193,14 +115,23 @@
     <div id="partage-contenu" class="dash-contenu"></div>
   </dialog>
 
-  <datalist id="extensions"></datalist>
-  <datalist id="raretes"></datalist>
+  <!-- Classeur : choix de la carte d'un Pokémon -->
+  <dialog id="picker" class="modal">
+    <div class="picker-head">
+      <h2 id="picker-titre">Cartes</h2>
+      <div class="picker-actions">
+        <button id="picker-clear" type="button" class="ghost">Retirer la carte</button>
+        <button id="picker-close" type="button" class="ghost" aria-label="Fermer">✕</button>
+      </div>
+    </div>
+    <p id="picker-info" class="msg"></p>
+    <div id="picker-grille" class="grille"></div>
+  </dialog>
+
   <datalist id="noms-pokemon"></datalist>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
   <script src="config.js"></script>
-  <script src="app.js"></script>
-  <script src="outils.js"></script>
-  <script src="scan.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>
 </html>

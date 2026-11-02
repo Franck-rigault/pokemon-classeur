@@ -1,5 +1,7 @@
-// Scanner de cartes : caméra (ou photo) -> lecture du texte (OCR) -> carte exacte TCGdex.
-// Chargé après app.js : il utilise ses variables globales (cartes, cartesDe, detailCarte, appliquerCarte…).
+// Scanner de cartes : caméra (ou photo) -> lecture du texte (OCR) -> carte exacte TCGdex -> collection.
+import { $, h, normalise, echapper, euros, essayer, message, cartesDExtension, cartesParNom, detailCarte, variantesDe, imageCarte, libelleExt, ETATS, prixDe, fermerAuFond } from "./api.js";
+import { S } from "./etat.js";
+import * as D from "./donnees.js";
 
 const TESSERACT_SRC = "https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js";
 const RATIO_CARTE = 63 / 88; // largeur / hauteur d'une carte Pokémon
@@ -34,7 +36,7 @@ async function moteurOcr() {
   if (moteur) return moteur;
   info("Chargement du moteur de lecture (première fois seulement)…");
   await chargerScript(TESSERACT_SRC);
-  moteur = await Tesseract.createWorker("fra", 1, {
+  moteur = await window.Tesseract.createWorker("fra", 1, {
     logger: (m) => {
       if (m.status === "recognizing text") info("Lecture du texte… " + Math.round(m.progress * 100) + " %");
     },
@@ -79,9 +81,9 @@ function niveler(c) {
 
 // Découpe une zone (en fractions de la carte) et l'agrandit pour la lecture
 function bande(carte, x0, y0, x1, y1, facteur = 2) {
-  const w = carte.width, h = carte.height;
-  const sw = (x1 - x0) * w, sh = (y1 - y0) * h;
-  return niveler(copieCanvas(carte, x0 * w, y0 * h, sw, sh, sw * facteur, sh * facteur));
+  const w = carte.width, h2 = carte.height;
+  const sw = (x1 - x0) * w, sh = (y1 - y0) * h2;
+  return niveler(copieCanvas(carte, x0 * w, y0 * h2, sw, sh, sw * facteur, sh * facteur));
 }
 
 // ---------- Interprétation du texte lu ----------
@@ -100,25 +102,26 @@ function levenshtein(a, b) {
 }
 
 const nomsPokemon = () =>
-  cartes
-    .map((c) => ({ c, n: normalise(c.nom) }))
+  S.pokemon
+    .map((p) => ({ nom: p.nom, n: normalise(p.nom) }))
     .filter((x) => x.n.length >= 3)
     .sort((a, b) => b.n.length - a.n.length); // les noms longs d'abord : « Mewtwo » avant « Mew »
 
 // Trouve le Pokémon cité dans un texte ; `flou` tolère 1-2 lettres mal lues (zone du nom seulement)
 function trouverNom(texte, flou) {
   const t = normalise(texte);
-  for (const x of nomsPokemon()) {
+  const noms = nomsPokemon();
+  for (const x of noms) {
     if (!t.includes(x.n)) continue;
     const mot = new RegExp("(?<![\\p{L}\\p{N}])" + echapper(x.n) + "(?![\\p{L}\\p{N}])", "u");
-    if (mot.test(t)) return x.c;
+    if (mot.test(t)) return x.nom;
   }
   if (!flou) return null;
 
   const mots = t.split(/[^\p{L}]+/u).filter((m) => m.length >= 4);
   let meilleur = null;
   for (const m of mots) {
-    for (const x of nomsPokemon()) {
+    for (const x of noms) {
       if (x.n.length < 4 || Math.abs(x.n.length - m.length) > 2) continue;
       const d = levenshtein(m, x.n);
       const tolere = x.n.length >= 8 ? 2 : 1;
@@ -127,7 +130,7 @@ function trouverNom(texte, flou) {
       }
     }
   }
-  return meilleur ? meilleur.x.c : null;
+  return meilleur ? meilleur.x.nom : null;
 }
 
 // Cherche « 018/091 » (le O lu à la place du 0, le l à la place du 1 sont corrigés)
@@ -142,7 +145,7 @@ function trouverNumero(texte) {
     const num = nombre(m[1]), total = nombre(m[2]);
     if (plausible(num, total)) return { num, total };
   }
-  // Le « / » est parfois lu comme un chiffre (« 063/193 » -> « 0634193 ») ou un signe : 3 chiffres, 1 caractère, 3 chiffres
+  // Le « / » est parfois lu comme un chiffre (« 063/193 » -> « 0634193 ») ou un signe
   const colle = /(?<![0-9])([0-9]{3})[^0-9\s]?[0-9]?([0-9]{3})(?![0-9])/g;
   while ((m = colle.exec(t))) {
     const num = nombre(m[1]), total = nombre(m[2]);
@@ -151,103 +154,158 @@ function trouverNumero(texte) {
   return null;
 }
 
+// Code d'extension imprimé en bas de la carte (ex. PAF, SVI) : permet d'identifier aussi Dresseurs et Énergies
+function trouverExtension(texte, numero) {
+  if (!numero) return null;
+  const jetons = new Set((texte.toUpperCase().match(/[A-Z0-9]{2,5}/g) || []));
+  const candidates = S.extensions
+    .filter((e) => e.code && jetons.has(e.code.toUpperCase()) && e.officiel === numero.total)
+    .sort((a, b) => (S.ordreExt.get(a.id) ?? 9999) - (S.ordreExt.get(b.id) ?? 9999));
+  return candidates[0] || null;
+}
+
 async function analyser(carte) {
   info("Lecture du nom…");
   const texteNom = await lire(bande(carte, 0.04, 0.02, 0.8, 0.14), "7");
   info("Lecture du numéro…");
   const texteBas = await lire(bande(carte, 0, 0.88, 1, 1), "6");
 
-  let pokemon = trouverNom(texteNom, true);
+  let nom = trouverNom(texteNom, true);
   let numero = trouverNumero(texteBas);
+  let ext = trouverExtension(texteBas, numero);
   let texteComplet = "";
 
-  if (!pokemon || !numero) {
+  if (!numero || (!nom && !ext)) {
     info("Lecture de la carte entière…");
     const entier = niveler(copieCanvas(carte, 0, 0, carte.width, carte.height, carte.width, carte.height));
     texteComplet = await lire(entier, "11");
-    if (!pokemon) pokemon = trouverNom(texteComplet, false);
+    if (!nom) nom = trouverNom(texteComplet, false);
     if (!numero) numero = trouverNumero(texteComplet);
+    if (!ext) ext = trouverExtension(texteBas + " " + texteComplet, numero);
   }
-  return { pokemon, numero, lu: [texteNom, texteBas, texteComplet].join(" ").replace(/\s+/g, " ").trim() };
+  return { nom, numero, ext, lu: [texteNom, texteBas, texteComplet].join(" ").replace(/\s+/g, " ").trim() };
 }
 
 // ---------- Recherche de la carte exacte ----------
 
 function viderResultats() {
-  $("scan-resultat").textContent = "";
+  $("scan-resultat").replaceChildren();
   $("scan-resultat").classList.remove("confirmation");
 }
 
-async function rechercher(ligne, numero) {
-  info("Recherche des cartes de " + ligne.nom + "…");
-  viderResultats();
-  const toutes = await cartesDe(ligne.nom);
-
-  let candidates = numero ? toutes.filter((k) => parseInt(k.localId, 10) === numero.num) : [];
-  if (candidates.length > 1 && numero.total) {
-    // Plusieurs extensions ont ce numéro : le total imprimé sur la carte (ex. /091) les départage
-    const sous = candidates.slice(0, 20);
-    const details = await Promise.all(sous.map((k) => detailCarte(k.id).catch(() => null)));
-    const bonnes = sous.filter((k, i) => details[i] && details[i].set.cardCount && details[i].set.cardCount.official === numero.total);
-    if (bonnes.length) candidates = bonnes;
-  }
-
-  const zone = $("scan-resultat");
-  if (candidates.length === 1) {
-    info("Trouvé : est-ce la bonne carte ?", "ok");
-    return afficherConfirmation(ligne, candidates[0], toutes);
-  }
-  if (candidates.length > 1) {
-    info(candidates.length + " cartes correspondent : touchez la vôtre.");
-    candidates.forEach((k) => zone.append(creerTuile(k, k.id === ligne.carte_id, (c) => valider(ligne, c))));
-    return;
-  }
-  info(
-    (numero ? "Numéro " + numero.num + " introuvable pour " + ligne.nom : "Numéro non lu") +
-      " : voici toutes ses cartes, touchez la vôtre.",
-    ""
+function tuile(k, auClic) {
+  return h("button", { type: "button", class: "tuile", onclick: () => auClic(k) },
+    k.image ? h("img", { loading: "lazy", alt: k.name, src: imageCarte(k.image), onerror: (ev) => ev.target.replaceWith(h("div", { class: "sans-image" }, "Pas d'image")) }) : h("div", { class: "sans-image" }, "Pas d'image"),
+    h("span", {}, k.name + " · " + libelleExt(k.set_id) + " · n° " + k.localId)
   );
-  toutes.forEach((k) => zone.append(creerTuile(k, k.id === ligne.carte_id, (c) => valider(ligne, c))));
 }
 
-function afficherConfirmation(ligne, k, toutes) {
+// Détermine les cartes candidates à partir de l'extension et/ou du nom, et du numéro lu
+async function candidates({ nom, numero, ext }) {
+  const num = numero ? numero.num : null;
+
+  if (ext && num) {
+    const { cartes } = await cartesDExtension(ext.id);
+    const trouvees = cartes.filter((k) => parseInt(k.localId, 10) === num);
+    if (trouvees.length === 1) return { liste: trouvees, toutes: null, sure: true };
+  }
+
+  if (nom) {
+    const toutes = await cartesParNom(nom);
+    let liste = num ? toutes.filter((k) => parseInt(k.localId, 10) === num) : [];
+    if (liste.length > 1 && numero.total) {
+      // Plusieurs extensions ont ce numéro : le total imprimé sur la carte (ex. /091) les départage
+      const sous = liste.slice(0, 20);
+      const details = await Promise.all(sous.map((k) => detailCarte(k.id).catch(() => null)));
+      const bonnes = sous.filter((k, i) => details[i] && details[i].set.cardCount && details[i].set.cardCount.official === numero.total);
+      if (bonnes.length) liste = bonnes;
+    }
+    return { liste, toutes, sure: false };
+  }
+  // Ni nom ni code lus (carte Dresseur/Énergie, texte illisible) : on cherche ce numéro dans les extensions de même taille
+  if (num && numero.total) {
+    const sets = S.extensions.filter((e) => e.officiel === numero.total).slice(0, 8);
+    const trouvees = [];
+    await Promise.all(sets.map(async (e) => {
+      try {
+        const { cartes } = await cartesDExtension(e.id);
+        trouvees.push(...cartes.filter((k) => parseInt(k.localId, 10) === num));
+      } catch {
+        // une extension indisponible n'empêche pas les autres
+      }
+    }));
+    trouvees.sort((a, b) => (S.ordreExt.get(a.set_id) ?? 9999) - (S.ordreExt.get(b.set_id) ?? 9999));
+    return { liste: trouvees, toutes: null, sure: false };
+  }
+  return { liste: [], toutes: null, sure: false };
+}
+
+async function rechercher(recherche) {
+  viderResultats();
+  info("Recherche de la carte…");
+  const { liste, toutes } = await candidates(recherche);
+  const zone = $("scan-resultat");
+
+  if (liste.length === 1) {
+    info("Trouvé : est-ce la bonne carte ?", "ok");
+    return afficherConfirmation(liste[0], toutes);
+  }
+  if (liste.length > 1) {
+    info(liste.length + " cartes correspondent : touchez la vôtre.");
+    return zone.append(...liste.map((k) => tuile(k, confirmer(toutes))));
+  }
+  if (toutes && toutes.length) {
+    info((recherche.numero ? "Numéro " + recherche.numero.num + " introuvable" : "Numéro non lu") + " : voici toutes les cartes « " + recherche.nom + " », touchez la vôtre.");
+    return zone.append(...toutes.map((k) => tuile(k, confirmer(toutes))));
+  }
+  info("Aucune carte trouvée. Corrigez le nom, le numéro ou le code d'extension ci-dessous.", "ko");
+  $("scan-manuel").parentElement.open = true;
+}
+
+const confirmer = (toutes) => (k) => {
+  viderResultats();
+  afficherConfirmation(k, toutes);
+};
+
+async function afficherConfirmation(k, toutes) {
   const zone = $("scan-resultat");
   zone.classList.add("confirmation");
-  zone.append(creerTuile(k, false, () => {}));
+  zone.replaceChildren(h("p", { class: "msg" }, "Chargement de la carte…"));
 
-  const actions = document.createElement("div");
-  actions.className = "scan-confirm-actions";
-  const ok = document.createElement("button");
-  ok.type = "button";
-  ok.textContent = "✔ Ajouter à ma collection";
-  ok.addEventListener("click", () => valider(ligne, k));
-  const autre = document.createElement("button");
-  autre.type = "button";
-  autre.className = "ghost";
-  autre.textContent = "Ce n'est pas elle";
-  autre.addEventListener("click", () => {
-    viderResultats();
-    info("Touchez votre carte dans la liste de " + ligne.nom + ".");
-    toutes.forEach((c) => zone.append(creerTuile(c, c.id === ligne.carte_id, (x) => valider(ligne, x))));
-  });
-  actions.append(ok, autre);
-  zone.append(actions);
-}
-
-async function valider(ligne, k) {
-  if (ligne.carte_id && ligne.carte_id !== k.id && !confirm(ligne.nom + " a déjà une carte enregistrée. La remplacer ?")) return;
-  info("Enregistrement…");
+  let d;
   try {
-    const { d, ext, prix } = await appliquerCarte(ligne, k.id, { possede: true });
-    viderResultats();
-    const texte =
-      "✔ " + ligne.nom + " ajouté : " + (ext ? ext.label : d.set.name) + ", n° " + d.localId +
-      (prix !== null ? " · " + euros(prix) : "");
-    info(texte + ". Carte suivante !", "ok");
-    message(texte, "ok");
+    d = await detailCarte(k.id);
   } catch (err) {
-    info("Échec : " + err.message, "ko");
+    zone.classList.remove("confirmation");
+    return info("Carte indisponible : " + err.message, "ko");
   }
+  const prix = prixDe(d);
+  const variante = h("select", { "aria-label": "Variante" }, variantesDe(d).map((v) => h("option", { value: v }, v)));
+  const etat = h("select", { "aria-label": "État" }, ETATS.map((e) => h("option", { value: e }, e)));
+
+  const ok = h("button", {
+    type: "button",
+    onclick: () => essayer(async () => {
+      ok.disabled = true;
+      await D.ajouterCarte(d, { variante: variante.value, etat: etat.value });
+      const texte = "✔ " + d.name + " ajoutée (" + libelleExt(d.set.id) + ", n° " + d.localId + (prix !== null ? " · " + euros(prix) : "") + ")";
+      viderResultats();
+      info(texte + ". Carte suivante !", "ok");
+      message(texte, "ok");
+    }),
+  }, "✔ Ajouter à ma collection");
+
+  const autre = toutes && toutes.length > 1
+    ? h("button", { type: "button", class: "ghost", onclick: () => { viderResultats(); info("Touchez votre carte dans la liste."); $("scan-resultat").append(...toutes.map((c) => tuile(c, confirmer(toutes)))); } }, "Ce n'est pas elle")
+    : h("button", { type: "button", class: "ghost", onclick: () => { viderResultats(); info(""); } }, "Ce n'est pas elle");
+
+  zone.replaceChildren(
+    h("div", { class: "tuile" },
+      d.image ? h("img", { src: imageCarte(d.image), alt: d.name }) : h("div", { class: "sans-image" }, "Pas d'image"),
+      h("span", {}, d.name + " · " + libelleExt(d.set.id) + " · n° " + d.localId)
+    ),
+    h("div", { class: "scan-confirm-actions" }, h("div", { class: "row tools" }, variante, etat), ok, autre)
+  );
 }
 
 // ---------- Caméra ----------
@@ -262,8 +320,7 @@ function ajusterGuide() {
   const vw = video.videoWidth, vh = video.videoHeight;
   if (!vw || !vh) return;
   const gw = Math.min(0.95, (HAUTEUR_GUIDE * vh * RATIO_CARTE) / vw);
-  const cadre = $("scan-cadre");
-  cadre.style.aspectRatio = vw + " / " + vh;
+  $("scan-cadre").style.aspectRatio = vw + " / " + vh;
   const g = $("scan-guide");
   g.style.left = ((1 - gw) / 2) * 100 + "%";
   g.style.width = gw * 100 + "%";
@@ -305,20 +362,16 @@ async function lancerAnalyse(carteCanvas) {
   $("scan-capture").disabled = true;
   viderResultats();
   try {
-    const { pokemon, numero, lu } = await analyser(carteCanvas);
-    if (!pokemon) {
-      info(
-        "Nom non reconnu (carte Dresseur/Énergie, reflet ou image floue ?). Texte lu : « " + lu.slice(0, 90) +
-          " ». Saisissez le nom ci-dessous.",
-        "ko"
-      );
+    const lecture = await analyser(carteCanvas);
+    $("scan-nom").value = lecture.nom || "";
+    $("scan-num").value = lecture.numero ? lecture.numero.num + "/" + lecture.numero.total : "";
+    $("scan-ext").value = lecture.ext ? lecture.ext.code : "";
+    if (!lecture.nom && !lecture.ext && !lecture.numero) {
+      info("Carte non reconnue (reflet, image floue ?). Texte lu : « " + lecture.lu.slice(0, 90) + " ». Saisissez le nom ou le code d'extension ci-dessous.", "ko");
       $("scan-manuel").parentElement.open = true;
-      if (numero) $("scan-num").value = numero.num + "/" + numero.total;
       return;
     }
-    $("scan-nom").value = pokemon.nom;
-    $("scan-num").value = numero ? numero.num + "/" + numero.total : "";
-    await rechercher(pokemon, numero);
+    await rechercher(lecture);
   } catch (err) {
     info("Échec de la lecture : " + err.message, "ko");
   } finally {
@@ -329,17 +382,18 @@ async function lancerAnalyse(carteCanvas) {
 
 // ---------- Branchements ----------
 
-$("btn-scan").addEventListener("click", () => {
+export function ouvrirScan() {
   const dl = $("noms-pokemon");
-  if (!dl.children.length) cartes.forEach((c) => dl.append(new Option(c.nom, c.nom)));
+  if (!dl.children.length) S.pokemon.forEach((p) => dl.append(new Option(p.nom, p.nom)));
   viderResultats();
   info("");
   $("scan").showModal();
   demarrerCamera();
-});
+}
 
 $("scan-close").addEventListener("click", () => $("scan").close());
 $("scan").addEventListener("close", arreterCamera);
+fermerAuFond($("scan"));
 
 $("scan-capture").addEventListener("click", () => {
   if (!video.videoWidth) return info("La caméra n'est pas prête.", "ko");
@@ -361,11 +415,15 @@ $("scan-fichier").addEventListener("change", async (e) => {
 
 $("scan-manuel").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const ligne = cartes.find((c) => normalise(c.nom) === normalise($("scan-nom").value));
-  if (!ligne) return info("Pokémon inconnu : " + $("scan-nom").value, "ko");
+  const nom = $("scan-nom").value.trim();
   const m = /(\d{1,3})(?:\s*[/\\]\s*(\d{1,3}))?/.exec($("scan-num").value);
+  const numero = m ? { num: parseInt(m[1], 10), total: m[2] ? parseInt(m[2], 10) : null } : null;
+  const code = $("scan-ext").value.trim().toUpperCase();
+  const ext = code ? S.extensions.find((x) => x.code && x.code.toUpperCase() === code) || null : null;
+  if (code && !ext) return info("Code d'extension inconnu : " + code, "ko");
+  if (!nom && !(ext && numero)) return info("Indiquez un nom, ou un code d'extension avec un numéro.", "ko");
   try {
-    await rechercher(ligne, m ? { num: parseInt(m[1], 10), total: m[2] ? parseInt(m[2], 10) : null } : null);
+    await rechercher({ nom: nom || null, numero, ext });
   } catch (err) {
     info("Échec : " + err.message, "ko");
   }

@@ -1,1214 +1,1872 @@
 [
   {
     "id": "30th",
-    "value": "30C",
-    "label": "30ᵉ Anniversaire (2026)",
-    "pocket": false
+    "nom": "30ᵉ Anniversaire",
+    "code": "30C",
+    "date": "2026-09-16",
+    "serie": "Méga-Évolution",
+    "officiel": 128,
+    "total": 161,
+    "logo": null
   },
   {
     "id": "30th-c",
-    "value": "30C",
-    "label": "Collection Classique 30ᵉ Anniversaire (2026)",
-    "pocket": false
+    "nom": "Collection Classique 30ᵉ Anniversaire",
+    "code": "30C",
+    "date": "2026-09-16",
+    "serie": "Méga-Évolution",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
   },
   {
     "id": "me05",
-    "value": "PBL",
-    "label": "Nuit Noire (2026)",
-    "pocket": false
+    "nom": "Nuit Noire",
+    "code": "PBL",
+    "date": "2026-07-17",
+    "serie": "Méga-Évolution",
+    "officiel": 84,
+    "total": 120,
+    "logo": "https://assets.tcgdex.net/fr/me/me05/logo"
   },
   {
     "id": "me04",
-    "value": "CRI",
-    "label": "Chaos Ascendant (2026)",
-    "pocket": false
+    "nom": "Chaos Ascendant",
+    "code": "CRI",
+    "date": "2026-05-22",
+    "serie": "Méga-Évolution",
+    "officiel": 86,
+    "total": 122,
+    "logo": "https://assets.tcgdex.net/fr/me/me04/logo"
   },
   {
     "id": "me03",
-    "value": "POR",
-    "label": "Équilibre Parfait (2026)",
-    "pocket": false
-  },
-  {
-    "id": "B2a",
-    "value": "Merveilles de Paldea",
-    "label": "Merveilles de Paldea (2026)",
-    "pocket": true
+    "nom": "Équilibre Parfait",
+    "code": "POR",
+    "date": "2026-03-27",
+    "serie": "Méga-Évolution",
+    "officiel": 88,
+    "total": 124,
+    "logo": "https://assets.tcgdex.net/fr/me/me03/logo"
   },
   {
     "id": "me02.5",
-    "value": "ASC",
-    "label": "Héros Transcendants (2026)",
-    "pocket": false
-  },
-  {
-    "id": "B2",
-    "value": "Parade Onirique",
-    "label": "Parade Onirique (2026)",
-    "pocket": true
-  },
-  {
-    "id": "B1a",
-    "value": "Embrasement Écarlate",
-    "label": "Embrasement Écarlate (2025)",
-    "pocket": true
+    "nom": "Héros Transcendants",
+    "code": "ASC",
+    "date": "2026-01-30",
+    "serie": "Méga-Évolution",
+    "officiel": 217,
+    "total": 295,
+    "logo": "https://assets.tcgdex.net/fr/me/me02.5/logo"
   },
   {
     "id": "me02",
-    "value": "PFL",
-    "label": "Flammes Fantasmagoriques (2025)",
-    "pocket": false
-  },
-  {
-    "id": "B1",
-    "value": "Méga-Ascension",
-    "label": "Méga-Ascension (2025)",
-    "pocket": true
+    "nom": "Flammes Fantasmagoriques",
+    "code": "PFL",
+    "date": "2025-11-14",
+    "serie": "Méga-Évolution",
+    "officiel": 94,
+    "total": 130,
+    "logo": "https://assets.tcgdex.net/fr/me/me02/logo"
   },
   {
     "id": "me01",
-    "value": "MEG",
-    "label": "Méga-Évolution (2025)",
-    "pocket": false
+    "nom": "Méga-Évolution",
+    "code": "MEG",
+    "date": "2025-09-26",
+    "serie": "Méga-Évolution",
+    "officiel": 132,
+    "total": 188,
+    "logo": "https://assets.tcgdex.net/fr/me/me01/logo"
   },
   {
     "id": "mep",
-    "value": "MEP",
-    "label": "MEP Black Star Promos (2025)",
-    "pocket": false
+    "nom": "MEP Black Star Promos",
+    "code": "MEP",
+    "date": "2025-09-26",
+    "serie": "Méga-Évolution",
+    "officiel": 0,
+    "total": 108,
+    "logo": null
   },
   {
     "id": "mee",
-    "value": "MEE",
-    "label": "Méga-Évolution Énergie (2025)",
-    "pocket": false
-  },
-  {
-    "id": "A4a",
-    "value": "Source Secrète",
-    "label": "Source Secrète (2025)",
-    "pocket": true
-  },
-  {
-    "id": "A4",
-    "value": "Sagesse Entre Ciel et Mer",
-    "label": "Sagesse Entre Ciel et Mer (2025)",
-    "pocket": true
-  },
-  {
-    "id": "sv10.5w",
-    "value": "WHT",
-    "label": "Flamme Blanche (2025)",
-    "pocket": false
+    "nom": "Méga-Évolution Énergie",
+    "code": "MEE",
+    "date": "2025-09-25",
+    "serie": "Méga-Évolution",
+    "officiel": 16,
+    "total": 16,
+    "logo": null
   },
   {
     "id": "sv10.5b",
-    "value": "BLK",
-    "label": "Foudre Noire (2025)",
-    "pocket": false
+    "nom": "Foudre Noire",
+    "code": "BLK",
+    "date": "2025-07-17",
+    "serie": "Écarlate et Violet",
+    "officiel": 86,
+    "total": 172,
+    "logo": "https://assets.tcgdex.net/fr/sv/sv10.5b/logo"
   },
   {
-    "id": "A3b",
-    "value": "La Clairière d'Évoli",
-    "label": "La Clairière d'Évoli (2025)",
-    "pocket": true
+    "id": "sv10.5w",
+    "nom": "Flamme Blanche",
+    "code": "WHT",
+    "date": "2025-07-17",
+    "serie": "Écarlate et Violet",
+    "officiel": 86,
+    "total": 173,
+    "logo": "https://assets.tcgdex.net/fr/sv/sv10.5w/logo"
   },
   {
     "id": "sv10",
-    "value": "DRI",
-    "label": "Rivalités Destinées (2025)",
-    "pocket": false
-  },
-  {
-    "id": "A3a",
-    "value": "Crise Interdimensionnelle",
-    "label": "Crise Interdimensionnelle (2025)",
-    "pocket": true
-  },
-  {
-    "id": "A3",
-    "value": "Gardiens Astraux",
-    "label": "Gardiens Astraux (2025)",
-    "pocket": true
+    "nom": "Rivalités Destinées",
+    "code": "DRI",
+    "date": "2025-05-30",
+    "serie": "Écarlate et Violet",
+    "officiel": 182,
+    "total": 244,
+    "logo": "https://assets.tcgdex.net/fr/sv/sv10/logo"
   },
   {
     "id": "sv09",
-    "value": "JTG",
-    "label": "Aventures Ensemble (2025)",
-    "pocket": false
-  },
-  {
-    "id": "A2b",
-    "value": "Réjouissances Rayonnantes",
-    "label": "Réjouissances Rayonnantes (2025)",
-    "pocket": true
-  },
-  {
-    "id": "A2a",
-    "value": "Lumière Triomphale",
-    "label": "Lumière Triomphale (2025)",
-    "pocket": true
-  },
-  {
-    "id": "A2",
-    "value": "Choc Spatio-Temporel",
-    "label": "Choc Spatio-Temporel (2025)",
-    "pocket": true
+    "nom": "Aventures Ensemble",
+    "code": "JTG",
+    "date": "2025-03-28",
+    "serie": "Écarlate et Violet",
+    "officiel": 159,
+    "total": 190,
+    "logo": "https://assets.tcgdex.net/fr/sv/sv09/logo"
   },
   {
     "id": "sv08.5",
-    "value": "PRE",
-    "label": "Évolutions Prismatiques (2025)",
-    "pocket": false
-  },
-  {
-    "id": "A1a",
-    "value": "L’Île Fabuleuse",
-    "label": "L’Île Fabuleuse (2024)",
-    "pocket": true
+    "nom": "Évolutions Prismatiques",
+    "code": "PRE",
+    "date": "2025-01-17",
+    "serie": "Écarlate et Violet",
+    "officiel": 131,
+    "total": 180,
+    "logo": "https://assets.tcgdex.net/fr/sv/sv08.5/logo"
   },
   {
     "id": "2024sv",
-    "value": "MCD24",
-    "label": "Collection McDonald's 2024 (2024)",
-    "pocket": false
+    "nom": "Collection McDonald's 2024",
+    "code": "MCD24",
+    "date": "2024-12-04",
+    "serie": "Collection McDonald's",
+    "officiel": 15,
+    "total": 15,
+    "logo": null
   },
   {
     "id": "sv08",
-    "value": "SSP",
-    "label": "Étincelles Déferlantes (2024)",
-    "pocket": false
-  },
-  {
-    "id": "P-A",
-    "value": "Promo-A",
-    "label": "Promo-A (2024)",
-    "pocket": true
-  },
-  {
-    "id": "A1",
-    "value": "Puissance Génétique",
-    "label": "Puissance Génétique (2024)",
-    "pocket": true
+    "nom": "Étincelles Déferlantes",
+    "code": "SSP",
+    "date": "2024-11-08",
+    "serie": "Écarlate et Violet",
+    "officiel": 191,
+    "total": 252,
+    "logo": "https://assets.tcgdex.net/fr/sv/sv08/logo"
   },
   {
     "id": "sv07",
-    "value": "SCR",
-    "label": "Couronne Stellaire (2024)",
-    "pocket": false
+    "nom": "Couronne Stellaire",
+    "code": "SCR",
+    "date": "2024-09-13",
+    "serie": "Écarlate et Violet",
+    "officiel": 142,
+    "total": 175,
+    "logo": "https://assets.tcgdex.net/fr/sv/sv07/logo"
   },
   {
     "id": "sv06.5",
-    "value": "SFA",
-    "label": "Fable Nébuleuse (2024)",
-    "pocket": false
+    "nom": "Fable Nébuleuse",
+    "code": "SFA",
+    "date": "2024-08-02",
+    "serie": "Écarlate et Violet",
+    "officiel": 64,
+    "total": 99,
+    "logo": "https://assets.tcgdex.net/fr/sv/sv06.5/logo"
   },
   {
     "id": "sv06",
-    "value": "TWM",
-    "label": "Mascarade Crépusculaire (2024)",
-    "pocket": false
+    "nom": "Mascarade Crépusculaire",
+    "code": "TWM",
+    "date": "2024-05-24",
+    "serie": "Écarlate et Violet",
+    "officiel": 167,
+    "total": 226,
+    "logo": "https://assets.tcgdex.net/fr/sv/sv06/logo"
   },
   {
     "id": "sv05",
-    "value": "TEF",
-    "label": "Forces Temporelles (2024)",
-    "pocket": false
+    "nom": "Forces Temporelles",
+    "code": "TEF",
+    "date": "2024-03-22",
+    "serie": "Écarlate et Violet",
+    "officiel": 162,
+    "total": 218,
+    "logo": "https://assets.tcgdex.net/fr/sv/sv05/logo"
   },
   {
     "id": "sv04.5",
-    "value": "PAF",
-    "label": "Destinées de Paldea (2024)",
-    "pocket": false
+    "nom": "Destinées de Paldea",
+    "code": "PAF",
+    "date": "2024-01-26",
+    "serie": "Écarlate et Violet",
+    "officiel": 91,
+    "total": 245,
+    "logo": "https://assets.tcgdex.net/fr/sv/sv04.5/logo"
   },
   {
     "id": "sv04",
-    "value": "PAR",
-    "label": "Faille Paradoxe (2023)",
-    "pocket": false
+    "nom": "Faille Paradoxe",
+    "code": "PAR",
+    "date": "2023-11-03",
+    "serie": "Écarlate et Violet",
+    "officiel": 182,
+    "total": 266,
+    "logo": "https://assets.tcgdex.net/fr/sv/sv04/logo"
   },
   {
     "id": "sv03.5",
-    "value": "MEW",
-    "label": "151 (2023)",
-    "pocket": false
+    "nom": "151",
+    "code": "MEW",
+    "date": "2023-09-22",
+    "serie": "Écarlate et Violet",
+    "officiel": 165,
+    "total": 207,
+    "logo": "https://assets.tcgdex.net/fr/sv/sv03.5/logo"
   },
   {
     "id": "sv03",
-    "value": "OBF",
-    "label": "Flammes Obsidiennes (2023)",
-    "pocket": false
+    "nom": "Flammes Obsidiennes",
+    "code": "OBF",
+    "date": "2023-08-11",
+    "serie": "Écarlate et Violet",
+    "officiel": 197,
+    "total": 230,
+    "logo": "https://assets.tcgdex.net/fr/sv/sv03/logo"
   },
   {
     "id": "2023sv",
-    "value": "MCD23",
-    "label": "Collection McDonald's 2023 (2023)",
-    "pocket": false
+    "nom": "Collection McDonald's 2023",
+    "code": "MCD23",
+    "date": "2023-08-01",
+    "serie": "Collection McDonald's",
+    "officiel": 15,
+    "total": 15,
+    "logo": null
   },
   {
     "id": "sv02",
-    "value": "PAL",
-    "label": "Évolutions à Paldea (2023)",
-    "pocket": false
+    "nom": "Évolutions à Paldea",
+    "code": "PAL",
+    "date": "2023-06-09",
+    "serie": "Écarlate et Violet",
+    "officiel": 193,
+    "total": 279,
+    "logo": "https://assets.tcgdex.net/fr/sv/sv02/logo"
   },
   {
     "id": "sv01",
-    "value": "SVI",
-    "label": "Écarlate et Violet (2023)",
-    "pocket": false
+    "nom": "Écarlate et Violet",
+    "code": "SVI",
+    "date": "2023-03-31",
+    "serie": "Écarlate et Violet",
+    "officiel": 198,
+    "total": 258,
+    "logo": "https://assets.tcgdex.net/fr/sv/sv01/logo"
   },
   {
     "id": "sve",
-    "value": "SVE",
-    "label": "Écarlate et Violet Énergie (2023)",
-    "pocket": false
+    "nom": "Écarlate et Violet Énergie",
+    "code": "SVE",
+    "date": "2023-03-31",
+    "serie": "Écarlate et Violet",
+    "officiel": 24,
+    "total": 24,
+    "logo": null
   },
   {
     "id": "svp",
-    "value": "SVP",
-    "label": "SVP Black Star Promos (2023)",
-    "pocket": false
+    "nom": "SVP Black Star Promos",
+    "code": "SVP",
+    "date": "2023-03-31",
+    "serie": "Écarlate et Violet",
+    "officiel": 225,
+    "total": 225,
+    "logo": null
   },
   {
     "id": "swsh12.5",
-    "value": "CRZ",
-    "label": "Zénith Suprême (2023)",
-    "pocket": false
+    "nom": "Zénith Suprême",
+    "code": "CRZ",
+    "date": "2023-01-20",
+    "serie": "Épée et Bouclier",
+    "officiel": 159,
+    "total": 160,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swsh12.5/logo"
   },
   {
     "id": "swsh12.5gg",
-    "value": "CRZ:GG",
-    "label": "Zénith Suprême Galerie Galaroise (2023)",
-    "pocket": false
+    "nom": "Zénith Suprême Galerie Galaroise",
+    "code": "CRZ:GG",
+    "date": "2023-01-20",
+    "serie": "Épée et Bouclier",
+    "officiel": 70,
+    "total": 70,
+    "logo": null
   },
   {
     "id": "swsh12",
-    "value": "SIT",
-    "label": "Tempête Argentée (2022)",
-    "pocket": false
+    "nom": "Tempête Argentée",
+    "code": "SIT",
+    "date": "2022-11-11",
+    "serie": "Épée et Bouclier",
+    "officiel": 195,
+    "total": 215,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swsh12/logo"
   },
   {
     "id": "swsh12tg",
-    "value": "SIT:TG",
-    "label": "Tempête Argentée Galerie de Dresseurs (2022)",
-    "pocket": false
+    "nom": "Tempête Argentée Galerie de Dresseurs",
+    "code": "SIT:TG",
+    "date": "2022-11-11",
+    "serie": "Épée et Bouclier",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
   },
   {
     "id": "swsh11tg",
-    "value": "LOR:TG",
-    "label": "Origine Perdue Galerie de Dresseurs (2022)",
-    "pocket": false
+    "nom": "Origine Perdue Galerie de Dresseurs",
+    "code": "LOR:TG",
+    "date": "2022-09-09",
+    "serie": "Épée et Bouclier",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
   },
   {
     "id": "swsh11",
-    "value": "LOR",
-    "label": "Origine Perdue (2022)",
-    "pocket": false
+    "nom": "Origine Perdue",
+    "code": "LOR",
+    "date": "2022-09-09",
+    "serie": "Épée et Bouclier",
+    "officiel": 196,
+    "total": 217,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swsh11/logo"
   },
   {
     "id": "2022swsh",
-    "value": "MCD22",
-    "label": "Collection McDonald's 2022 (2022)",
-    "pocket": false
+    "nom": "Collection McDonald's 2022",
+    "code": "MCD22",
+    "date": "2022-08-03",
+    "serie": "Collection McDonald's",
+    "officiel": 15,
+    "total": 15,
+    "logo": null
   },
   {
     "id": "swsh10.5",
-    "value": "PGO",
-    "label": "Pokémon GO (2022)",
-    "pocket": false
+    "nom": "Pokémon GO",
+    "code": "PGO",
+    "date": "2022-07-01",
+    "serie": "Épée et Bouclier",
+    "officiel": 78,
+    "total": 88,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swsh10.5/logo"
   },
   {
     "id": "swsh10",
-    "value": "ASR",
-    "label": "Astres Radieux (2022)",
-    "pocket": false
+    "nom": "Astres Radieux",
+    "code": "ASR",
+    "date": "2022-05-27",
+    "serie": "Épée et Bouclier",
+    "officiel": 189,
+    "total": 216,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swsh10/logo"
   },
   {
     "id": "swsh10tg",
-    "value": "ASR:TG",
-    "label": "Astres Radieux Galerie de Dresseurs (2022)",
-    "pocket": false
+    "nom": "Astres Radieux Galerie de Dresseurs",
+    "code": "ASR:TG",
+    "date": "2022-05-27",
+    "serie": "Épée et Bouclier",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
   },
   {
     "id": "swsh9tg",
-    "value": "BRS:TG",
-    "label": "Stars Étincelantes Galerie de Dresseurs (2022)",
-    "pocket": false
+    "nom": "Stars Étincelantes Galerie de Dresseurs",
+    "code": "BRS:TG",
+    "date": "2022-02-25",
+    "serie": "Épée et Bouclier",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
   },
   {
     "id": "swsh9",
-    "value": "BRS",
-    "label": "Stars Étincelantes (2022)",
-    "pocket": false
+    "nom": "Stars Étincelantes",
+    "code": "BRS",
+    "date": "2022-02-25",
+    "serie": "Épée et Bouclier",
+    "officiel": 172,
+    "total": 186,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swsh9/logo"
   },
   {
     "id": "swsh8",
-    "value": "FST",
-    "label": "Poing de Fusion (2021)",
-    "pocket": false
+    "nom": "Poing de Fusion",
+    "code": "FST",
+    "date": "2021-11-12",
+    "serie": "Épée et Bouclier",
+    "officiel": 264,
+    "total": 284,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swsh8/logo"
   },
   {
     "id": "cel25",
-    "value": "CEL",
-    "label": "Célébrations (2021)",
-    "pocket": false
+    "nom": "Célébrations",
+    "code": "CEL",
+    "date": "2021-10-08",
+    "serie": "Épée et Bouclier",
+    "officiel": 25,
+    "total": 25,
+    "logo": "https://assets.tcgdex.net/fr/swsh/cel25/logo"
   },
   {
     "id": "cel25cc",
-    "value": "CEL:CC",
-    "label": "Célébrations Collection Classique (2021)",
-    "pocket": false
+    "nom": "Célébrations Collection Classique",
+    "code": "CEL:CC",
+    "date": "2021-10-08",
+    "serie": "Épée et Bouclier",
+    "officiel": 25,
+    "total": 25,
+    "logo": null
   },
   {
     "id": "swsh7",
-    "value": "EVS",
-    "label": "Évolution Céleste (2021)",
-    "pocket": false
+    "nom": "Évolution Céleste",
+    "code": "EVS",
+    "date": "2021-08-27",
+    "serie": "Épée et Bouclier",
+    "officiel": 203,
+    "total": 237,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swsh7/logo"
   },
   {
     "id": "swsh6",
-    "value": "CRE",
-    "label": "Règne de Glace (2021)",
-    "pocket": false
+    "nom": "Règne de Glace",
+    "code": "CRE",
+    "date": "2021-06-18",
+    "serie": "Épée et Bouclier",
+    "officiel": 198,
+    "total": 233,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swsh6/logo"
   },
   {
     "id": "swsh5",
-    "value": "BST",
-    "label": "Styles de combat (2021)",
-    "pocket": false
+    "nom": "Styles de combat",
+    "code": "BST",
+    "date": "2021-03-19",
+    "serie": "Épée et Bouclier",
+    "officiel": 163,
+    "total": 183,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swsh5/logo"
   },
   {
     "id": "swsh4.5",
-    "value": "SHF",
-    "label": "Destinées Radieuses (2021)",
-    "pocket": false
+    "nom": "Destinées Radieuses",
+    "code": "SHF",
+    "date": "2021-02-19",
+    "serie": "Épée et Bouclier",
+    "officiel": 72,
+    "total": 73,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swsh4.5/logo"
   },
   {
     "id": "swsh4.5sv",
-    "value": "SHF:SV",
-    "label": "Destinées Radieuses Coffre Étincelant (2021)",
-    "pocket": false
+    "nom": "Destinées Radieuses Coffre Étincelant",
+    "code": "SHF:SV",
+    "date": "2021-02-19",
+    "serie": "Épée et Bouclier",
+    "officiel": 122,
+    "total": 122,
+    "logo": null
   },
   {
     "id": "2021swsh",
-    "value": "MCD21",
-    "label": "Collection McDonald's 2021 (2021)",
-    "pocket": false
+    "nom": "Collection McDonald's 2021",
+    "code": "MCD21",
+    "date": "2021-02-09",
+    "serie": "Collection McDonald's",
+    "officiel": 25,
+    "total": 25,
+    "logo": null
   },
   {
     "id": "swsh4",
-    "value": "VIV",
-    "label": "Voltage Éclatant (2020)",
-    "pocket": false
+    "nom": "Voltage Éclatant",
+    "code": "VIV",
+    "date": "2020-11-13",
+    "serie": "Épée et Bouclier",
+    "officiel": 185,
+    "total": 203,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swsh4/logo"
   },
   {
     "id": "swsh3.5",
-    "value": "CPA",
-    "label": "La Voie du Maître (2020)",
-    "pocket": false
+    "nom": "La Voie du Maître",
+    "code": "CPA",
+    "date": "2020-09-25",
+    "serie": "Épée et Bouclier",
+    "officiel": 73,
+    "total": 80,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swsh3.5/logo"
   },
   {
     "id": "swsh3",
-    "value": "DAA",
-    "label": "Ténèbres Embrasées (2020)",
-    "pocket": false
+    "nom": "Ténèbres Embrasées",
+    "code": "DAA",
+    "date": "2020-08-14",
+    "serie": "Épée et Bouclier",
+    "officiel": 189,
+    "total": 201,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swsh3/logo"
   },
   {
     "id": "swsh2",
-    "value": "RCL",
-    "label": "Clash des Rebelles (2020)",
-    "pocket": false
+    "nom": "Clash des Rebelles",
+    "code": "RCL",
+    "date": "2020-05-01",
+    "serie": "Épée et Bouclier",
+    "officiel": 192,
+    "total": 209,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swsh2/logo"
   },
   {
     "id": "swsh1",
-    "value": "SSH",
-    "label": "Épée et Bouclier (2020)",
-    "pocket": false
+    "nom": "Épée et Bouclier",
+    "code": "SSH",
+    "date": "2020-02-07",
+    "serie": "Épée et Bouclier",
+    "officiel": 202,
+    "total": 216,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swsh1/logo"
   },
   {
     "id": "swshp",
-    "value": "Promo SWSH",
-    "label": "Promo SWSH (2019)",
-    "pocket": false
+    "nom": "Promo SWSH",
+    "code": null,
+    "date": "2019-11-15",
+    "serie": "Épée et Bouclier",
+    "officiel": 307,
+    "total": 307,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swshp/logo"
   },
   {
     "id": "sm12",
-    "value": "CEC",
-    "label": "Éclipse Cosmique (2019)",
-    "pocket": false
+    "nom": "Éclipse Cosmique",
+    "code": "CEC",
+    "date": "2019-11-01",
+    "serie": "Soleil et Lune",
+    "officiel": 236,
+    "total": 271,
+    "logo": "https://assets.tcgdex.net/fr/sm/sm12/logo"
   },
   {
     "id": "2019sm-fr",
-    "value": "Collection McDonald's 2019",
-    "label": "Collection McDonald's 2019 (2019)",
-    "pocket": false
+    "nom": "Collection McDonald's 2019",
+    "code": null,
+    "date": "2019-10-30",
+    "serie": "Collection McDonald's",
+    "officiel": 40,
+    "total": 41,
+    "logo": null
   },
   {
     "id": "sm115",
-    "value": "HIF",
-    "label": "Destinées Occultes (2019)",
-    "pocket": false
+    "nom": "Destinées Occultes",
+    "code": "HIF",
+    "date": "2019-08-23",
+    "serie": "Soleil et Lune",
+    "officiel": 68,
+    "total": 69,
+    "logo": "https://assets.tcgdex.net/fr/sm/sm115/logo"
   },
   {
     "id": "sma",
-    "value": "Destinées Occultes Coffre Étincelant",
-    "label": "Destinées Occultes Coffre Étincelant (2019)",
-    "pocket": false
+    "nom": "Destinées Occultes Coffre Étincelant",
+    "code": null,
+    "date": "2019-08-23",
+    "serie": "Soleil et Lune",
+    "officiel": 94,
+    "total": 94,
+    "logo": null
   },
   {
     "id": "sm11",
-    "value": "UNM",
-    "label": "Harmonie des Esprits (2019)",
-    "pocket": false
+    "nom": "Harmonie des Esprits",
+    "code": "UNM",
+    "date": "2019-08-02",
+    "serie": "Soleil et Lune",
+    "officiel": 236,
+    "total": 258,
+    "logo": "https://assets.tcgdex.net/fr/sm/sm11/logo"
   },
   {
     "id": "sm10",
-    "value": "UNB",
-    "label": "Alliance Infaillible (2019)",
-    "pocket": false
+    "nom": "Alliance Infaillible",
+    "code": "UNB",
+    "date": "2019-05-03",
+    "serie": "Soleil et Lune",
+    "officiel": 214,
+    "total": 234,
+    "logo": "https://assets.tcgdex.net/fr/sm/sm10/logo"
   },
   {
     "id": "det1",
-    "value": "DET",
-    "label": "Détective Pikachu (2019)",
-    "pocket": false
+    "nom": "Détective Pikachu",
+    "code": "DET",
+    "date": "2019-03-29",
+    "serie": "Soleil et Lune",
+    "officiel": 18,
+    "total": 18,
+    "logo": "https://assets.tcgdex.net/fr/sm/det1/logo"
   },
   {
     "id": "sm9",
-    "value": "TEU",
-    "label": "Duo de Choc (2019)",
-    "pocket": false
+    "nom": "Duo de Choc",
+    "code": "TEU",
+    "date": "2019-01-31",
+    "serie": "Soleil et Lune",
+    "officiel": 181,
+    "total": 196,
+    "logo": "https://assets.tcgdex.net/fr/sm/sm9/logo"
   },
   {
     "id": "sm8",
-    "value": "LOT",
-    "label": "Tonnerre Perdu (2018)",
-    "pocket": false
+    "nom": "Tonnerre Perdu",
+    "code": "LOT",
+    "date": "2018-11-02",
+    "serie": "Soleil et Lune",
+    "officiel": 214,
+    "total": 236,
+    "logo": "https://assets.tcgdex.net/fr/sm/sm8/logo"
   },
   {
     "id": "sm7.5",
-    "value": "DRM",
-    "label": "Majesté Des Dragons (2018)",
-    "pocket": false
+    "nom": "Majesté Des Dragons",
+    "code": "DRM",
+    "date": "2018-09-07",
+    "serie": "Soleil et Lune",
+    "officiel": 70,
+    "total": 78,
+    "logo": "https://assets.tcgdex.net/fr/sm/sm7.5/logo"
   },
   {
     "id": "sm7",
-    "value": "CES",
-    "label": "Tempête Céleste (2018)",
-    "pocket": false
+    "nom": "Tempête Céleste",
+    "code": "CES",
+    "date": "2018-08-03",
+    "serie": "Soleil et Lune",
+    "officiel": 168,
+    "total": 183,
+    "logo": "https://assets.tcgdex.net/fr/sm/sm7/logo"
   },
   {
     "id": "2018sm-fr",
-    "value": "Collection McDonald's 2018",
-    "label": "Collection McDonald's 2018 (2018)",
-    "pocket": false
+    "nom": "Collection McDonald's 2018",
+    "code": null,
+    "date": "2018-06-13",
+    "serie": "Collection McDonald's",
+    "officiel": 40,
+    "total": 40,
+    "logo": null
   },
   {
     "id": "sm6",
-    "value": "FLI",
-    "label": "Lumière Interdite (2018)",
-    "pocket": false
+    "nom": "Lumière Interdite",
+    "code": "FLI",
+    "date": "2018-05-04",
+    "serie": "Soleil et Lune",
+    "officiel": 131,
+    "total": 146,
+    "logo": "https://assets.tcgdex.net/fr/sm/sm6/logo"
   },
   {
     "id": "sm5",
-    "value": "UPR",
-    "label": "Ultra-Prisme (2018)",
-    "pocket": false
+    "nom": "Ultra-Prisme",
+    "code": "UPR",
+    "date": "2018-02-02",
+    "serie": "Soleil et Lune",
+    "officiel": 156,
+    "total": 173,
+    "logo": "https://assets.tcgdex.net/fr/sm/sm5/logo"
   },
   {
     "id": "sm4",
-    "value": "CIN",
-    "label": "Invasion Carmin (2017)",
-    "pocket": false
+    "nom": "Invasion Carmin",
+    "code": "CIN",
+    "date": "2017-11-03",
+    "serie": "Soleil et Lune",
+    "officiel": 111,
+    "total": 125,
+    "logo": "https://assets.tcgdex.net/fr/sm/sm4/logo"
   },
   {
     "id": "sm3.5",
-    "value": "SLG",
-    "label": "Légendes Brillantes (2017)",
-    "pocket": false
+    "nom": "Légendes Brillantes",
+    "code": "SLG",
+    "date": "2017-10-06",
+    "serie": "Soleil et Lune",
+    "officiel": 73,
+    "total": 78,
+    "logo": "https://assets.tcgdex.net/fr/sm/sm3.5/logo"
   },
   {
     "id": "sm3",
-    "value": "BUS",
-    "label": "Ombres Ardentes (2017)",
-    "pocket": false
+    "nom": "Ombres Ardentes",
+    "code": "BUS",
+    "date": "2017-08-04",
+    "serie": "Soleil et Lune",
+    "officiel": 147,
+    "total": 169,
+    "logo": "https://assets.tcgdex.net/fr/sm/sm3/logo"
   },
   {
     "id": "2017sm",
-    "value": "MCD17",
-    "label": "Collection McDonald's 2017 (2017)",
-    "pocket": false
+    "nom": "Collection McDonald's 2017",
+    "code": "MCD17",
+    "date": "2017-08-03",
+    "serie": "Collection McDonald's",
+    "officiel": 12,
+    "total": 12,
+    "logo": null
   },
   {
     "id": "sm2",
-    "value": "GRI",
-    "label": "Gardiens Ascendants (2017)",
-    "pocket": false
+    "nom": "Gardiens Ascendants",
+    "code": "GRI",
+    "date": "2017-05-05",
+    "serie": "Soleil et Lune",
+    "officiel": 145,
+    "total": 169,
+    "logo": "https://assets.tcgdex.net/fr/sm/sm2/logo"
   },
   {
     "id": "tk-sm-r",
-    "value": "TK10A",
-    "label": "SM Kit du dresseur (Raichu d'Alola) (2017)",
-    "pocket": false
+    "nom": "SM Kit du dresseur (Raichu d'Alola)",
+    "code": "TK10A",
+    "date": "2017-04-21",
+    "serie": "Kits du dresseur",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
   },
   {
     "id": "tk-sm-l",
-    "value": "TK10L",
-    "label": "SM Kit du dresseur (Lougarox) (2017)",
-    "pocket": false
-  },
-  {
-    "id": "sm1",
-    "value": "SUM",
-    "label": "Soleil et Lune (2017)",
-    "pocket": false
+    "nom": "SM Kit du dresseur (Lougarox)",
+    "code": "TK10L",
+    "date": "2017-04-21",
+    "serie": "Kits du dresseur",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
   },
   {
     "id": "smp",
-    "value": "SMP",
-    "label": "Promo SM (2017)",
-    "pocket": false
+    "nom": "Promo SM",
+    "code": "SMP",
+    "date": "2017-02-03",
+    "serie": "Soleil et Lune",
+    "officiel": 248,
+    "total": 248,
+    "logo": null
+  },
+  {
+    "id": "sm1",
+    "nom": "Soleil et Lune",
+    "code": "SUM",
+    "date": "2017-02-03",
+    "serie": "Soleil et Lune",
+    "officiel": 149,
+    "total": 163,
+    "logo": "https://assets.tcgdex.net/fr/sm/sm1/logo"
   },
   {
     "id": "xy12",
-    "value": "EVO",
-    "label": "Évolutions (2016)",
-    "pocket": false
+    "nom": "Évolutions",
+    "code": "EVO",
+    "date": "2016-11-02",
+    "serie": "XY",
+    "officiel": 108,
+    "total": 113,
+    "logo": "https://assets.tcgdex.net/fr/xy/xy12/logo"
   },
   {
     "id": "2016xy",
-    "value": "MCD16",
-    "label": "Collection McDonald's 2016 (2016)",
-    "pocket": false
+    "nom": "Collection McDonald's 2016",
+    "code": "MCD16",
+    "date": "2016-08-20",
+    "serie": "Collection McDonald's",
+    "officiel": 12,
+    "total": 12,
+    "logo": null
   },
   {
     "id": "xy11",
-    "value": "STS",
-    "label": "Offensive Vapeur (2016)",
-    "pocket": false
+    "nom": "Offensive Vapeur",
+    "code": "STS",
+    "date": "2016-08-03",
+    "serie": "XY",
+    "officiel": 114,
+    "total": 116,
+    "logo": "https://assets.tcgdex.net/fr/xy/xy11/logo"
   },
   {
     "id": "xy10",
-    "value": "FCO",
-    "label": "Impact des Destins (2016)",
-    "pocket": false
-  },
-  {
-    "id": "tk-xy-su",
-    "value": "TK9S",
-    "label": "XY Kit du dresseur (Suicune) (2016)",
-    "pocket": false
+    "nom": "Impact des Destins",
+    "code": "FCO",
+    "date": "2016-05-02",
+    "serie": "XY",
+    "officiel": 124,
+    "total": 129,
+    "logo": "https://assets.tcgdex.net/fr/xy/xy10/logo"
   },
   {
     "id": "tk-xy-p",
-    "value": "TK9P",
-    "label": "XY Kit du dresseur (Pikachu Libre) (2016)",
-    "pocket": false
+    "nom": "XY Kit du dresseur (Pikachu Libre)",
+    "code": "TK9P",
+    "date": "2016-04-27",
+    "serie": "Kits du dresseur",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
+  },
+  {
+    "id": "tk-xy-su",
+    "nom": "XY Kit du dresseur (Suicune)",
+    "code": "TK9S",
+    "date": "2016-04-27",
+    "serie": "Kits du dresseur",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
   },
   {
     "id": "g1",
-    "value": "GEN",
-    "label": "Générations (2016)",
-    "pocket": false
+    "nom": "Générations",
+    "code": "GEN",
+    "date": "2016-02-22",
+    "serie": "XY",
+    "officiel": 83,
+    "total": 117,
+    "logo": "https://assets.tcgdex.net/fr/xy/g1/logo"
   },
   {
     "id": "xy9",
-    "value": "BKP",
-    "label": "Rupture Turbo (2016)",
-    "pocket": false
+    "nom": "Rupture Turbo",
+    "code": "BKP",
+    "date": "2016-02-03",
+    "serie": "XY",
+    "officiel": 122,
+    "total": 126,
+    "logo": "https://assets.tcgdex.net/fr/xy/xy9/logo"
   },
   {
     "id": "2015xy",
-    "value": "MCD15",
-    "label": "Collection McDonald's 2015 (2015)",
-    "pocket": false
+    "nom": "Collection McDonald's 2015",
+    "code": "MCD15",
+    "date": "2015-11-27",
+    "serie": "Collection McDonald's",
+    "officiel": 12,
+    "total": 12,
+    "logo": null
   },
   {
     "id": "xy8",
-    "value": "BKT",
-    "label": "Impulsion Turbo (2015)",
-    "pocket": false
+    "nom": "Impulsion Turbo",
+    "code": "BKT",
+    "date": "2015-11-04",
+    "serie": "XY",
+    "officiel": 162,
+    "total": 165,
+    "logo": "https://assets.tcgdex.net/fr/xy/xy8/logo"
   },
   {
     "id": "xy7",
-    "value": "AOR",
-    "label": "Origines Antiques (2015)",
-    "pocket": false
+    "nom": "Origines Antiques",
+    "code": "AOR",
+    "date": "2015-08-12",
+    "serie": "XY",
+    "officiel": 98,
+    "total": 101,
+    "logo": "https://assets.tcgdex.net/fr/xy/xy7/logo"
   },
   {
     "id": "xy6",
-    "value": "ROS",
-    "label": "Ciel Rugissant (2015)",
-    "pocket": false
-  },
-  {
-    "id": "tk-xy-latio",
-    "value": "TK8O",
-    "label": "XY Kit du dresseur (Latios) (2015)",
-    "pocket": false
+    "nom": "Ciel Rugissant",
+    "code": "ROS",
+    "date": "2015-05-06",
+    "serie": "XY",
+    "officiel": 108,
+    "total": 112,
+    "logo": "https://assets.tcgdex.net/fr/xy/xy6/logo"
   },
   {
     "id": "tk-xy-latia",
-    "value": "TK8A",
-    "label": "XY Kit du dresseur (Latias) (2015)",
-    "pocket": false
+    "nom": "XY Kit du dresseur (Latias)",
+    "code": "TK8A",
+    "date": "2015-04-29",
+    "serie": "Kits du dresseur",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
+  },
+  {
+    "id": "tk-xy-latio",
+    "nom": "XY Kit du dresseur (Latios)",
+    "code": "TK8O",
+    "date": "2015-04-29",
+    "serie": "Kits du dresseur",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
   },
   {
     "id": "dc1",
-    "value": "DCR",
-    "label": "Double Danger (2015)",
-    "pocket": false
+    "nom": "Double Danger",
+    "code": "DCR",
+    "date": "2015-03-25",
+    "serie": "XY",
+    "officiel": 34,
+    "total": 34,
+    "logo": "https://assets.tcgdex.net/fr/xy/dc1/logo"
   },
   {
     "id": "xy5",
-    "value": "PRC",
-    "label": "Primo-Choc (2015)",
-    "pocket": false
+    "nom": "Primo-Choc",
+    "code": "PRC",
+    "date": "2015-02-04",
+    "serie": "XY",
+    "officiel": 160,
+    "total": 164,
+    "logo": "https://assets.tcgdex.net/fr/xy/xy5/logo"
   },
   {
     "id": "xy4",
-    "value": "PHF",
-    "label": "Vigueur Spectrale (2014)",
-    "pocket": false
-  },
-  {
-    "id": "tk-xy-b",
-    "value": "TK7A",
-    "label": "XY Kit du dresseur (Scalproie) (2014)",
-    "pocket": false
+    "nom": "Vigueur Spectrale",
+    "code": "PHF",
+    "date": "2014-11-05",
+    "serie": "XY",
+    "officiel": 119,
+    "total": 124,
+    "logo": "https://assets.tcgdex.net/fr/xy/xy4/logo"
   },
   {
     "id": "tk-xy-w",
-    "value": "TK7B",
-    "label": "XY Kit du dresseur (Grodoudou) (2014)",
-    "pocket": false
+    "nom": "XY Kit du dresseur (Grodoudou)",
+    "code": "TK7B",
+    "date": "2014-11-01",
+    "serie": "Kits du dresseur",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
+  },
+  {
+    "id": "tk-xy-b",
+    "nom": "XY Kit du dresseur (Scalproie)",
+    "code": "TK7A",
+    "date": "2014-11-01",
+    "serie": "Kits du dresseur",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
   },
   {
     "id": "xy3",
-    "value": "FFI",
-    "label": "Poings Furieux (2014)",
-    "pocket": false
+    "nom": "Poings Furieux",
+    "code": "FFI",
+    "date": "2014-08-13",
+    "serie": "XY",
+    "officiel": 111,
+    "total": 114,
+    "logo": "https://assets.tcgdex.net/fr/xy/xy3/logo"
   },
   {
     "id": "2014xy",
-    "value": "MCD14",
-    "label": "Collection McDonald's 2014 (2014)",
-    "pocket": false
+    "nom": "Collection McDonald's 2014",
+    "code": "MCD14",
+    "date": "2014-05-23",
+    "serie": "Collection McDonald's",
+    "officiel": 12,
+    "total": 12,
+    "logo": null
   },
   {
     "id": "xy2",
-    "value": "FLF",
-    "label": "Étincelles (2014)",
-    "pocket": false
+    "nom": "Étincelles",
+    "code": "FLF",
+    "date": "2014-05-07",
+    "serie": "XY",
+    "officiel": 106,
+    "total": 110,
+    "logo": "https://assets.tcgdex.net/fr/xy/xy2/logo"
   },
   {
     "id": "tk-xy-sy",
-    "value": "TK6S",
-    "label": "XY Kit du dresseur (Nymphali) (2014)",
-    "pocket": false
+    "nom": "XY Kit du dresseur (Nymphali)",
+    "code": "TK6S",
+    "date": "2014-03-12",
+    "serie": "Kits du dresseur",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
   },
   {
     "id": "tk-xy-n",
-    "value": "TK6N",
-    "label": "XY Kit du dresseur (Bruyverne) (2014)",
-    "pocket": false
+    "nom": "XY Kit du dresseur (Bruyverne)",
+    "code": "TK6N",
+    "date": "2014-03-12",
+    "serie": "Kits du dresseur",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
   },
   {
     "id": "xy1",
-    "value": "XY",
-    "label": "XY (2014)",
-    "pocket": false
+    "nom": "XY",
+    "code": "XY",
+    "date": "2014-02-05",
+    "serie": "XY",
+    "officiel": 146,
+    "total": 146,
+    "logo": "https://assets.tcgdex.net/fr/xy/xy1/logo"
   },
   {
     "id": "xya",
-    "value": "carte alternative A Jaune",
-    "label": "carte alternative A Jaune (2014)",
-    "pocket": false
+    "nom": "carte alternative A Jaune",
+    "code": null,
+    "date": "2014-02-05",
+    "serie": "XY",
+    "officiel": 6,
+    "total": 6,
+    "logo": null
   },
   {
     "id": "xy0",
-    "value": "KSS",
-    "label": "Bienvenue à Kalos (2013)",
-    "pocket": false
+    "nom": "Bienvenue à Kalos",
+    "code": "KSS",
+    "date": "2013-11-08",
+    "serie": "XY",
+    "officiel": 39,
+    "total": 39,
+    "logo": "https://assets.tcgdex.net/fr/xy/xy0/logo"
   },
   {
     "id": "rc",
-    "value": "Radiant Collection",
-    "label": "Radiant Collection (2013)",
-    "pocket": false
+    "nom": "Radiant Collection",
+    "code": null,
+    "date": "2013-11-06",
+    "serie": "Noir & Blanc",
+    "officiel": 25,
+    "total": 25,
+    "logo": null
   },
   {
     "id": "2013bw",
-    "value": "Collection McDonald's 2013",
-    "label": "Collection McDonald's 2013 (2013)",
-    "pocket": false
+    "nom": "Collection McDonald's 2013",
+    "code": null,
+    "date": "2013-11-01",
+    "serie": "Collection McDonald's",
+    "officiel": 12,
+    "total": 12,
+    "logo": null
   },
   {
     "id": "xyp",
-    "value": "XYP",
-    "label": "Promo XY (2013)",
-    "pocket": false
+    "nom": "Promo XY",
+    "code": "XYP",
+    "date": "2013-10-12",
+    "serie": "XY",
+    "officiel": 211,
+    "total": 216,
+    "logo": null
   },
   {
     "id": "bw10",
-    "value": "PLB",
-    "label": "Explosion Plasma (2013)",
-    "pocket": false
+    "nom": "Explosion Plasma",
+    "code": "PLB",
+    "date": "2013-08-14",
+    "serie": "Noir & Blanc",
+    "officiel": 101,
+    "total": 105,
+    "logo": "https://assets.tcgdex.net/fr/bw/bw10/logo"
   },
   {
     "id": "bw9",
-    "value": "PLF",
-    "label": "Glaciation Plasma (2013)",
-    "pocket": false
+    "nom": "Glaciation Plasma",
+    "code": "PLF",
+    "date": "2013-05-08",
+    "serie": "Noir & Blanc",
+    "officiel": 116,
+    "total": 122,
+    "logo": "https://assets.tcgdex.net/fr/bw/bw9/logo"
   },
   {
     "id": "bw8",
-    "value": "PLS",
-    "label": "Tempète Plasma (2013)",
-    "pocket": false
+    "nom": "Tempète Plasma",
+    "code": "PLS",
+    "date": "2013-02-06",
+    "serie": "Noir & Blanc",
+    "officiel": 135,
+    "total": 138,
+    "logo": "https://assets.tcgdex.net/fr/bw/bw8/logo"
   },
   {
     "id": "bw7",
-    "value": "BCR",
-    "label": "Frontières Franchies (2012)",
-    "pocket": false
+    "nom": "Frontières Franchies",
+    "code": "BCR",
+    "date": "2012-11-07",
+    "serie": "Noir & Blanc",
+    "officiel": 149,
+    "total": 153,
+    "logo": "https://assets.tcgdex.net/fr/bw/bw7/logo"
   },
   {
     "id": "dv1",
-    "value": "DRV",
-    "label": "Coffre des Dragons (2012)",
-    "pocket": false
+    "nom": "Coffre des Dragons",
+    "code": "DRV",
+    "date": "2012-10-05",
+    "serie": "Noir & Blanc",
+    "officiel": 20,
+    "total": 21,
+    "logo": "https://assets.tcgdex.net/fr/bw/dv1/logo"
   },
   {
     "id": "bw6",
-    "value": "DRX",
-    "label": "Dragons Éxaltés (2012)",
-    "pocket": false
+    "nom": "Dragons Éxaltés",
+    "code": "DRX",
+    "date": "2012-08-15",
+    "serie": "Noir & Blanc",
+    "officiel": 124,
+    "total": 128,
+    "logo": "https://assets.tcgdex.net/fr/bw/bw6/logo"
   },
   {
     "id": "2012bw",
-    "value": "MCD12",
-    "label": "Collection McDonald's 2012 (2012)",
-    "pocket": false
+    "nom": "Collection McDonald's 2012",
+    "code": "MCD12",
+    "date": "2012-06-15",
+    "serie": "Collection McDonald's",
+    "officiel": 12,
+    "total": 12,
+    "logo": null
   },
   {
     "id": "bw5",
-    "value": "DEX",
-    "label": "Explorateurs Obscurs (2012)",
-    "pocket": false
+    "nom": "Explorateurs Obscurs",
+    "code": "DEX",
+    "date": "2012-05-09",
+    "serie": "Noir & Blanc",
+    "officiel": 108,
+    "total": 111,
+    "logo": "https://assets.tcgdex.net/fr/bw/bw5/logo"
   },
   {
     "id": "bw4",
-    "value": "NXD",
-    "label": "Destinées Futures (2012)",
-    "pocket": false
+    "nom": "Destinées Futures",
+    "code": "NXD",
+    "date": "2012-02-08",
+    "serie": "Noir & Blanc",
+    "officiel": 99,
+    "total": 103,
+    "logo": "https://assets.tcgdex.net/fr/bw/bw4/logo"
   },
   {
     "id": "bw3",
-    "value": "NVI",
-    "label": "Nobles Victoires (2011)",
-    "pocket": false
+    "nom": "Nobles Victoires",
+    "code": "NVI",
+    "date": "2011-11-16",
+    "serie": "Noir & Blanc",
+    "officiel": 101,
+    "total": 102,
+    "logo": "https://assets.tcgdex.net/fr/bw/bw3/logo"
   },
   {
     "id": "tk-bw-z",
-    "value": "TK5Z",
-    "label": "BW Kit du dresseur (Zoroark) (2011)",
-    "pocket": false
+    "nom": "BW Kit du dresseur (Zoroark)",
+    "code": "TK5Z",
+    "date": "2011-09-01",
+    "serie": "Kits du dresseur",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
   },
   {
     "id": "tk-bw-e",
-    "value": "TK5E",
-    "label": "BW Kit du dresseur (Minitaupe) (2011)",
-    "pocket": false
+    "nom": "BW Kit du dresseur (Minitaupe)",
+    "code": "TK5E",
+    "date": "2011-09-01",
+    "serie": "Kits du dresseur",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
   },
   {
     "id": "bw2",
-    "value": "EP",
-    "label": "Pouvoirs Émergents (2011)",
-    "pocket": false
+    "nom": "Pouvoirs Émergents",
+    "code": "EP",
+    "date": "2011-08-31",
+    "serie": "Noir & Blanc",
+    "officiel": 98,
+    "total": 98,
+    "logo": "https://assets.tcgdex.net/fr/bw/bw2/logo"
   },
   {
     "id": "2011bw",
-    "value": "MCD11",
-    "label": "Collection McDonald's 2011 (2011)",
-    "pocket": false
+    "nom": "Collection McDonald's 2011",
+    "code": "MCD11",
+    "date": "2011-06-17",
+    "serie": "Collection McDonald's",
+    "officiel": 12,
+    "total": 12,
+    "logo": null
   },
   {
     "id": "bwp",
-    "value": "BWP",
-    "label": "Promo BW (2011)",
-    "pocket": false
+    "nom": "Promo BW",
+    "code": "BWP",
+    "date": "2011-04-26",
+    "serie": "Noir & Blanc",
+    "officiel": 101,
+    "total": 101,
+    "logo": null
   },
   {
     "id": "bw1",
-    "value": "BLW",
-    "label": "Noir & Blanc (2011)",
-    "pocket": false
+    "nom": "Noir & Blanc",
+    "code": "BLW",
+    "date": "2011-04-25",
+    "serie": "Noir & Blanc",
+    "officiel": 114,
+    "total": 115,
+    "logo": "https://assets.tcgdex.net/fr/bw/bw1/logo"
   },
   {
     "id": "col1",
-    "value": "COL",
-    "label": "L'appel des Légendes (2011)",
-    "pocket": false
+    "nom": "L'appel des Légendes",
+    "code": "COL",
+    "date": "2011-02-09",
+    "serie": "L'appel des Légendes",
+    "officiel": 95,
+    "total": 106,
+    "logo": "https://assets.tcgdex.net/fr/col/col1/logo"
   },
   {
     "id": "hgss4",
-    "value": "TRI",
-    "label": "Triomphant (2010)",
-    "pocket": false
+    "nom": "Triomphant",
+    "code": "TRI",
+    "date": "2010-11-03",
+    "serie": "HeartGold SoulSilver",
+    "officiel": 102,
+    "total": 103,
+    "logo": "https://assets.tcgdex.net/fr/hgss/hgss4/logo"
   },
   {
     "id": "hgss3",
-    "value": "UND",
-    "label": "Indomptable (2010)",
-    "pocket": false
+    "nom": "Indomptable",
+    "code": "UND",
+    "date": "2010-08-18",
+    "serie": "HeartGold SoulSilver",
+    "officiel": 90,
+    "total": 91,
+    "logo": "https://assets.tcgdex.net/fr/hgss/hgss3/logo"
   },
   {
     "id": "hgss2",
-    "value": "UL",
-    "label": "Déchaînement (2010)",
-    "pocket": false
+    "nom": "Déchaînement",
+    "code": "UL",
+    "date": "2010-05-12",
+    "serie": "HeartGold SoulSilver",
+    "officiel": 95,
+    "total": 96,
+    "logo": "https://assets.tcgdex.net/fr/hgss/hgss2/logo"
   },
   {
     "id": "tk-hs-g",
-    "value": "TK4G",
-    "label": "HS Kit du dresseur (Léviator) (2010)",
-    "pocket": false
+    "nom": "HS Kit du dresseur (Léviator)",
+    "code": "TK4G",
+    "date": "2010-05-01",
+    "serie": "Kits du dresseur",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
   },
   {
     "id": "tk-hs-r",
-    "value": "TK4R",
-    "label": "HS Kit du dresseur (Raichu) (2010)",
-    "pocket": false
+    "nom": "HS Kit du dresseur (Raichu)",
+    "code": "TK4R",
+    "date": "2010-05-01",
+    "serie": "Kits du dresseur",
+    "officiel": 30,
+    "total": 30,
+    "logo": null
   },
   {
     "id": "hgssp",
-    "value": "Promo HGSS",
-    "label": "Promo HGSS (2010)",
-    "pocket": false
+    "nom": "Promo HGSS",
+    "code": null,
+    "date": "2010-02-11",
+    "serie": "HeartGold SoulSilver",
+    "officiel": 25,
+    "total": 25,
+    "logo": null
   },
   {
     "id": "hgss1",
-    "value": "HS",
-    "label": "HeartGold SoulSilver (2010)",
-    "pocket": false
+    "nom": "HeartGold SoulSilver",
+    "code": "HS",
+    "date": "2010-02-10",
+    "serie": "HeartGold SoulSilver",
+    "officiel": 123,
+    "total": 124,
+    "logo": "https://assets.tcgdex.net/fr/hgss/hgss1/logo"
   },
   {
     "id": "pl3",
-    "value": "SV",
-    "label": "Vainqueurs Suprêmes (2009)",
-    "pocket": false
+    "nom": "Vainqueurs Suprêmes",
+    "code": "SV",
+    "date": "2009-08-19",
+    "serie": "Platine",
+    "officiel": 147,
+    "total": 162,
+    "logo": "https://assets.tcgdex.net/fr/pl/pl3/logo"
   },
   {
     "id": "pl2",
-    "value": "RR",
-    "label": "Rivaux Émergeants (2009)",
-    "pocket": false
+    "nom": "Rivaux Émergeants",
+    "code": "RR",
+    "date": "2009-05-16",
+    "serie": "Platine",
+    "officiel": 111,
+    "total": 120,
+    "logo": "https://assets.tcgdex.net/fr/pl/pl2/logo"
   },
   {
     "id": "pop9",
-    "value": "P9",
-    "label": "POP Série 9 (2009)",
-    "pocket": false
+    "nom": "POP Série 9",
+    "code": "P9",
+    "date": "2009-03-01",
+    "serie": "POP",
+    "officiel": 17,
+    "total": 17,
+    "logo": null
   },
   {
     "id": "pl1",
-    "value": "PL",
-    "label": "Platine (2009)",
-    "pocket": false
+    "nom": "Platine",
+    "code": "PL",
+    "date": "2009-02-11",
+    "serie": "Platine",
+    "officiel": 127,
+    "total": 133,
+    "logo": "https://assets.tcgdex.net/fr/pl/pl1/logo"
   },
   {
     "id": "dp7",
-    "value": "SF",
-    "label": "Tempête (2008)",
-    "pocket": false
+    "nom": "Tempête",
+    "code": "SF",
+    "date": "2008-11-01",
+    "serie": "Diamant & Perle",
+    "officiel": 100,
+    "total": 106,
+    "logo": "https://assets.tcgdex.net/fr/dp/dp7/logo"
   },
   {
     "id": "dp6",
-    "value": "LA",
-    "label": "Éveil des Légendes (2008)",
-    "pocket": false
+    "nom": "Éveil des Légendes",
+    "code": "LA",
+    "date": "2008-08-01",
+    "serie": "Diamant & Perle",
+    "officiel": 146,
+    "total": 146,
+    "logo": "https://assets.tcgdex.net/fr/dp/dp6/logo"
   },
   {
     "id": "dp5",
-    "value": "MD",
-    "label": "Aube Majestueuse (2008)",
-    "pocket": false
+    "nom": "Aube Majestueuse",
+    "code": "MD",
+    "date": "2008-05-01",
+    "serie": "Diamant & Perle",
+    "officiel": 100,
+    "total": 100,
+    "logo": "https://assets.tcgdex.net/fr/dp/dp5/logo"
   },
   {
     "id": "pop7",
-    "value": "P7",
-    "label": "POP Série 7 (2008)",
-    "pocket": false
+    "nom": "POP Série 7",
+    "code": "P7",
+    "date": "2008-03-01",
+    "serie": "POP",
+    "officiel": 17,
+    "total": 17,
+    "logo": null
   },
   {
     "id": "dp4",
-    "value": "GE",
-    "label": "Duels au Sommets (2008)",
-    "pocket": false
+    "nom": "Duels au Sommets",
+    "code": "GE",
+    "date": "2008-02-01",
+    "serie": "Diamant & Perle",
+    "officiel": 106,
+    "total": 106,
+    "logo": "https://assets.tcgdex.net/fr/dp/dp4/logo"
   },
   {
     "id": "dp3",
-    "value": "SW",
-    "label": "Merveilles Secrètes (2007)",
-    "pocket": false
+    "nom": "Merveilles Secrètes",
+    "code": "SW",
+    "date": "2007-11-01",
+    "serie": "Diamant & Perle",
+    "officiel": 132,
+    "total": 132,
+    "logo": "https://assets.tcgdex.net/fr/dp/dp3/logo"
   },
   {
     "id": "tk-dp-m",
-    "value": "TK3M",
-    "label": "DP Kit dresseur (Manaphy) (2007)",
-    "pocket": false
+    "nom": "DP Kit dresseur (Manaphy)",
+    "code": "TK3M",
+    "date": "2007-09-01",
+    "serie": "Kits du dresseur",
+    "officiel": 12,
+    "total": 12,
+    "logo": null
   },
   {
     "id": "tk-dp-l",
-    "value": "TK3L",
-    "label": "DP Kit dresseur (Lucario) (2007)",
-    "pocket": false
+    "nom": "DP Kit dresseur (Lucario)",
+    "code": "TK3L",
+    "date": "2007-09-01",
+    "serie": "Kits du dresseur",
+    "officiel": 11,
+    "total": 11,
+    "logo": null
   },
   {
     "id": "dp2",
-    "value": "MT",
-    "label": "Trésors Mystérieux (2007)",
-    "pocket": false
-  },
-  {
-    "id": "dpp",
-    "value": "Promo DP",
-    "label": "Promo DP (2007)",
-    "pocket": false
+    "nom": "Trésors Mystérieux",
+    "code": "MT",
+    "date": "2007-08-01",
+    "serie": "Diamant & Perle",
+    "officiel": 123,
+    "total": 124,
+    "logo": "https://assets.tcgdex.net/fr/dp/dp2/logo"
   },
   {
     "id": "dp1",
-    "value": "DP",
-    "label": "Diamant & Perle (2007)",
-    "pocket": false
+    "nom": "Diamant & Perle",
+    "code": "DP",
+    "date": "2007-05-01",
+    "serie": "Diamant & Perle",
+    "officiel": 130,
+    "total": 130,
+    "logo": "https://assets.tcgdex.net/fr/dp/dp1/logo"
+  },
+  {
+    "id": "dpp",
+    "nom": "Promo DP",
+    "code": null,
+    "date": "2007-05-01",
+    "serie": "Diamant & Perle",
+    "officiel": 56,
+    "total": 56,
+    "logo": null
   },
   {
     "id": "ex16",
-    "value": "PK",
-    "label": "EX Gardiens du Pouvoir (2007)",
-    "pocket": false
+    "nom": "EX Gardiens du Pouvoir",
+    "code": "PK",
+    "date": "2007-02-17",
+    "serie": "EX",
+    "officiel": 108,
+    "total": 108,
+    "logo": "https://assets.tcgdex.net/fr/ex/ex16/logo"
   },
   {
     "id": "ex15",
-    "value": "DF",
-    "label": "EX Île des Dragons (2006)",
-    "pocket": false
+    "nom": "EX Île des Dragons",
+    "code": "DF",
+    "date": "2006-11-08",
+    "serie": "EX",
+    "officiel": 101,
+    "total": 101,
+    "logo": "https://assets.tcgdex.net/fr/ex/ex15/logo"
   },
   {
     "id": "ex14",
-    "value": "CG",
-    "label": "EX Gardiens de Cristal (2006)",
-    "pocket": false
+    "nom": "EX Gardiens de Cristal",
+    "code": "CG",
+    "date": "2006-08-30",
+    "serie": "EX",
+    "officiel": 100,
+    "total": 100,
+    "logo": "https://assets.tcgdex.net/fr/ex/ex14/logo"
   },
   {
     "id": "pop4",
-    "value": "P4",
-    "label": "POP Série 4 (2006)",
-    "pocket": false
+    "nom": "POP Série 4",
+    "code": "P4",
+    "date": "2006-08-01",
+    "serie": "POP",
+    "officiel": 17,
+    "total": 17,
+    "logo": null
   },
   {
     "id": "ex13",
-    "value": "HP",
-    "label": "EX Fantômes Holon (2006)",
-    "pocket": false
+    "nom": "EX Fantômes Holon",
+    "code": "HP",
+    "date": "2006-05-03",
+    "serie": "EX",
+    "officiel": 110,
+    "total": 111,
+    "logo": "https://assets.tcgdex.net/fr/ex/ex13/logo"
   },
   {
     "id": "pop3",
-    "value": "P3",
-    "label": "POP Série 3 (2006)",
-    "pocket": false
+    "nom": "POP Série 3",
+    "code": "P3",
+    "date": "2006-04-01",
+    "serie": "POP",
+    "officiel": 17,
+    "total": 17,
+    "logo": null
   },
   {
     "id": "tk-ex-m",
-    "value": "TK2M",
-    "label": "EX Kit dresseur (Négapi) (2006)",
-    "pocket": false
+    "nom": "EX Kit dresseur (Négapi)",
+    "code": "TK2M",
+    "date": "2006-03-01",
+    "serie": "Kits du dresseur",
+    "officiel": 12,
+    "total": 12,
+    "logo": null
   },
   {
     "id": "tk-ex-p",
-    "value": "TK2P",
-    "label": "EX Kit dresseur (Positi) (2006)",
-    "pocket": false
+    "nom": "EX Kit dresseur (Positi)",
+    "code": "TK2P",
+    "date": "2006-03-01",
+    "serie": "Kits du dresseur",
+    "officiel": 12,
+    "total": 12,
+    "logo": null
   },
   {
     "id": "ex12",
-    "value": "LM",
-    "label": "EX Créateurs de légendes (2006)",
-    "pocket": false
+    "nom": "EX Créateurs de légendes",
+    "code": "LM",
+    "date": "2006-02-13",
+    "serie": "EX",
+    "officiel": 92,
+    "total": 93,
+    "logo": "https://assets.tcgdex.net/fr/ex/ex12/logo"
   },
   {
     "id": "ex11",
-    "value": "DS",
-    "label": "EX Espèces Delta (2005)",
-    "pocket": false
-  },
-  {
-    "id": "exu",
-    "value": "EX Forces Cachées Collection Zarbi",
-    "label": "EX Forces Cachées Collection Zarbi (2005)",
-    "pocket": false
+    "nom": "EX Espèces Delta",
+    "code": "DS",
+    "date": "2005-10-31",
+    "serie": "EX",
+    "officiel": 113,
+    "total": 114,
+    "logo": "https://assets.tcgdex.net/fr/ex/ex11/logo"
   },
   {
     "id": "ex10",
-    "value": "UF",
-    "label": "EX Forces Cachées (2005)",
-    "pocket": false
+    "nom": "EX Forces Cachées",
+    "code": "UF",
+    "date": "2005-08-22",
+    "serie": "EX",
+    "officiel": 115,
+    "total": 117,
+    "logo": "https://assets.tcgdex.net/fr/ex/ex10/logo"
+  },
+  {
+    "id": "exu",
+    "nom": "EX Forces Cachées Collection Zarbi",
+    "code": null,
+    "date": "2005-08-22",
+    "serie": "EX",
+    "officiel": 28,
+    "total": 28,
+    "logo": null
   },
   {
     "id": "pop2",
-    "value": "P2",
-    "label": "POP Série 2 (2005)",
-    "pocket": false
+    "nom": "POP Série 2",
+    "code": "P2",
+    "date": "2005-08-01",
+    "serie": "POP",
+    "officiel": 17,
+    "total": 17,
+    "logo": null
   },
   {
     "id": "ex9",
-    "value": "EM",
-    "label": "EX Émeraude (2005)",
-    "pocket": false
+    "nom": "EX Émeraude",
+    "code": "EM",
+    "date": "2005-05-09",
+    "serie": "EX",
+    "officiel": 106,
+    "total": 107,
+    "logo": "https://assets.tcgdex.net/fr/ex/ex9/logo"
   },
   {
     "id": "ex8",
-    "value": "DX",
-    "label": "EX Deoxys (2005)",
-    "pocket": false
+    "nom": "EX Deoxys",
+    "code": "DX",
+    "date": "2005-02-01",
+    "serie": "EX",
+    "officiel": 107,
+    "total": 108,
+    "logo": "https://assets.tcgdex.net/fr/ex/ex8/logo"
   },
   {
     "id": "ex6",
-    "value": "RG",
-    "label": "EX Rouge Feu & Vert Feuille (2004)",
-    "pocket": false
+    "nom": "EX Rouge Feu & Vert Feuille",
+    "code": "RG",
+    "date": "2004-09-01",
+    "serie": "EX",
+    "officiel": 112,
+    "total": 116,
+    "logo": "https://assets.tcgdex.net/fr/ex/ex6/logo"
   },
   {
     "id": "pop1",
-    "value": "P1",
-    "label": "POP Série 1 (2004)",
-    "pocket": false
+    "nom": "POP Série 1",
+    "code": "P1",
+    "date": "2004-09-01",
+    "serie": "POP",
+    "officiel": 17,
+    "total": 17,
+    "logo": null
   },
   {
     "id": "tk-ex-latia",
-    "value": "TK1A",
-    "label": "EX Kit dresseur (Latias) (2004)",
-    "pocket": false
+    "nom": "EX Kit dresseur (Latias)",
+    "code": "TK1A",
+    "date": "2004-07-01",
+    "serie": "Kits du dresseur",
+    "officiel": 10,
+    "total": 10,
+    "logo": null
   },
   {
     "id": "tk-ex-latio",
-    "value": "TK1O",
-    "label": "EX Kit dresseur (Latios) (2004)",
-    "pocket": false
+    "nom": "EX Kit dresseur (Latios)",
+    "code": "TK1O",
+    "date": "2004-07-01",
+    "serie": "Kits du dresseur",
+    "officiel": 10,
+    "total": 10,
+    "logo": null
   },
   {
     "id": "ex5",
-    "value": "HL",
-    "label": "EX Légendes Oubliées (2004)",
-    "pocket": false
+    "nom": "EX Légendes Oubliées",
+    "code": "HL",
+    "date": "2004-06-01",
+    "serie": "EX",
+    "officiel": 101,
+    "total": 102,
+    "logo": "https://assets.tcgdex.net/fr/ex/ex5/logo"
   },
   {
     "id": "ex4",
-    "value": "MA",
-    "label": "EX Team Magma vs Team Aqua (2004)",
-    "pocket": false
+    "nom": "EX Team Magma vs Team Aqua",
+    "code": "MA",
+    "date": "2004-03-01",
+    "serie": "EX",
+    "officiel": 95,
+    "total": 97,
+    "logo": "https://assets.tcgdex.net/fr/ex/ex4/logo"
   },
   {
     "id": "ex3",
-    "value": "DR",
-    "label": "EX Dragon (2003)",
-    "pocket": false
+    "nom": "EX Dragon",
+    "code": "DR",
+    "date": "2003-11-24",
+    "serie": "EX",
+    "officiel": 97,
+    "total": 100,
+    "logo": "https://assets.tcgdex.net/fr/ex/ex3/logo"
   },
   {
     "id": "np",
-    "value": "Promo Nintendo",
-    "label": "Promo Nintendo (2003)",
-    "pocket": false
+    "nom": "Promo Nintendo",
+    "code": null,
+    "date": "2003-10-01",
+    "serie": "POP",
+    "officiel": 40,
+    "total": 40,
+    "logo": null
   },
   {
     "id": "ex2",
-    "value": "SS",
-    "label": "EX Tempête de sable (2003)",
-    "pocket": false
+    "nom": "EX Tempête de sable",
+    "code": "SS",
+    "date": "2003-09-18",
+    "serie": "EX",
+    "officiel": 100,
+    "total": 100,
+    "logo": "https://assets.tcgdex.net/fr/ex/ex2/logo"
   },
   {
     "id": "ex1",
-    "value": "RS",
-    "label": "EX Rubis & Saphir (2003)",
-    "pocket": false
+    "nom": "EX Rubis & Saphir",
+    "code": "RS",
+    "date": "2003-07-01",
+    "serie": "EX",
+    "officiel": 109,
+    "total": 109,
+    "logo": "https://assets.tcgdex.net/fr/ex/ex1/logo"
   },
   {
     "id": "ecard2",
-    "value": "AQ",
-    "label": "Aquapolis (2003)",
-    "pocket": false
+    "nom": "Aquapolis",
+    "code": "AQ",
+    "date": "2003-01-15",
+    "serie": "e-cards",
+    "officiel": 147,
+    "total": 186,
+    "logo": "https://assets.tcgdex.net/fr/ecard/ecard2/logo"
   },
   {
     "id": "ecard1",
-    "value": "EX",
-    "label": "Expedition (2002)",
-    "pocket": false
+    "nom": "Expedition",
+    "code": "EX",
+    "date": "2002-09-15",
+    "serie": "e-cards",
+    "officiel": 165,
+    "total": 165,
+    "logo": "https://assets.tcgdex.net/fr/ecard/ecard1/logo"
   },
   {
     "id": "neo4",
-    "value": "N4",
-    "label": "Neo Destiny (2002)",
-    "pocket": false
+    "nom": "Neo Destiny",
+    "code": "N4",
+    "date": "2002-02-28",
+    "serie": "Neo",
+    "officiel": 105,
+    "total": 113,
+    "logo": "https://assets.tcgdex.net/fr/neo/neo4/logo"
   },
   {
     "id": "neo3",
-    "value": "N3",
-    "label": "Neo Revelation (2001)",
-    "pocket": false
+    "nom": "Neo Revelation",
+    "code": "N3",
+    "date": "2001-09-21",
+    "serie": "Neo",
+    "officiel": 64,
+    "total": 66,
+    "logo": "https://assets.tcgdex.net/fr/neo/neo3/logo"
   },
   {
     "id": "neo2",
-    "value": "N2",
-    "label": "Neo Discovery (2001)",
-    "pocket": false
+    "nom": "Neo Discovery",
+    "code": "N2",
+    "date": "2001-06-01",
+    "serie": "Neo",
+    "officiel": 75,
+    "total": 75,
+    "logo": "https://assets.tcgdex.net/fr/neo/neo2/logo"
   },
   {
     "id": "neo1",
-    "value": "N1",
-    "label": "Neo Genesis (2000)",
-    "pocket": false
+    "nom": "Neo Genesis",
+    "code": "N1",
+    "date": "2000-12-16",
+    "serie": "Neo",
+    "officiel": 111,
+    "total": 111,
+    "logo": "https://assets.tcgdex.net/fr/neo/neo1/logo"
   },
   {
     "id": "base5",
-    "value": "RO",
-    "label": "Team Rocket (2000)",
-    "pocket": false
+    "nom": "Team Rocket",
+    "code": "RO",
+    "date": "2000-04-24",
+    "serie": "Base",
+    "officiel": 82,
+    "total": 83,
+    "logo": "https://assets.tcgdex.net/fr/base/base5/logo"
   },
   {
     "id": "jumbo",
-    "value": "Cartes Jumbo",
-    "label": "Cartes Jumbo (2000)",
-    "pocket": false
+    "nom": "Cartes Jumbo",
+    "code": null,
+    "date": "2000-02-01",
+    "serie": "Autre",
+    "officiel": 160,
+    "total": 160,
+    "logo": null
   },
   {
     "id": "base3",
-    "value": "FO",
-    "label": "Fossile (1999)",
-    "pocket": false
+    "nom": "Fossile",
+    "code": "FO",
+    "date": "1999-10-10",
+    "serie": "Base",
+    "officiel": 62,
+    "total": 62,
+    "logo": "https://assets.tcgdex.net/fr/base/base3/logo"
   },
   {
     "id": "wp",
-    "value": "W Promotional",
-    "label": "W Promotional (1999)",
-    "pocket": false
+    "nom": "W Promotional",
+    "code": null,
+    "date": "1999-09-01",
+    "serie": "Base",
+    "officiel": 7,
+    "total": 7,
+    "logo": null
   },
   {
     "id": "basep",
-    "value": "Wizards Black Star Promos",
-    "label": "Wizards Black Star Promos (1999)",
-    "pocket": false
+    "nom": "Wizards Black Star Promos",
+    "code": null,
+    "date": "1999-07-01",
+    "serie": "Base",
+    "officiel": 53,
+    "total": 53,
+    "logo": null
   },
   {
     "id": "base2",
-    "value": "JU",
-    "label": "Jungle (1999)",
-    "pocket": false
+    "nom": "Jungle",
+    "code": "JU",
+    "date": "1999-06-16",
+    "serie": "Base",
+    "officiel": 64,
+    "total": 64,
+    "logo": "https://assets.tcgdex.net/fr/base/base2/logo"
   },
   {
     "id": "base1",
-    "value": "BS",
-    "label": "Set de Base (1999)",
-    "pocket": false
+    "nom": "Set de Base",
+    "code": "BS",
+    "date": "1999-01-09",
+    "serie": "Base",
+    "officiel": 102,
+    "total": 102,
+    "logo": null
   }
 ]

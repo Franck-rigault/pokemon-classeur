@@ -1,0 +1,112 @@
+// Vue « Tableau de bord » : chiffres clés, extensions les plus avancées, raretés, cartes les plus chères, courbe de valeur.
+import { h, db, euros, imageCarte, libelleExt, annee } from "./api.js";
+import { S } from "./etat.js";
+import * as D from "./donnees.js";
+
+function barre(pct, texteDroite, texteGauche) {
+  const rempli = h("div", { class: "barre-rempli" });
+  rempli.style.width = Math.min(100, pct) + "%";
+  return h("div", { class: "barre-ligne" }, h("span", { class: "barre-nom", title: texteGauche }, texteGauche), h("div", { class: "barre" }, rempli), h("span", { class: "barre-val" }, texteDroite));
+}
+
+function graphique(points) {
+  const L = 640, H = 200, G = 52, Dr = 16, B = 28, T = 14;
+  const valeurs = points.map((p) => Number(p.valeur_possedee));
+  const min = Math.min(...valeurs), max = Math.max(...valeurs);
+  const ecart = max - min || 1;
+  const x = (i) => G + (i / (points.length - 1)) * (L - G - Dr);
+  const y = (v) => T + (1 - (v - min) / ecart) * (H - T - B);
+  const ligne = points.map((p, i) => x(i).toFixed(1) + "," + y(Number(p.valeur_possedee)).toFixed(1)).join(" ");
+  const aire = G + "," + (H - B) + " " + ligne + " " + x(points.length - 1).toFixed(1) + "," + (H - B);
+  const date = (p) => new Date(p.jour).toLocaleDateString("fr-FR", { day: "2-digit", month: "short" });
+
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.setAttribute("viewBox", "0 0 " + L + " " + H);
+  svg.setAttribute("class", "graphe");
+  svg.innerHTML =
+    '<polygon points="' + aire + '" class="graphe-aire"/>' +
+    '<polyline points="' + ligne + '" class="graphe-ligne"/>' +
+    '<text x="' + (G - 6) + '" y="' + (T + 4) + '" text-anchor="end">' + euros(max) + "</text>" +
+    '<text x="' + (G - 6) + '" y="' + (H - B) + '" text-anchor="end">' + euros(min) + "</text>" +
+    '<text x="' + G + '" y="' + (H - 8) + '">' + date(points[0]) + "</text>" +
+    '<text x="' + (L - Dr) + '" y="' + (H - 8) + '" text-anchor="end">' + date(points[points.length - 1]) + "</text>";
+  return svg;
+}
+
+export const vueDashboard = {
+  async monter(conteneur) {
+    const st = D.statistiques();
+    const parSet = new Map();
+    for (const c of S.collection) {
+      if (!parSet.has(c.set_id)) parSet.set(c.set_id, new Set());
+      parSet.get(c.set_id).add(c.carte_id);
+    }
+    const complets = S.extensions.filter((e) => e.officiel && parSet.has(e.id) && parSet.get(e.id).size >= e.officiel).length;
+    const valeurWishlist = S.souhaits.reduce((s, x) => s + Number(x.valeur || 0), 0);
+
+    const tuiles = [
+      [st.exemplaires, "Exemplaires (" + st.distinctes + " cartes différentes)"],
+      [euros(st.valeur), "Valeur de la collection"],
+      [st.extensions + " (" + complets + " complète" + (complets > 1 ? "s" : "") + ")", "Extensions commencées"],
+      [euros(valeurWishlist), "Wishlist (" + S.souhaits.length + " cartes)"],
+    ];
+
+    // Extensions les plus avancées
+    const avancees = S.extensions
+      .filter((e) => parSet.has(e.id))
+      .map((e) => ({ e, n: parSet.get(e.id).size, total: e.total || e.officiel || 1 }))
+      .sort((a, b) => b.n / b.total - a.n / a.total || b.n - a.n)
+      .slice(0, 8);
+
+    // Raretés
+    const raretes = new Map();
+    for (const c of S.collection) raretes.set(c.rarete || "Inconnue", (raretes.get(c.rarete || "Inconnue") || 0) + c.quantite);
+    const raretesTriees = [...raretes].sort((a, b) => b[1] - a[1]).slice(0, 8);
+    const maxRar = raretesTriees.length ? raretesTriees[0][1] : 1;
+
+    // Cartes les plus chères
+    const top = [...S.collection].filter((c) => c.valeur > 0).sort((a, b) => Number(b.valeur) - Number(a.valeur)).slice(0, 5);
+
+    const placeGraphe = h("p", { class: "muted" }, "Chargement de l'historique…");
+
+    conteneur.replaceChildren(
+      h("div", { class: "dash-tuiles" }, tuiles.map(([v, l]) => h("div", { class: "dash-tuile" }, h("span", {}, v), h("small", {}, l)))),
+      h("div", { class: "dash-colonnes" },
+        h("section", { class: "panneau" },
+          h("h3", {}, "Extensions les plus avancées"),
+          avancees.length
+            ? avancees.map(({ e, n, total }) => barre((n / total) * 100, n + " / " + total, e.nom + (annee(e) ? " (" + annee(e) + ")" : "")))
+            : h("p", { class: "muted" }, "Aucune extension commencée.")
+        ),
+        h("section", { class: "panneau" },
+          h("h3", {}, "Répartition par rareté"),
+          raretesTriees.length
+            ? raretesTriees.map(([nom, n]) => barre((n / maxRar) * 100, String(n), nom))
+            : h("p", { class: "muted" }, "Aucune carte.")
+        )
+      ),
+      h("section", { class: "panneau" },
+        h("h3", {}, "Mes cartes les plus chères"),
+        top.length
+          ? h("ol", { class: "top-liste" }, top.map((c) =>
+              h("li", { class: c.image ? "avec-image" : "" },
+                c.image ? h("img", { src: imageCarte(c.image), alt: c.nom, loading: "lazy" }) : null,
+                h("b", {}, c.nom),
+                h("span", {}, [libelleExt(c.set_id), "n° " + c.local_id, c.rarete, c.variante !== "Normale" ? c.variante : null].filter(Boolean).join(" · ")),
+                h("em", {}, euros(c.valeur))
+              )))
+          : h("p", { class: "muted" }, "Aucune carte avec un prix pour l'instant.")
+      ),
+      S.lectureSeule || S.partage
+        ? null
+        : h("section", { class: "panneau" }, h("h3", {}, "Évolution de la valeur"), placeGraphe)
+    );
+
+    if (S.lectureSeule || S.partage) return;
+    const { data, error } = await db.from("historique").select("jour, valeur_possedee").order("jour");
+    if (error) placeGraphe.textContent = "Historique indisponible : " + error.message;
+    else if (data.length < 2) placeGraphe.textContent = "Le graphique apparaîtra dès le 2ᵉ jour d'utilisation (un point est enregistré par jour).";
+    else placeGraphe.replaceWith(graphique(data));
+  },
+  rafraichir() {},
+};
