@@ -13,8 +13,8 @@ export const VARIANTES = ["Normale", "Reverse", "Holo", "1re édition"];
 
 export const $ = (id) => document.getElementById(id);
 
-export const normalise = (s) =>
-  String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+import { normalise } from "./texte.js";
+export { normalise };
 
 export const echapper = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 

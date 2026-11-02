@@ -1,14 +1,27 @@
 // Règles du jeu « Fake Booster » : quelles extensions sont jouables, de quoi est fait un booster,
-// et avec quelles probabilités tombent les cartes rares.
+// avec quelles probabilités tombent les cartes rares, et combien vaut un booster.
+// Ce module n'utilise aucune API du navigateur : il sert aussi au script quotidien de calcul des prix (scripts/).
 //
 // IMPORTANT : The Pokémon Company ne publie PAS les taux de drop officiels. Les valeurs ci-dessous sont des
 // ESTIMATIONS inspirées des statistiques d'ouverture de la communauté, époque par époque. Elles sont volontairement
 // regroupées ici (TAUX) pour pouvoir être ajustées facilement : ce sont des poids relatifs, pas des pourcentages exacts.
-import { normalise } from "./api.js";
+import { normalise } from "./texte.js";
 
-export const LIMITE_PAR_JOUR = 100;
+// ---------- Économie ----------
 
-// Groupes de rareté, du moins bon au meilleur. `ordre` sert au tri (la meilleure carte est révélée en dernier).
+// 1 pièce gagnée par carte en double ; un booster coûte à peu près sa valeur moyenne en euros (1 € ≈ 1 pièce).
+export const PIECES_PAR_DOUBLON = 1;
+export const PIECES_PAR_EURO = 1;
+export const PRIX_MINI = 2;
+
+// Valeur moyenne d'un booster (en €) utilisée tant que les prix du jour ne sont pas disponibles
+export const VALEUR_PAR_DEFAUT = { ev: 3, swsh: 3, sm: 4, xy: 5, bw: 8, inter: 15, classique: 60 };
+
+export const prixEnPieces = (valeurEuros) => Math.max(PRIX_MINI, Math.round(valeurEuros * PIECES_PAR_EURO));
+
+// ---------- Groupes de rareté ----------
+
+// Du moins bon au meilleur. `ordre` sert au tri (la meilleure carte est révélée en dernier).
 export const GROUPES = {
   E: { nom: "Énergie", ordre: -1, couleur: "#c9a15a" },
   C: { nom: "Commune", ordre: 0, couleur: "#9aa3d6" },
@@ -64,7 +77,7 @@ const EPOQUES = {
 };
 
 // Extensions qui ne se vendent pas en boosters classiques (promos, kits, coffrets, énergies…)
-const EXCLUS = /promo|black star|kit|mcdonald|wizards|collection classique|anniversaire|celebration|energie/;
+const EXCLUS = /promo|black star|kit|mcdonald|wizards|collection|anniversaire|celebration|energie|galerie|galaroise|coffre/;
 
 export const epoqueDe = (ext) => EPOQUES[ext.serie] || null;
 export const jouable = (ext) => !!epoqueDe(ext) && !EXCLUS.test(normalise(ext.nom)) && (ext.officiel || 0) >= 20;
@@ -103,22 +116,8 @@ export const importance = (c) => (GROUPES[c.groupe] ? GROUPES[c.groupe].ordre : 
 export const estHit = (c) => importance(c) >= 5; // double rare et au-dessus
 export const estJackpot = (c) => importance(c) >= 7; // illustration rare et au-dessus
 
-function choisirPondere(table, disponibles, hasard) {
-  const entrees = Object.entries(table).filter(([g, poids]) => poids > 0 && (g === "REV" || disponibles.has(g)));
-  const total = entrees.reduce((s, [, p]) => s + p, 0);
-  if (!entrees.length || total <= 0) return null;
-  let t = hasard() * total;
-  for (const [g, p] of entrees) {
-    t -= p;
-    if (t < 0) return g;
-  }
-  return entrees[entrees.length - 1][0];
-}
-
-const dans = (liste, hasard) => liste[Math.floor(hasard() * liste.length)];
-
-// `cartes` : détails de toutes les cartes de l'extension (voir detailsExtension dans api.js)
-export function tirerBooster(cartes, ext, hasard = Math.random) {
+// Répartit les cartes de l'extension en « réserves » par groupe de rareté (commune, peu commune, rare…)
+function preparer(cartes, ext) {
   const epoque = epoqueDe(ext);
   if (!epoque) throw new Error("Extension non jouable : " + ext.nom);
 
@@ -135,9 +134,31 @@ export function tirerBooster(cartes, ext, hasard = Math.random) {
   const pour = (g) => (pools[g] && pools[g].length ? pools[g] : tous);
   // Reverse : commune, peu commune ou rare existant en version reverse
   const reverses = ["C", "U", "R", "RH"].flatMap((g) => pools[g] || []).filter((c) => (c.variantes || []).includes("Reverse"));
-  const poolReverse = reverses.length ? reverses : [...(pools.C || []), ...(pools.U || [])].length ? [...(pools.C || []), ...(pools.U || [])] : tous;
+  const communes = [...(pools.C || []), ...(pools.U || [])];
+  const poolReverse = reverses.length ? reverses : communes.length ? communes : tous;
+  return { epoque, pools, tous, disponibles, pour, poolReverse, taux: TAUX[epoque] };
+}
 
-  const taux = TAUX[epoque];
+// Groupes possibles d'un emplacement avec leur poids (REV = carte reverse)
+const entrees = (table, disponibles) => Object.entries(table).filter(([g, poids]) => poids > 0 && (g === "REV" || disponibles.has(g)));
+
+function choisirPondere(table, disponibles, hasard) {
+  const liste = entrees(table, disponibles);
+  const total = liste.reduce((s, [, p]) => s + p, 0);
+  if (!liste.length || total <= 0) return null;
+  let t = hasard() * total;
+  for (const [g, p] of liste) {
+    t -= p;
+    if (t < 0) return g;
+  }
+  return liste[liste.length - 1][0];
+}
+
+const dans = (liste, hasard) => liste[Math.floor(hasard() * liste.length)];
+
+// `cartes` : détails de toutes les cartes de l'extension (voir detailsExtension dans api.js)
+export function tirerBooster(cartes, ext, hasard = Math.random) {
+  const { epoque, pools, pour, poolReverse, disponibles, taux } = preparer(cartes, ext);
   const booster = [];
   const dejaTire = new Set();
 
@@ -160,4 +181,29 @@ export function tirerBooster(cartes, ext, hasard = Math.random) {
     }
   }
   return booster.sort((a, b) => importance(a) - importance(b) || (a.prix || 0) - (b.prix || 0));
+}
+
+// ---------- Valeur d'un booster ----------
+
+const moyenne = (liste) => (liste.length ? liste.reduce((s, c) => s + (c.prix || 0), 0) / liste.length : 0);
+
+// Valeur moyenne (en €) d'un booster de cette extension : somme, emplacement par emplacement, des prix moyens
+// des cartes pondérés par leurs probabilités (calcul exact, sans tirage au sort).
+export function valeurEsperee(cartes, ext) {
+  const { epoque, pools, pour, poolReverse, disponibles, taux } = preparer(cartes, ext);
+  const valeurReverse = moyenne(poolReverse);
+  let total = 0;
+  for (const slot of SLOTS[epoque]) {
+    if (slot === "C") total += moyenne(pour("C"));
+    else if (slot === "U") total += moyenne(pour("U"));
+    else if (slot === "ENERGIE") total += moyenne(pools.E && pools.E.length ? pools.E : pour("C"));
+    else if (slot === "REV") total += valeurReverse;
+    else {
+      const liste = entrees(taux[slot], disponibles);
+      const poids = liste.reduce((s, [, p]) => s + p, 0);
+      if (!liste.length || poids <= 0) total += valeurReverse;
+      else total += liste.reduce((s, [g, p]) => s + (p / poids) * (g === "REV" ? valeurReverse : moyenne(pour(g))), 0);
+    }
+  }
+  return total;
 }

@@ -1,46 +1,62 @@
 // Jeu « Fake Booster » : ouverture de boosters virtuels (animation, une carte à la fois), inventaire sans doublon,
-// limite de 100 boosters par jour et classement entre les joueurs.
-import { $, h, db, essayer, message, euros, imageCarte, libelleExt, annee, detailsExtension, idExtDe, normalise, ARTWORK_URL } from "./api.js";
+// pack gratuit illimité de l'extension la plus récente, pièces gagnées avec les doublons, boutique de boosters
+// (prix recalculés chaque jour d'après les vrais prix des cartes) et classement entre les joueurs.
+import { $, h, db, essayer, message, euros, imageCarte, libelleExt, annee, detailsExtension, idExtDe, normalise } from "./api.js";
 import { S, evenements, emettre } from "./etat.js";
 import { stockage } from "./donnees.js";
 import { ouvrirCarte } from "./dialogue-carte.js";
-import { LIMITE_PAR_JOUR, GROUPES, jouable, tirerBooster, estHit, estJackpot, importance } from "./jeu-regles.js";
+import {
+  GROUPES, PIECES_PAR_DOUBLON, VALEUR_PAR_DEFAUT, jouable, epoqueDe, prixEnPieces,
+  tirerBooster, estHit, estJackpot, importance,
+} from "./jeu-regles.js";
 import { son, vibrer, sonActif, basculerSon } from "./jeu-effets.js";
 
-// Accès au classement (remplaçable pour les tests)
+// Accès réseau du jeu (remplaçable pour les tests)
 export const jeuStock = {
   async classement() {
     const { data, error } = await db.rpc("classement_jeu");
     if (error) throw error;
     return data;
   },
+  // Prix des boosters recalculés chaque nuit (travail GitHub) : on prend le plus récent entre la branche « donnees » et la copie du site
+  async prix() {
+    const sources = [];
+    if (location.hostname.endsWith(".github.io")) {
+      const proprietaire = location.hostname.split(".")[0];
+      const depot = location.pathname.split("/")[1];
+      if (depot) sources.push("https://raw.githubusercontent.com/" + proprietaire + "/" + depot + "/donnees/prix-boosters.json");
+    }
+    sources.push("data/prix-boosters.json");
+    let meilleur = null;
+    for (const source of sources) {
+      try {
+        const rep = await fetch(source, { cache: "no-cache" });
+        if (!rep.ok) continue;
+        const donnees = await rep.json();
+        if (!meilleur || String(donnees.date) > String(meilleur.date)) meilleur = donnees;
+      } catch {
+        // source indisponible : on essaie la suivante
+      }
+    }
+    return meilleur;
+  },
 };
 
-const jeu = { userId: null, charge: false, joueur: null, cartes: [], possedees: new Set() };
-const aujourdhui = () => new Date().toLocaleDateString("sv-SE");
-const reste = () => Math.max(0, LIMITE_PAR_JOUR - (jeu.joueur ? jeu.joueur.paquets_jour : 0));
+const jeu = { userId: null, charge: false, joueur: null, cartes: [], possedees: new Set(), prix: null };
 
 // ---------- Données du joueur ----------
-
-async function verifierJour() {
-  const j = jeu.joueur;
-  if (j.jour !== aujourdhui()) {
-    await stockage.maj("jeu_joueurs", j.id, { jour: aujourdhui(), paquets_jour: 0 });
-    j.jour = aujourdhui();
-    j.paquets_jour = 0;
-  }
-}
 
 async function chargerJeu() {
   if (jeu.userId !== S.moi.id) Object.assign(jeu, { userId: S.moi.id, charge: false });
   if (!jeu.charge) {
     jeu.cartes = await stockage.lister("jeu_cartes", S.moi.id, [["id", false]]);
     const [j] = await stockage.lister("jeu_joueurs", S.moi.id, [["id", true]]);
-    jeu.joueur = j || (await stockage.inserer("jeu_joueurs", { jour: aujourdhui(), paquets_jour: 0, paquets_total: 0, doublons: 0 }))[0];
+    jeu.joueur = j || (await stockage.inserer("jeu_joueurs", { paquets_total: 0, doublons: 0, pieces: 0 }))[0];
+    jeu.joueur.pieces = jeu.joueur.pieces || 0;
     jeu.possedees = new Set(jeu.cartes.map((c) => c.carte_id));
+    jeu.prix = await jeuStock.prix();
     jeu.charge = true;
   }
-  await verifierJour();
 }
 
 // Marque les cartes nouvelles (jamais obtenues) ; une carte n'est « nouvelle » qu'à sa première apparition
@@ -60,10 +76,11 @@ function marquer(paquets) {
       }
     }
   }
-  return { nouvelles, doublons };
+  return { nouvelles, doublons, pieces: doublons * PIECES_PAR_DOUBLON };
 }
 
-async function enregistrer(nbPaquets, bilan) {
+// Enregistre l'ouverture : nouvelles cartes, compteurs, et solde de pièces (− coût du booster + pièces des doublons)
+async function enregistrer(nbPaquets, bilan, cout) {
   if (bilan.nouvelles.length) {
     const lignes = bilan.nouvelles.map((c) => ({
       carte_id: c.id, set_id: idExtDe(c.id), nom: c.name, local_id: c.localId, image: c.image, rarete: c.rarete, valeur: c.prix,
@@ -73,10 +90,32 @@ async function enregistrer(nbPaquets, bilan) {
     crees.forEach((c) => jeu.possedees.add(c.carte_id));
   }
   const j = jeu.joueur;
-  const champs = { paquets_jour: j.paquets_jour + nbPaquets, paquets_total: j.paquets_total + nbPaquets, doublons: j.doublons + bilan.doublons };
+  const champs = {
+    paquets_total: j.paquets_total + nbPaquets,
+    doublons: j.doublons + bilan.doublons,
+    pieces: j.pieces - cout + bilan.pieces,
+  };
   await stockage.maj("jeu_joueurs", j.id, champs);
   Object.assign(j, champs);
 }
+
+// ---------- Extensions et prix ----------
+
+const aujourdhui = () => new Date().toLocaleDateString("sv-SE");
+
+// Pack gratuit : l'extension jouable la plus récente (déjà sortie)
+function extensionGratuite() {
+  return S.extensions.filter((e) => jouable(e) && (!e.date || e.date <= aujourdhui()))[0] || null;
+}
+
+// Valeur moyenne d'un booster (€) : calcul du jour, sinon valeur par défaut de l'époque
+function valeurBooster(ext) {
+  const donnee = jeu.prix && jeu.prix.boosters && jeu.prix.boosters[ext.id];
+  if (donnee) return { valeur: donnee.valeur, estime: false };
+  return { valeur: VALEUR_PAR_DEFAUT[epoqueDe(ext)] || 5, estime: true };
+}
+
+const prixPieces = (ext) => prixEnPieces(valeurBooster(ext).valeur);
 
 // ---------- Ouverture ----------
 
@@ -90,10 +129,11 @@ function logoExtension(ext, classe = "ext-logo") {
     : code();
 }
 
-async function ouvrir(ext, n = 1, rapide = false) {
+// n boosters de l'extension ; `gratuit` : pack de l'extension la plus récente, sans limite et sans coût
+async function ouvrir(ext, n = 1, rapide = false, gratuit = false) {
   try {
-    await verifierJour();
-    if (n > reste()) return message(reste() ? "Il ne vous reste que " + reste() + " booster(s) aujourd'hui." : "Limite de " + LIMITE_PAR_JOUR + " boosters atteinte pour aujourd'hui. Revenez demain !", "ko");
+    const cout = gratuit ? 0 : prixPieces(ext) * n;
+    if (cout > jeu.joueur.pieces) return message("Il vous manque " + (cout - jeu.joueur.pieces) + " pièce(s) : récupérez-en avec les doublons du pack gratuit.", "ko");
 
     // Préparation : on récupère une fois les détails (rareté, prix) de toutes les cartes de l'extension
     const info = h("p", { class: "jeu-chargement" }, "Préparation de l'extension…");
@@ -103,11 +143,13 @@ async function ouvrir(ext, n = 1, rapide = false) {
 
     const paquets = Array.from({ length: n }, () => tirerBooster(details, ext));
     const bilan = marquer(paquets);
-    await enregistrer(n, bilan); // enregistré avant l'animation : fermer la fenêtre ne permet pas de « tricher »
+    bilan.cout = cout;
+    await enregistrer(n, bilan, cout); // enregistré avant l'animation : fermer la fenêtre ne permet pas de « tricher »
     emettre("jeu");
 
-    if (n === 1 && !rapide) scenePaquet(ext, paquets[0], bilan);
-    else sceneResume(ext, paquets, bilan);
+    const options = { gratuit };
+    if (n === 1 && !rapide) scenePaquet(ext, paquets[0], bilan, options);
+    else sceneResume(ext, paquets, bilan, options);
   } catch (e) {
     if (fenetre().open) fenetre().close();
     message("Ouverture impossible : " + (e && e.message ? e.message : e), "ko");
@@ -115,7 +157,7 @@ async function ouvrir(ext, n = 1, rapide = false) {
 }
 
 // Scène 1 : le paquet à déchirer
-function scenePaquet(ext, booster, bilan) {
+function scenePaquet(ext, booster, bilan, options) {
   const teinte = [...ext.id].reduce((s, c) => s + c.charCodeAt(0), 0) % 360;
   let ouvert = false;
   const paquet = h("button", {
@@ -126,7 +168,7 @@ function scenePaquet(ext, booster, bilan) {
       paquet.classList.add("ouvre");
       son("dechirure");
       vibrer(60);
-      setTimeout(() => sceneCartes(ext, booster, bilan), 950);
+      setTimeout(() => sceneCartes(ext, booster, bilan, options), 950);
     },
   },
     h("div", { class: "paquet-haut" }),
@@ -178,7 +220,7 @@ function carteElement(c) {
 }
 
 // Scène 2 : les cartes, une par une (la meilleure en dernier)
-function sceneCartes(ext, booster, bilan) {
+function sceneCartes(ext, booster, bilan, options) {
   let i = -1;
   let revelee = true;
   const compteur = h("div", { class: "jeu-compteur" });
@@ -187,7 +229,7 @@ function sceneCartes(ext, booster, bilan) {
   const racine = h("div", { class: "jeu-cartes" },
     compteur, zone, info,
     h("p", { class: "jeu-aide" }, "Touchez pour continuer"),
-    h("button", { type: "button", class: "ghost passer", onclick: (e) => { e.stopPropagation(); sceneResume(ext, [booster], bilan); } }, "Passer ›")
+    h("button", { type: "button", class: "ghost passer", onclick: (e) => { e.stopPropagation(); sceneResume(ext, [booster], bilan, options); } }, "Passer ›")
   );
 
   function reveler(c, element) {
@@ -210,7 +252,8 @@ function sceneCartes(ext, booster, bilan) {
     info.replaceChildren(
       h("b", { class: "jeu-nom" }, c.name),
       h("span", { class: "jeu-rarete", style: "color:" + g.couleur }, (c.rarete || g.nom) + (c.variante === "Reverse" ? " · Reverse" : "")),
-      h("span", { class: "jeu-prix" }, c.prix != null ? euros(c.prix) : "Pas de prix")
+      h("span", { class: "jeu-prix" }, c.prix != null ? euros(c.prix) : "Pas de prix"),
+      !c.nouveau ? h("span", { class: "jeu-doublon" }, "Doublon : +" + PIECES_PAR_DOUBLON + " 🪙") : null
     );
   }
 
@@ -220,7 +263,7 @@ function sceneCartes(ext, booster, bilan) {
       return reveler(booster[i], zone.firstChild);
     }
     i++;
-    if (i >= booster.length) return sceneResume(ext, [booster], bilan);
+    if (i >= booster.length) return sceneResume(ext, [booster], bilan, options);
     revelee = false;
     compteur.textContent = i + 1 + " / " + booster.length;
     info.replaceChildren();
@@ -235,7 +278,7 @@ function sceneCartes(ext, booster, bilan) {
 }
 
 // Scène 3 : résumé (un booster ou un lot de 10)
-function sceneResume(ext, paquets, bilan) {
+function sceneResume(ext, paquets, bilan, options) {
   const toutes = paquets.flat();
   const tries = [...toutes].sort((a, b) => importance(b) - importance(a) || (b.prix || 0) - (a.prix || 0));
   const meilleure = tries[0];
@@ -250,20 +293,25 @@ function sceneResume(ext, paquets, bilan) {
       onclick: () => ouvrirCarte(c.id),
     },
       c.image ? h("img", { src: imageCarte(c.image), alt: c.name, loading: "lazy" }) : h("div", { class: "sans-image" }, c.name),
-      c.nouveau ? h("span", { class: "badge-new" }, "NEW") : h("span", { class: "badge-doublon" }, "Doublon"),
+      c.nouveau ? h("span", { class: "badge-new" }, "NEW") : h("span", { class: "badge-doublon" }, "+" + PIECES_PAR_DOUBLON + " 🪙"),
       h("small", {}, c.prix != null ? euros(c.prix) : "—")
     );
   };
 
-  const encore = (n, rapide) => h("button", {
-    type: "button", disabled: reste() < n, onclick: () => ouvrir(ext, n, rapide),
-  }, n === 1 ? "🔁 Ouvrir un autre (" + reste() + " restants)" : "⚡ ×10 rapide");
+  // Rejouer : le même pack (gratuit, ou payé au prix du jour)
+  const encore = (n, rapide) => {
+    const cout = options.gratuit ? 0 : prixPieces(ext) * n;
+    return h("button", {
+      type: "button", disabled: cout > jeu.joueur.pieces,
+      onclick: () => ouvrir(ext, n, rapide, options.gratuit),
+    }, (n === 1 ? "🔁 Un autre" : "⚡ ×10 rapide") + (cout ? " (" + cout + " 🪙)" : " (gratuit)"));
+  };
 
   scene().replaceChildren(h("div", { class: "jeu-resume" },
     h("h2", {}, lot ? "Résultat de " + paquets.length + " boosters" : "Résumé du booster"),
-    h("p", { class: "muted" }, ext.nom),
+    h("p", { class: "muted" }, ext.nom + (bilan.cout ? " · " + bilan.cout + " 🪙 dépensées" : " · pack gratuit")),
     h("div", { class: "dash-tuiles" },
-      [[euros(valeur), "Valeur des cartes"], [bilan.nouvelles.length, "Nouvelles cartes"], [bilan.doublons, "Doublons (non gardés)"], [toutes.length, "Cartes tirées"]].map(([v, l]) =>
+      [[euros(valeur), "Valeur des cartes"], [bilan.nouvelles.length, "Nouvelles cartes"], ["+" + bilan.pieces + " 🪙", bilan.doublons + " doublon(s)"], [jeu.joueur.pieces + " 🪙", "Votre solde"]].map(([v, l]) =>
         h("div", { class: "dash-tuile" }, h("span", {}, v), h("small", {}, l)))
     ),
     meilleure ? h("p", {}, "Meilleure carte : ", h("b", {}, meilleure.name), " (" + (meilleure.rarete || "") + (meilleure.prix != null ? ", " + euros(meilleure.prix) : "") + ")") : null,
@@ -278,52 +326,49 @@ function sceneResume(ext, paquets, bilan) {
 let courante = null;
 const PAGES = ["ouvrir", "collection", "classement"];
 
-function barre(pct) {
-  const rempli = h("div", { class: "barre-rempli" });
-  rempli.style.width = Math.min(100, pct) + "%";
-  return h("div", { class: "barre" }, rempli);
-}
-
 export const vueJeu = {
   async monter(conteneur, param) {
     conteneur.replaceChildren(h("p", { class: "msg" }, "Chargement…"));
     try {
       await chargerJeu();
     } catch (e) {
-      return conteneur.replaceChildren(h("p", { class: "msg ko" }, "Jeu indisponible : " + e.message + " — la migration schema-v5.sql a-t-elle été lancée ?"));
+      return conteneur.replaceChildren(h("p", { class: "msg ko" }, "Jeu indisponible : " + e.message + " — la migration schema-v6.sql a-t-elle été lancée ?"));
     }
     const page = PAGES.includes(param) ? param : "ouvrir";
-    const jauge = h("div", { class: "jeu-jauge" });
+    const solde = h("div", { class: "jeu-solde" });
     const corps = h("div", { class: "jeu-corps" });
     const boutonSon = h("button", {
       type: "button", class: "ghost", title: "Activer ou couper les bruitages",
       onclick: () => { boutonSon.textContent = basculerSon() ? "🔊 Son" : "🔇 Muet"; },
     }, sonActif() ? "🔊 Son" : "🔇 Muet");
 
-    function majJauge() {
-      const utilises = jeu.joueur.paquets_jour;
-      jauge.replaceChildren(barre((utilises / LIMITE_PAR_JOUR) * 100), h("span", {}, utilises + " / " + LIMITE_PAR_JOUR + " boosters aujourd'hui · " + jeu.joueur.paquets_total + " au total"));
+    function majSolde() {
+      const j = jeu.joueur;
+      solde.replaceChildren(
+        h("span", { class: "pieces" }, "🪙 " + j.pieces),
+        h("span", { class: "muted" }, "pièces · " + j.paquets_total + " boosters ouverts · " + jeu.cartes.length + " cartes uniques")
+      );
     }
 
     conteneur.replaceChildren(
       h("div", { class: "jeu-entete" },
         h("div", {}, h("h2", { class: "jeu-titre" }, "🎴 Fake Booster"),
-          h("p", { class: "muted" }, "Des boosters virtuels, gratuits. Les taux de drop sont des estimations inspirées des statistiques de la communauté (non officiels).")),
+          h("p", { class: "muted" }, "Pack gratuit illimité, une pièce par doublon, et une boutique pour ouvrir les autres extensions. Les taux de drop sont des estimations (non officiels).")),
         boutonSon
       ),
-      jauge,
+      solde,
       h("nav", { class: "onglets-jeu" }, [["ouvrir", "🎁 Ouvrir"], ["collection", "🗂 Ma collection de jeu"], ["classement", "🏆 Classement"]].map(([p, t]) =>
         h("a", { href: "#/jeu/" + (p === "ouvrir" ? "" : p), class: p === page ? "actif" : "" }, t))),
       corps
     );
 
     const dessiner = () => {
-      majJauge();
+      majSolde();
       if (page === "ouvrir") pageOuvrir(corps);
       else if (page === "collection") pageCollection(corps);
       else pageClassement(corps);
     };
-    courante = page === "classement" ? () => majJauge() : dessiner;
+    courante = page === "classement" ? () => majSolde() : dessiner;
     dessiner();
   },
   rafraichir() {
@@ -333,40 +378,85 @@ export const vueJeu = {
 
 evenements.addEventListener("jeu", () => vueJeu.rafraichir());
 
-// Boutique : les extensions jouables
+// Pack gratuit + boutique
 function pageOuvrir(corps) {
   if (corps.dataset.pret) {
-    // les filtres existent déjà : on met seulement à jour l'état des boutons
-    corps.querySelectorAll("[data-n]").forEach((b) => (b.disabled = reste() < Number(b.dataset.n)));
+    // la page existe déjà : on met seulement à jour les boutons selon le solde
+    corps.querySelectorAll("[data-cout]").forEach((b) => (b.disabled = jeu.joueur.pieces < Number(b.dataset.cout)));
     return;
   }
   corps.dataset.pret = "1";
-  const jouables = S.extensions.filter(jouable);
-  const series = [...new Set(jouables.map((e) => e.serie))];
+
+  const gratuite = extensionGratuite();
+  const boutiqueExt = S.extensions.filter((e) => jouable(e) && (!e.date || e.date <= aujourdhui()) && (!gratuite || e.id !== gratuite.id));
+  const series = [...new Set(boutiqueExt.map((e) => e.serie))];
+
   const recherche = h("input", { type: "search", placeholder: "Rechercher une extension", autocomplete: "off" });
   const choixSerie = h("select", { "aria-label": "Série" }, h("option", { value: "" }, "Toutes les séries"), series.map((s) => h("option", { value: s }, s)));
+  const choixTri = h("select", { "aria-label": "Trier par" },
+    h("option", { value: "recent" }, "Tri : plus récentes"),
+    h("option", { value: "prix" }, "Tri : prix croissant"),
+    h("option", { value: "prix-desc" }, "Tri : prix décroissant"),
+    h("option", { value: "nom" }, "Tri : nom A → Z")
+  );
   const grille = h("div", { class: "ext-grille" });
   const info = h("p", { class: "muted" });
 
+  const bandeauGratuit = gratuite
+    ? h("section", { class: "pack-gratuit" },
+        h("div", { class: "pack-gratuit-visuel" }, logoExtension(gratuite, "ext-logo grand")),
+        h("div", { class: "pack-gratuit-texte" },
+          h("span", { class: "etiquette" }, "PACK GRATUIT · ILLIMITÉ"),
+          h("h3", {}, gratuite.nom),
+          h("p", { class: "muted" }, "L'extension la plus récente. Chaque doublon vous rapporte " + PIECES_PAR_DOUBLON + " 🪙 à dépenser dans la boutique."),
+          h("div", { class: "row tools" },
+            h("button", { type: "button", class: "gros", onclick: () => ouvrir(gratuite, 1, false, true) }, "🎁 Ouvrir un booster"),
+            h("button", { type: "button", class: "ghost", title: "Ouvre 10 boosters d'un coup et affiche un résumé", onclick: () => ouvrir(gratuite, 10, true, true) }, "⚡ ×10 rapide")
+          )
+        ))
+    : null;
+
+  const dateTexte = () => {
+    if (!jeu.prix) return "Prix par défaut (les prix du jour ne sont pas disponibles).";
+    const jours = Math.floor((Date.now() - new Date(jeu.prix.date).getTime()) / 864e5);
+    return "Prix du " + new Date(jeu.prix.date).toLocaleDateString("fr-FR") + (jours > 3 ? " (anciens : le recalcul quotidien n'a pas tourné depuis " + jours + " jours)" : "") + ", recalculés chaque nuit d'après les prix Cardmarket des cartes.";
+  };
+
   function dessiner() {
     const q = normalise(recherche.value);
-    const liste = jouables.filter((e) => (!choixSerie.value || e.serie === choixSerie.value) && (!q || normalise(e.nom).includes(q) || normalise(e.code || "").includes(q)));
-    info.textContent = liste.length + " extension(s) jouable(s). Choisissez-en une pour ouvrir un booster.";
-    grille.replaceChildren(...liste.map((ext) =>
-      h("div", { class: "ext-carte" },
+    const liste = boutiqueExt
+      .filter((e) => (!choixSerie.value || e.serie === choixSerie.value) && (!q || normalise(e.nom).includes(q) || normalise(e.code || "").includes(q)))
+      .sort(choixTri.value === "prix" ? (a, b) => prixPieces(a) - prixPieces(b)
+        : choixTri.value === "prix-desc" ? (a, b) => prixPieces(b) - prixPieces(a)
+        : choixTri.value === "nom" ? (a, b) => a.nom.localeCompare(b.nom, "fr")
+        : () => 0);
+    info.textContent = liste.length + " extension(s). " + dateTexte();
+    grille.replaceChildren(...liste.map((ext) => {
+      const { valeur, estime } = valeurBooster(ext);
+      const prix = prixEnPieces(valeur);
+      return h("div", { class: "ext-carte" },
         h("div", { class: "ext-visuel" }, logoExtension(ext)),
         h("b", { class: "ext-nom" }, ext.nom),
-        h("small", { class: "muted" }, [ext.code, annee(ext), (ext.total || ext.officiel) + " cartes"].filter(Boolean).join(" · ")),
+        h("small", { class: "muted" }, [ext.code, annee(ext)].filter(Boolean).join(" · ")),
+        h("div", { class: "prix-booster", title: "Valeur moyenne d'un booster : " + euros(valeur) + (estime ? " (estimation par défaut)" : "") }, h("b", {}, "🪙 " + prix), h("small", { class: "muted" }, "≈ " + euros(valeur) + (estime ? " (est.)" : ""))),
         h("div", { class: "tuile-actions" },
-          h("button", { type: "button", "data-n": "1", disabled: reste() < 1, onclick: () => ouvrir(ext, 1, false) }, "🎁 Ouvrir"),
-          h("button", { type: "button", class: "ghost", "data-n": "10", title: "Ouvre 10 boosters d'un coup et affiche un résumé", disabled: reste() < 10, onclick: () => ouvrir(ext, 10, true) }, "⚡ ×10")
+          h("button", { type: "button", "data-cout": String(prix), disabled: jeu.joueur.pieces < prix, onclick: () => ouvrir(ext, 1, false) }, "🛒 Acheter"),
+          h("button", { type: "button", class: "ghost", "data-cout": String(prix * 10), title: "10 boosters d'un coup : " + prix * 10 + " pièces", disabled: jeu.joueur.pieces < prix * 10, onclick: () => ouvrir(ext, 10, true) }, "⚡ ×10")
         )
-      )));
+      );
+    }));
   }
 
   recherche.addEventListener("input", dessiner);
   choixSerie.addEventListener("change", dessiner);
-  corps.replaceChildren(h("div", { class: "filtres" }, recherche, choixSerie), info, grille);
+  choixTri.addEventListener("change", dessiner);
+  corps.replaceChildren(
+    bandeauGratuit,
+    h("h3", { class: "titre-boutique" }, "🛒 Boutique"),
+    h("div", { class: "filtres" }, recherche, choixSerie, choixTri),
+    info,
+    grille
+  );
   dessiner();
 }
 

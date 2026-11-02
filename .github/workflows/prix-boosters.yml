@@ -1,0 +1,36 @@
+# Recalcule chaque nuit la valeur moyenne d'un booster pour chaque extension (prix Cardmarket du jour)
+# et publie le résultat sur la branche « donnees », lue par la boutique du jeu Fake Booster.
+# La branche du site (main) n'est jamais modifiée : aucun conflit avec vos propres modifications.
+name: Prix des boosters
+
+on:
+  schedule:
+    - cron: "30 3 * * *" # tous les jours vers 4 h 30 (heure de Paris en hiver, 5 h 30 en été)
+  workflow_dispatch: # lancement manuel possible depuis l'onglet Actions
+
+permissions:
+  contents: write
+
+jobs:
+  prix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Calculer les prix
+        run: node scripts/maj-prix-boosters.mjs
+      - name: Publier sur la branche donnees
+        run: |
+          mkdir -p "$RUNNER_TEMP/sortie"
+          cp data/prix-boosters.json "$RUNNER_TEMP/sortie/"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan donnees-tmp
+          git rm -rf . --quiet
+          cp "$RUNNER_TEMP/sortie/prix-boosters.json" .
+          git add prix-boosters.json
+          git commit -m "Prix des boosters du $(date -u +%F)"
+          git push --force origin donnees-tmp:donnees

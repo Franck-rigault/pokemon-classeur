@@ -1,0 +1,6 @@
+{
+  "name": "classeur-pokemon",
+  "private": true,
+  "type": "module",
+  "description": "Le site est statique ; ce fichier sert seulement à exécuter les scripts Node de scripts/ (module ES)."
+}

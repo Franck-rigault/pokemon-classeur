@@ -25,7 +25,9 @@ Les données des cartes viennent de [TCGdex](https://tcgdex.dev).
 - **Tableau de bord** : valeur, extensions les plus avancées, raretés, plus chères, **rentabilité** (achat / valeur), courbe de valeur.
 
 **Fake Booster (jeu)**
-- Ouverture de boosters virtuels et gratuits (limite de **100 par jour**) : choix de l'extension (128 jouables), paquet à déchirer, cartes révélées une par une (la meilleure en dernier), badge **NEW** sur les cartes pas encore possédées, halos, confettis, bruitages et vibrations. Mode « ×10 rapide » avec résumé.
+- **Pack gratuit et illimité** de l'extension jouable la plus récente (choisie automatiquement) : paquet à déchirer, cartes révélées une par une (la meilleure en dernier), badge **NEW** sur les cartes pas encore possédées, halos, confettis, bruitages et vibrations. Mode « ×10 rapide » avec résumé.
+- **1 pièce 🪙 par doublon.** Les pièces servent dans la **boutique** à acheter des boosters des autres extensions (117 jouables).
+- **Prix de la boutique** = valeur moyenne d'un booster (≈ 1 € = 1 pièce), calculée d'après les prix Cardmarket de toutes les cartes de l'extension et les probabilités du jeu. Recalculée **chaque nuit** par `.github/workflows/prix-boosters.yml` (script `scripts/maj-prix-boosters.mjs`), publiée sur la branche `donnees` ; `data/prix-boosters.json` sert de copie de secours.
 - Structure des boosters et probabilités propres à chaque époque (`js/jeu-regles.js`). **Les taux de drop officiels n'existent pas** : ce sont des estimations inspirées des statistiques de la communauté, faciles à ajuster.
 - Inventaire de jeu **sans doublon**, séparé de la vraie collection ; **classement** entre les joueurs (valeur de l'inventaire).
 
@@ -36,7 +38,7 @@ Les données des cartes viennent de [TCGdex](https://tcgdex.dev).
 
 ## Mise en route
 
-1. **Supabase** : créer un projet, lancer dans SQL Editor, dans l'ordre : `schema.sql`, `schema-v2.sql`, `schema-v3.sql`, `schema-v4.sql`, `schema-v5.sql` (jeu).
+1. **Supabase** : créer un projet, lancer dans SQL Editor, dans l'ordre : `schema.sql`, `schema-v2.sql`, `schema-v3.sql`, `schema-v4.sql`, `schema-v5.sql` (jeu), `schema-v6.sql` (pièces).
 2. **Comptes** : Authentication > Users > Add user (e-mail + mot de passe, cocher « Auto Confirm User »), un par personne.
    Désactiver les inscriptions publiques (Authentication > Sign In / Providers > « Allow new users to sign up »).
    Un profil est créé automatiquement. Le compte le plus ancien reçoit le classeur Pokémon ; pour l'activer ou le retirer :
@@ -59,6 +61,17 @@ Puis ouvrir http://localhost:8000 (la caméra n'est autorisée que sur `localhos
 ```bash
 pwsh scripts/maj-extensions.ps1
 ```
+
+## Recalculer les prix des boosters à la main
+
+Le travail GitHub le fait chaque nuit ; pour le lancer tout de suite : dépôt > onglet **Actions** > « Prix des boosters » > **Run workflow**.
+En local (Node 20 ou plus) :
+
+```bash
+node scripts/maj-prix-boosters.mjs
+```
+
+Remarque : GitHub désactive les travaux planifiés d'un dépôt resté sans activité pendant 60 jours ; il suffit de les réactiver dans l'onglet Actions.
 
 ## Structure
 
