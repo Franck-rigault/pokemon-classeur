@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="jeu.css">
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -115,6 +116,12 @@
       <button id="partage-close" type="button" class="ghost" aria-label="Fermer">✕</button>
     </div>
     <div id="partage-contenu" class="dash-contenu"></div>
+  </dialog>
+
+  <!-- Fake Booster : ouverture d'un booster (plein écran) -->
+  <dialog id="jeu-ouverture" class="plein">
+    <button id="jeu-fermer" type="button" class="ghost jeu-fermer" aria-label="Fermer">✕</button>
+    <div id="jeu-scene"></div>
   </dialog>
 
   <!-- Liste d'achat d'une extension -->

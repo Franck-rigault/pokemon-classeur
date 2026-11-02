@@ -24,6 +24,11 @@ Les données des cartes viennent de [TCGdex](https://tcgdex.dev).
 - **Scellés** : coffrets, displays, boosters avec prix d'achat, valeur et rangement.
 - **Tableau de bord** : valeur, extensions les plus avancées, raretés, plus chères, **rentabilité** (achat / valeur), courbe de valeur.
 
+**Fake Booster (jeu)**
+- Ouverture de boosters virtuels et gratuits (limite de **100 par jour**) : choix de l'extension (128 jouables), paquet à déchirer, cartes révélées une par une (la meilleure en dernier), badge **NEW** sur les cartes pas encore possédées, halos, confettis, bruitages et vibrations. Mode « ×10 rapide » avec résumé.
+- Structure des boosters et probabilités propres à chaque époque (`js/jeu-regles.js`). **Les taux de drop officiels n'existent pas** : ce sont des estimations inspirées des statistiques de la communauté, faciles à ajuster.
+- Inventaire de jeu **sans doublon**, séparé de la vraie collection ; **classement** entre les joueurs (valeur de l'inventaire).
+
 **Comptes et données**
 - Plusieurs comptes : chacun a sa collection ; on peut consulter celle de l'autre en lecture seule. Classeurs virtuels et scellés restent privés.
 - **Classeur Pokémon** (compte propriétaire uniquement) : une ligne par Pokémon, synchronisé avec la collection.
@@ -31,7 +36,7 @@ Les données des cartes viennent de [TCGdex](https://tcgdex.dev).
 
 ## Mise en route
 
-1. **Supabase** : créer un projet, lancer dans SQL Editor, dans l'ordre : `schema.sql`, `schema-v2.sql`, `schema-v3.sql`, `schema-v4.sql`.
+1. **Supabase** : créer un projet, lancer dans SQL Editor, dans l'ordre : `schema.sql`, `schema-v2.sql`, `schema-v3.sql`, `schema-v4.sql`, `schema-v5.sql` (jeu).
 2. **Comptes** : Authentication > Users > Add user (e-mail + mot de passe, cocher « Auto Confirm User »), un par personne.
    Désactiver les inscriptions publiques (Authentication > Sign In / Providers > « Allow new users to sign up »).
    Un profil est créé automatiquement. Le compte le plus ancien reçoit le classeur Pokémon ; pour l'activer ou le retirer :

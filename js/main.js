@@ -9,6 +9,7 @@ import { vueWishlist } from "./vue-wishlist.js";
 import { vueDashboard } from "./vue-dashboard.js";
 import { vueClasseur } from "./vue-classeur.js";
 import { vueClasseurs } from "./vue-classeurs.js";
+import { vueJeu } from "./jeu.js";
 import { vueProduits } from "./vue-produits.js";
 import { ouvrirImport } from "./import.js";
 import "./dialogue-carte.js";
@@ -19,7 +20,7 @@ import { exporterCsv } from "./export.js";
 const JETON_PARTAGE = new URLSearchParams(location.search).get("partage");
 const VUES = {
   extensions: vueExtensions, recherche: vueRecherche, cartes: vueCartes, wishlist: vueWishlist,
-  classeurs: vueClasseurs, scelles: vueProduits, dashboard: vueDashboard, classeur: vueClasseur,
+  classeurs: vueClasseurs, scelles: vueProduits, jeu: vueJeu, dashboard: vueDashboard, classeur: vueClasseur,
 };
 const ONGLETS = [
   ["extensions", "📚 Extensions"],
@@ -28,11 +29,12 @@ const ONGLETS = [
   ["wishlist", "❤ Wishlist"],
   ["classeurs", "📘 Mes classeurs"],
   ["scelles", "📦 Scellés"],
+  ["jeu", "🎴 Fake Booster"],
   ["dashboard", "📊 Tableau de bord"],
   ["classeur", "📒 Classeur Pokémon"],
 ];
 // Sections privées : réservées à son propre compte (ni collection de l'autre, ni lien de partage)
-const PRIVEES = new Set(["classeurs", "scelles"]);
+const PRIVEES = new Set(["classeurs", "scelles", "jeu"]);
 
 let demarre = false;
 let vueCourante = null;
