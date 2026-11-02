@@ -346,6 +346,9 @@ async function choisirCarte(carte, k) {
     const d = await rep.json();
     const ext = extParId.get(d.set.id);
     const total = d.set.cardCount && d.set.cardCount.official;
+    // Prix moyen Cardmarket sur 30 jours (à défaut : moyenne du jour) ; sans prix, la valeur reste inchangée
+    const cm = d.pricing && d.pricing.cardmarket;
+    const prix = cm ? cm.avg30 ?? cm.avg ?? null : null;
     $("picker").close();
     await maj(carte, {
       carte_id: d.id,
@@ -353,8 +356,13 @@ async function choisirCarte(carte, k) {
       extension: ext ? ext.value : d.set.name,
       numero_carte: d.localId + (total ? "/" + total : ""),
       rarete: d.rarity || null,
+      ...(prix !== null ? { valeur: prix } : {}),
     });
-    message("✔ " + carte.nom + " : " + (ext ? ext.label : d.set.name) + ", n° " + d.localId, "ok");
+    message(
+      "✔ " + carte.nom + " : " + (ext ? ext.label : d.set.name) + ", n° " + d.localId +
+        (prix !== null ? " · prix moyen " + euros(prix) : " · pas de prix disponible, valeur inchangée"),
+      "ok"
+    );
   } catch (err) {
     $("picker-info").textContent = "Échec : " + err.message;
   }
