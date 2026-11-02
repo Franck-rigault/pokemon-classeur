@@ -1,746 +1,1214 @@
 [
   {
+    "id": "30th",
     "value": "30C",
-    "label": "Collection Classique 30ᵉ Anniversaire (2026)"
+    "label": "30ᵉ Anniversaire (2026)",
+    "pocket": false
   },
   {
+    "id": "30th-c",
+    "value": "30C",
+    "label": "Collection Classique 30ᵉ Anniversaire (2026)",
+    "pocket": false
+  },
+  {
+    "id": "me05",
     "value": "PBL",
-    "label": "Nuit Noire (2026)"
+    "label": "Nuit Noire (2026)",
+    "pocket": false
   },
   {
+    "id": "me04",
     "value": "CRI",
-    "label": "Chaos Ascendant (2026)"
+    "label": "Chaos Ascendant (2026)",
+    "pocket": false
   },
   {
+    "id": "me03",
     "value": "POR",
-    "label": "Équilibre Parfait (2026)"
+    "label": "Équilibre Parfait (2026)",
+    "pocket": false
   },
   {
+    "id": "B2a",
+    "value": "Merveilles de Paldea",
+    "label": "Merveilles de Paldea (2026)",
+    "pocket": true
+  },
+  {
+    "id": "me02.5",
     "value": "ASC",
-    "label": "Héros Transcendants (2026)"
+    "label": "Héros Transcendants (2026)",
+    "pocket": false
   },
   {
+    "id": "B2",
+    "value": "Parade Onirique",
+    "label": "Parade Onirique (2026)",
+    "pocket": true
+  },
+  {
+    "id": "B1a",
+    "value": "Embrasement Écarlate",
+    "label": "Embrasement Écarlate (2025)",
+    "pocket": true
+  },
+  {
+    "id": "me02",
     "value": "PFL",
-    "label": "Flammes Fantasmagoriques (2025)"
+    "label": "Flammes Fantasmagoriques (2025)",
+    "pocket": false
   },
   {
+    "id": "B1",
+    "value": "Méga-Ascension",
+    "label": "Méga-Ascension (2025)",
+    "pocket": true
+  },
+  {
+    "id": "me01",
     "value": "MEG",
-    "label": "Méga-Évolution (2025)"
+    "label": "Méga-Évolution (2025)",
+    "pocket": false
   },
   {
+    "id": "mep",
     "value": "MEP",
-    "label": "MEP Black Star Promos (2025)"
+    "label": "MEP Black Star Promos (2025)",
+    "pocket": false
   },
   {
+    "id": "mee",
     "value": "MEE",
-    "label": "Méga-Évolution Énergie (2025)"
+    "label": "Méga-Évolution Énergie (2025)",
+    "pocket": false
   },
   {
-    "value": "BLK",
-    "label": "Foudre Noire (2025)"
+    "id": "A4a",
+    "value": "Source Secrète",
+    "label": "Source Secrète (2025)",
+    "pocket": true
   },
   {
+    "id": "A4",
+    "value": "Sagesse Entre Ciel et Mer",
+    "label": "Sagesse Entre Ciel et Mer (2025)",
+    "pocket": true
+  },
+  {
+    "id": "sv10.5w",
     "value": "WHT",
-    "label": "Flamme Blanche (2025)"
+    "label": "Flamme Blanche (2025)",
+    "pocket": false
   },
   {
+    "id": "sv10.5b",
+    "value": "BLK",
+    "label": "Foudre Noire (2025)",
+    "pocket": false
+  },
+  {
+    "id": "A3b",
+    "value": "La Clairière d'Évoli",
+    "label": "La Clairière d'Évoli (2025)",
+    "pocket": true
+  },
+  {
+    "id": "sv10",
     "value": "DRI",
-    "label": "Rivalités Destinées (2025)"
+    "label": "Rivalités Destinées (2025)",
+    "pocket": false
   },
   {
+    "id": "A3a",
+    "value": "Crise Interdimensionnelle",
+    "label": "Crise Interdimensionnelle (2025)",
+    "pocket": true
+  },
+  {
+    "id": "A3",
+    "value": "Gardiens Astraux",
+    "label": "Gardiens Astraux (2025)",
+    "pocket": true
+  },
+  {
+    "id": "sv09",
     "value": "JTG",
-    "label": "Aventures Ensemble (2025)"
+    "label": "Aventures Ensemble (2025)",
+    "pocket": false
   },
   {
+    "id": "A2b",
+    "value": "Réjouissances Rayonnantes",
+    "label": "Réjouissances Rayonnantes (2025)",
+    "pocket": true
+  },
+  {
+    "id": "A2a",
+    "value": "Lumière Triomphale",
+    "label": "Lumière Triomphale (2025)",
+    "pocket": true
+  },
+  {
+    "id": "A2",
+    "value": "Choc Spatio-Temporel",
+    "label": "Choc Spatio-Temporel (2025)",
+    "pocket": true
+  },
+  {
+    "id": "sv08.5",
     "value": "PRE",
-    "label": "Évolutions Prismatiques (2025)"
+    "label": "Évolutions Prismatiques (2025)",
+    "pocket": false
   },
   {
+    "id": "A1a",
+    "value": "L’Île Fabuleuse",
+    "label": "L’Île Fabuleuse (2024)",
+    "pocket": true
+  },
+  {
+    "id": "2024sv",
     "value": "MCD24",
-    "label": "Collection McDonald's 2024 (2024)"
+    "label": "Collection McDonald's 2024 (2024)",
+    "pocket": false
   },
   {
+    "id": "sv08",
     "value": "SSP",
-    "label": "Étincelles Déferlantes (2024)"
+    "label": "Étincelles Déferlantes (2024)",
+    "pocket": false
   },
   {
+    "id": "P-A",
+    "value": "Promo-A",
+    "label": "Promo-A (2024)",
+    "pocket": true
+  },
+  {
+    "id": "A1",
+    "value": "Puissance Génétique",
+    "label": "Puissance Génétique (2024)",
+    "pocket": true
+  },
+  {
+    "id": "sv07",
     "value": "SCR",
-    "label": "Couronne Stellaire (2024)"
+    "label": "Couronne Stellaire (2024)",
+    "pocket": false
   },
   {
+    "id": "sv06.5",
     "value": "SFA",
-    "label": "Fable Nébuleuse (2024)"
+    "label": "Fable Nébuleuse (2024)",
+    "pocket": false
   },
   {
+    "id": "sv06",
     "value": "TWM",
-    "label": "Mascarade Crépusculaire (2024)"
+    "label": "Mascarade Crépusculaire (2024)",
+    "pocket": false
   },
   {
+    "id": "sv05",
     "value": "TEF",
-    "label": "Forces Temporelles (2024)"
+    "label": "Forces Temporelles (2024)",
+    "pocket": false
   },
   {
+    "id": "sv04.5",
     "value": "PAF",
-    "label": "Destinées de Paldea (2024)"
+    "label": "Destinées de Paldea (2024)",
+    "pocket": false
   },
   {
+    "id": "sv04",
     "value": "PAR",
-    "label": "Faille Paradoxe (2023)"
+    "label": "Faille Paradoxe (2023)",
+    "pocket": false
   },
   {
+    "id": "sv03.5",
     "value": "MEW",
-    "label": "151 (2023)"
+    "label": "151 (2023)",
+    "pocket": false
   },
   {
+    "id": "sv03",
     "value": "OBF",
-    "label": "Flammes Obsidiennes (2023)"
+    "label": "Flammes Obsidiennes (2023)",
+    "pocket": false
   },
   {
+    "id": "2023sv",
     "value": "MCD23",
-    "label": "Collection McDonald's 2023 (2023)"
+    "label": "Collection McDonald's 2023 (2023)",
+    "pocket": false
   },
   {
+    "id": "sv02",
     "value": "PAL",
-    "label": "Évolutions à Paldea (2023)"
+    "label": "Évolutions à Paldea (2023)",
+    "pocket": false
   },
   {
-    "value": "SVP",
-    "label": "SVP Black Star Promos (2023)"
-  },
-  {
+    "id": "sv01",
     "value": "SVI",
-    "label": "Écarlate et Violet (2023)"
+    "label": "Écarlate et Violet (2023)",
+    "pocket": false
   },
   {
+    "id": "sve",
     "value": "SVE",
-    "label": "Écarlate et Violet Énergie (2023)"
+    "label": "Écarlate et Violet Énergie (2023)",
+    "pocket": false
   },
   {
+    "id": "svp",
+    "value": "SVP",
+    "label": "SVP Black Star Promos (2023)",
+    "pocket": false
+  },
+  {
+    "id": "swsh12.5",
     "value": "CRZ",
-    "label": "Zénith Suprême (2023)"
+    "label": "Zénith Suprême (2023)",
+    "pocket": false
   },
   {
+    "id": "swsh12.5gg",
     "value": "CRZ:GG",
-    "label": "Zénith Suprême Galerie Galaroise (2023)"
+    "label": "Zénith Suprême Galerie Galaroise (2023)",
+    "pocket": false
   },
   {
+    "id": "swsh12",
     "value": "SIT",
-    "label": "Tempête Argentée (2022)"
+    "label": "Tempête Argentée (2022)",
+    "pocket": false
   },
   {
+    "id": "swsh12tg",
     "value": "SIT:TG",
-    "label": "Tempête Argentée Galerie de Dresseurs (2022)"
+    "label": "Tempête Argentée Galerie de Dresseurs (2022)",
+    "pocket": false
   },
   {
+    "id": "swsh11tg",
     "value": "LOR:TG",
-    "label": "Origine Perdue Galerie de Dresseurs (2022)"
+    "label": "Origine Perdue Galerie de Dresseurs (2022)",
+    "pocket": false
   },
   {
+    "id": "swsh11",
     "value": "LOR",
-    "label": "Origine Perdue (2022)"
+    "label": "Origine Perdue (2022)",
+    "pocket": false
   },
   {
+    "id": "2022swsh",
     "value": "MCD22",
-    "label": "Collection McDonald's 2022 (2022)"
+    "label": "Collection McDonald's 2022 (2022)",
+    "pocket": false
   },
   {
+    "id": "swsh10.5",
     "value": "PGO",
-    "label": "Pokémon GO (2022)"
+    "label": "Pokémon GO (2022)",
+    "pocket": false
   },
   {
+    "id": "swsh10",
     "value": "ASR",
-    "label": "Astres Radieux (2022)"
+    "label": "Astres Radieux (2022)",
+    "pocket": false
   },
   {
+    "id": "swsh10tg",
     "value": "ASR:TG",
-    "label": "Astres Radieux Galerie de Dresseurs (2022)"
+    "label": "Astres Radieux Galerie de Dresseurs (2022)",
+    "pocket": false
   },
   {
+    "id": "swsh9tg",
     "value": "BRS:TG",
-    "label": "Stars Étincelantes Galerie de Dresseurs (2022)"
+    "label": "Stars Étincelantes Galerie de Dresseurs (2022)",
+    "pocket": false
   },
   {
+    "id": "swsh9",
     "value": "BRS",
-    "label": "Stars Étincelantes (2022)"
+    "label": "Stars Étincelantes (2022)",
+    "pocket": false
   },
   {
+    "id": "swsh8",
     "value": "FST",
-    "label": "Poing de Fusion (2021)"
+    "label": "Poing de Fusion (2021)",
+    "pocket": false
   },
   {
-    "value": "CEL:CC",
-    "label": "Célébrations Collection Classique (2021)"
-  },
-  {
+    "id": "cel25",
     "value": "CEL",
-    "label": "Célébrations (2021)"
+    "label": "Célébrations (2021)",
+    "pocket": false
   },
   {
+    "id": "cel25cc",
+    "value": "CEL:CC",
+    "label": "Célébrations Collection Classique (2021)",
+    "pocket": false
+  },
+  {
+    "id": "swsh7",
     "value": "EVS",
-    "label": "Évolution Céleste (2021)"
+    "label": "Évolution Céleste (2021)",
+    "pocket": false
   },
   {
+    "id": "swsh6",
     "value": "CRE",
-    "label": "Règne de Glace (2021)"
+    "label": "Règne de Glace (2021)",
+    "pocket": false
   },
   {
+    "id": "swsh5",
     "value": "BST",
-    "label": "Styles de combat (2021)"
+    "label": "Styles de combat (2021)",
+    "pocket": false
   },
   {
+    "id": "swsh4.5",
     "value": "SHF",
-    "label": "Destinées Radieuses (2021)"
+    "label": "Destinées Radieuses (2021)",
+    "pocket": false
   },
   {
+    "id": "swsh4.5sv",
     "value": "SHF:SV",
-    "label": "Destinées Radieuses Coffre Étincelant (2021)"
+    "label": "Destinées Radieuses Coffre Étincelant (2021)",
+    "pocket": false
   },
   {
+    "id": "2021swsh",
     "value": "MCD21",
-    "label": "Collection McDonald's 2021 (2021)"
+    "label": "Collection McDonald's 2021 (2021)",
+    "pocket": false
   },
   {
+    "id": "swsh4",
     "value": "VIV",
-    "label": "Voltage Éclatant (2020)"
+    "label": "Voltage Éclatant (2020)",
+    "pocket": false
   },
   {
+    "id": "swsh3.5",
     "value": "CPA",
-    "label": "La Voie du Maître (2020)"
+    "label": "La Voie du Maître (2020)",
+    "pocket": false
   },
   {
+    "id": "swsh3",
     "value": "DAA",
-    "label": "Ténèbres Embrasées (2020)"
+    "label": "Ténèbres Embrasées (2020)",
+    "pocket": false
   },
   {
+    "id": "swsh2",
     "value": "RCL",
-    "label": "Clash des Rebelles (2020)"
+    "label": "Clash des Rebelles (2020)",
+    "pocket": false
   },
   {
+    "id": "swsh1",
     "value": "SSH",
-    "label": "Épée et Bouclier (2020)"
+    "label": "Épée et Bouclier (2020)",
+    "pocket": false
   },
   {
+    "id": "swshp",
     "value": "Promo SWSH",
-    "label": "Promo SWSH (2019)"
+    "label": "Promo SWSH (2019)",
+    "pocket": false
   },
   {
+    "id": "sm12",
     "value": "CEC",
-    "label": "Éclipse Cosmique (2019)"
+    "label": "Éclipse Cosmique (2019)",
+    "pocket": false
   },
   {
+    "id": "2019sm-fr",
     "value": "Collection McDonald's 2019",
-    "label": "Collection McDonald's 2019 (2019)"
+    "label": "Collection McDonald's 2019 (2019)",
+    "pocket": false
   },
   {
-    "value": "Destinées Occultes Coffre Étincelant",
-    "label": "Destinées Occultes Coffre Étincelant (2019)"
-  },
-  {
+    "id": "sm115",
     "value": "HIF",
-    "label": "Destinées Occultes (2019)"
+    "label": "Destinées Occultes (2019)",
+    "pocket": false
   },
   {
+    "id": "sma",
+    "value": "Destinées Occultes Coffre Étincelant",
+    "label": "Destinées Occultes Coffre Étincelant (2019)",
+    "pocket": false
+  },
+  {
+    "id": "sm11",
     "value": "UNM",
-    "label": "Harmonie des Esprits (2019)"
+    "label": "Harmonie des Esprits (2019)",
+    "pocket": false
   },
   {
+    "id": "sm10",
     "value": "UNB",
-    "label": "Alliance Infaillible (2019)"
+    "label": "Alliance Infaillible (2019)",
+    "pocket": false
   },
   {
+    "id": "det1",
     "value": "DET",
-    "label": "Détective Pikachu (2019)"
+    "label": "Détective Pikachu (2019)",
+    "pocket": false
   },
   {
+    "id": "sm9",
     "value": "TEU",
-    "label": "Duo de Choc (2019)"
+    "label": "Duo de Choc (2019)",
+    "pocket": false
   },
   {
+    "id": "sm8",
     "value": "LOT",
-    "label": "Tonnerre Perdu (2018)"
+    "label": "Tonnerre Perdu (2018)",
+    "pocket": false
   },
   {
+    "id": "sm7.5",
     "value": "DRM",
-    "label": "Majesté Des Dragons (2018)"
+    "label": "Majesté Des Dragons (2018)",
+    "pocket": false
   },
   {
+    "id": "sm7",
     "value": "CES",
-    "label": "Tempête Céleste (2018)"
+    "label": "Tempête Céleste (2018)",
+    "pocket": false
   },
   {
+    "id": "2018sm-fr",
     "value": "Collection McDonald's 2018",
-    "label": "Collection McDonald's 2018 (2018)"
+    "label": "Collection McDonald's 2018 (2018)",
+    "pocket": false
   },
   {
+    "id": "sm6",
     "value": "FLI",
-    "label": "Lumière Interdite (2018)"
+    "label": "Lumière Interdite (2018)",
+    "pocket": false
   },
   {
+    "id": "sm5",
     "value": "UPR",
-    "label": "Ultra-Prisme (2018)"
+    "label": "Ultra-Prisme (2018)",
+    "pocket": false
   },
   {
+    "id": "sm4",
     "value": "CIN",
-    "label": "Invasion Carmin (2017)"
+    "label": "Invasion Carmin (2017)",
+    "pocket": false
   },
   {
+    "id": "sm3.5",
     "value": "SLG",
-    "label": "Légendes Brillantes (2017)"
+    "label": "Légendes Brillantes (2017)",
+    "pocket": false
   },
   {
+    "id": "sm3",
     "value": "BUS",
-    "label": "Ombres Ardentes (2017)"
+    "label": "Ombres Ardentes (2017)",
+    "pocket": false
   },
   {
+    "id": "2017sm",
     "value": "MCD17",
-    "label": "Collection McDonald's 2017 (2017)"
+    "label": "Collection McDonald's 2017 (2017)",
+    "pocket": false
   },
   {
+    "id": "sm2",
     "value": "GRI",
-    "label": "Gardiens Ascendants (2017)"
+    "label": "Gardiens Ascendants (2017)",
+    "pocket": false
   },
   {
+    "id": "tk-sm-r",
     "value": "TK10A",
-    "label": "SM Kit du dresseur (Raichu d'Alola) (2017)"
+    "label": "SM Kit du dresseur (Raichu d'Alola) (2017)",
+    "pocket": false
   },
   {
+    "id": "tk-sm-l",
     "value": "TK10L",
-    "label": "SM Kit du dresseur (Lougarox) (2017)"
+    "label": "SM Kit du dresseur (Lougarox) (2017)",
+    "pocket": false
   },
   {
-    "value": "SMP",
-    "label": "Promo SM (2017)"
-  },
-  {
+    "id": "sm1",
     "value": "SUM",
-    "label": "Soleil et Lune (2017)"
+    "label": "Soleil et Lune (2017)",
+    "pocket": false
   },
   {
+    "id": "smp",
+    "value": "SMP",
+    "label": "Promo SM (2017)",
+    "pocket": false
+  },
+  {
+    "id": "xy12",
     "value": "EVO",
-    "label": "Évolutions (2016)"
+    "label": "Évolutions (2016)",
+    "pocket": false
   },
   {
+    "id": "2016xy",
     "value": "MCD16",
-    "label": "Collection McDonald's 2016 (2016)"
+    "label": "Collection McDonald's 2016 (2016)",
+    "pocket": false
   },
   {
+    "id": "xy11",
     "value": "STS",
-    "label": "Offensive Vapeur (2016)"
+    "label": "Offensive Vapeur (2016)",
+    "pocket": false
   },
   {
+    "id": "xy10",
     "value": "FCO",
-    "label": "Impact des Destins (2016)"
+    "label": "Impact des Destins (2016)",
+    "pocket": false
   },
   {
+    "id": "tk-xy-su",
     "value": "TK9S",
-    "label": "XY Kit du dresseur (Suicune) (2016)"
+    "label": "XY Kit du dresseur (Suicune) (2016)",
+    "pocket": false
   },
   {
+    "id": "tk-xy-p",
     "value": "TK9P",
-    "label": "XY Kit du dresseur (Pikachu Libre) (2016)"
+    "label": "XY Kit du dresseur (Pikachu Libre) (2016)",
+    "pocket": false
   },
   {
+    "id": "g1",
     "value": "GEN",
-    "label": "Générations (2016)"
+    "label": "Générations (2016)",
+    "pocket": false
   },
   {
+    "id": "xy9",
     "value": "BKP",
-    "label": "Rupture Turbo (2016)"
+    "label": "Rupture Turbo (2016)",
+    "pocket": false
   },
   {
+    "id": "2015xy",
     "value": "MCD15",
-    "label": "Collection McDonald's 2015 (2015)"
+    "label": "Collection McDonald's 2015 (2015)",
+    "pocket": false
   },
   {
+    "id": "xy8",
     "value": "BKT",
-    "label": "Impulsion Turbo (2015)"
+    "label": "Impulsion Turbo (2015)",
+    "pocket": false
   },
   {
+    "id": "xy7",
     "value": "AOR",
-    "label": "Origines Antiques (2015)"
+    "label": "Origines Antiques (2015)",
+    "pocket": false
   },
   {
+    "id": "xy6",
     "value": "ROS",
-    "label": "Ciel Rugissant (2015)"
+    "label": "Ciel Rugissant (2015)",
+    "pocket": false
   },
   {
-    "value": "TK8A",
-    "label": "XY Kit du dresseur (Latias) (2015)"
-  },
-  {
+    "id": "tk-xy-latio",
     "value": "TK8O",
-    "label": "XY Kit du dresseur (Latios) (2015)"
+    "label": "XY Kit du dresseur (Latios) (2015)",
+    "pocket": false
   },
   {
+    "id": "tk-xy-latia",
+    "value": "TK8A",
+    "label": "XY Kit du dresseur (Latias) (2015)",
+    "pocket": false
+  },
+  {
+    "id": "dc1",
     "value": "DCR",
-    "label": "Double Danger (2015)"
+    "label": "Double Danger (2015)",
+    "pocket": false
   },
   {
+    "id": "xy5",
     "value": "PRC",
-    "label": "Primo-Choc (2015)"
+    "label": "Primo-Choc (2015)",
+    "pocket": false
   },
   {
+    "id": "xy4",
     "value": "PHF",
-    "label": "Vigueur Spectrale (2014)"
+    "label": "Vigueur Spectrale (2014)",
+    "pocket": false
   },
   {
-    "value": "TK7B",
-    "label": "XY Kit du dresseur (Grodoudou) (2014)"
-  },
-  {
+    "id": "tk-xy-b",
     "value": "TK7A",
-    "label": "XY Kit du dresseur (Scalproie) (2014)"
+    "label": "XY Kit du dresseur (Scalproie) (2014)",
+    "pocket": false
   },
   {
+    "id": "tk-xy-w",
+    "value": "TK7B",
+    "label": "XY Kit du dresseur (Grodoudou) (2014)",
+    "pocket": false
+  },
+  {
+    "id": "xy3",
     "value": "FFI",
-    "label": "Poings Furieux (2014)"
+    "label": "Poings Furieux (2014)",
+    "pocket": false
   },
   {
+    "id": "2014xy",
     "value": "MCD14",
-    "label": "Collection McDonald's 2014 (2014)"
+    "label": "Collection McDonald's 2014 (2014)",
+    "pocket": false
   },
   {
+    "id": "xy2",
     "value": "FLF",
-    "label": "Étincelles (2014)"
+    "label": "Étincelles (2014)",
+    "pocket": false
   },
   {
-    "value": "TK6N",
-    "label": "XY Kit du dresseur (Bruyverne) (2014)"
-  },
-  {
+    "id": "tk-xy-sy",
     "value": "TK6S",
-    "label": "XY Kit du dresseur (Nymphali) (2014)"
+    "label": "XY Kit du dresseur (Nymphali) (2014)",
+    "pocket": false
   },
   {
+    "id": "tk-xy-n",
+    "value": "TK6N",
+    "label": "XY Kit du dresseur (Bruyverne) (2014)",
+    "pocket": false
+  },
+  {
+    "id": "xy1",
     "value": "XY",
-    "label": "XY (2014)"
+    "label": "XY (2014)",
+    "pocket": false
   },
   {
+    "id": "xya",
     "value": "carte alternative A Jaune",
-    "label": "carte alternative A Jaune (2014)"
+    "label": "carte alternative A Jaune (2014)",
+    "pocket": false
   },
   {
+    "id": "xy0",
     "value": "KSS",
-    "label": "Bienvenue à Kalos (2013)"
+    "label": "Bienvenue à Kalos (2013)",
+    "pocket": false
   },
   {
+    "id": "rc",
     "value": "Radiant Collection",
-    "label": "Radiant Collection (2013)"
+    "label": "Radiant Collection (2013)",
+    "pocket": false
   },
   {
+    "id": "2013bw",
     "value": "Collection McDonald's 2013",
-    "label": "Collection McDonald's 2013 (2013)"
+    "label": "Collection McDonald's 2013 (2013)",
+    "pocket": false
   },
   {
+    "id": "xyp",
     "value": "XYP",
-    "label": "Promo XY (2013)"
+    "label": "Promo XY (2013)",
+    "pocket": false
   },
   {
+    "id": "bw10",
     "value": "PLB",
-    "label": "Explosion Plasma (2013)"
+    "label": "Explosion Plasma (2013)",
+    "pocket": false
   },
   {
+    "id": "bw9",
     "value": "PLF",
-    "label": "Glaciation Plasma (2013)"
+    "label": "Glaciation Plasma (2013)",
+    "pocket": false
   },
   {
+    "id": "bw8",
     "value": "PLS",
-    "label": "Tempète Plasma (2013)"
+    "label": "Tempète Plasma (2013)",
+    "pocket": false
   },
   {
+    "id": "bw7",
     "value": "BCR",
-    "label": "Frontières Franchies (2012)"
+    "label": "Frontières Franchies (2012)",
+    "pocket": false
   },
   {
+    "id": "dv1",
     "value": "DRV",
-    "label": "Coffre des Dragons (2012)"
+    "label": "Coffre des Dragons (2012)",
+    "pocket": false
   },
   {
+    "id": "bw6",
     "value": "DRX",
-    "label": "Dragons Éxaltés (2012)"
+    "label": "Dragons Éxaltés (2012)",
+    "pocket": false
   },
   {
+    "id": "2012bw",
     "value": "MCD12",
-    "label": "Collection McDonald's 2012 (2012)"
+    "label": "Collection McDonald's 2012 (2012)",
+    "pocket": false
   },
   {
+    "id": "bw5",
     "value": "DEX",
-    "label": "Explorateurs Obscurs (2012)"
+    "label": "Explorateurs Obscurs (2012)",
+    "pocket": false
   },
   {
+    "id": "bw4",
     "value": "NXD",
-    "label": "Destinées Futures (2012)"
+    "label": "Destinées Futures (2012)",
+    "pocket": false
   },
   {
+    "id": "bw3",
     "value": "NVI",
-    "label": "Nobles Victoires (2011)"
+    "label": "Nobles Victoires (2011)",
+    "pocket": false
   },
   {
+    "id": "tk-bw-z",
     "value": "TK5Z",
-    "label": "BW Kit du dresseur (Zoroark) (2011)"
+    "label": "BW Kit du dresseur (Zoroark) (2011)",
+    "pocket": false
   },
   {
+    "id": "tk-bw-e",
     "value": "TK5E",
-    "label": "BW Kit du dresseur (Minitaupe) (2011)"
+    "label": "BW Kit du dresseur (Minitaupe) (2011)",
+    "pocket": false
   },
   {
+    "id": "bw2",
     "value": "EP",
-    "label": "Pouvoirs Émergents (2011)"
+    "label": "Pouvoirs Émergents (2011)",
+    "pocket": false
   },
   {
+    "id": "2011bw",
     "value": "MCD11",
-    "label": "Collection McDonald's 2011 (2011)"
+    "label": "Collection McDonald's 2011 (2011)",
+    "pocket": false
   },
   {
+    "id": "bwp",
     "value": "BWP",
-    "label": "Promo BW (2011)"
+    "label": "Promo BW (2011)",
+    "pocket": false
   },
   {
+    "id": "bw1",
     "value": "BLW",
-    "label": "Noir & Blanc (2011)"
+    "label": "Noir & Blanc (2011)",
+    "pocket": false
   },
   {
+    "id": "col1",
     "value": "COL",
-    "label": "L'appel des Légendes (2011)"
+    "label": "L'appel des Légendes (2011)",
+    "pocket": false
   },
   {
+    "id": "hgss4",
     "value": "TRI",
-    "label": "Triomphant (2010)"
+    "label": "Triomphant (2010)",
+    "pocket": false
   },
   {
+    "id": "hgss3",
     "value": "UND",
-    "label": "Indomptable (2010)"
+    "label": "Indomptable (2010)",
+    "pocket": false
   },
   {
+    "id": "hgss2",
     "value": "UL",
-    "label": "Déchaînement (2010)"
+    "label": "Déchaînement (2010)",
+    "pocket": false
   },
   {
-    "value": "TK4R",
-    "label": "HS Kit du dresseur (Raichu) (2010)"
-  },
-  {
+    "id": "tk-hs-g",
     "value": "TK4G",
-    "label": "HS Kit du dresseur (Léviator) (2010)"
+    "label": "HS Kit du dresseur (Léviator) (2010)",
+    "pocket": false
   },
   {
+    "id": "tk-hs-r",
+    "value": "TK4R",
+    "label": "HS Kit du dresseur (Raichu) (2010)",
+    "pocket": false
+  },
+  {
+    "id": "hgssp",
     "value": "Promo HGSS",
-    "label": "Promo HGSS (2010)"
+    "label": "Promo HGSS (2010)",
+    "pocket": false
   },
   {
+    "id": "hgss1",
     "value": "HS",
-    "label": "HeartGold SoulSilver (2010)"
+    "label": "HeartGold SoulSilver (2010)",
+    "pocket": false
   },
   {
+    "id": "pl3",
     "value": "SV",
-    "label": "Vainqueurs Suprêmes (2009)"
+    "label": "Vainqueurs Suprêmes (2009)",
+    "pocket": false
   },
   {
+    "id": "pl2",
     "value": "RR",
-    "label": "Rivaux Émergeants (2009)"
+    "label": "Rivaux Émergeants (2009)",
+    "pocket": false
   },
   {
+    "id": "pop9",
     "value": "P9",
-    "label": "POP Série 9 (2009)"
+    "label": "POP Série 9 (2009)",
+    "pocket": false
   },
   {
+    "id": "pl1",
     "value": "PL",
-    "label": "Platine (2009)"
+    "label": "Platine (2009)",
+    "pocket": false
   },
   {
+    "id": "dp7",
     "value": "SF",
-    "label": "Tempête (2008)"
+    "label": "Tempête (2008)",
+    "pocket": false
   },
   {
+    "id": "dp6",
     "value": "LA",
-    "label": "Éveil des Légendes (2008)"
+    "label": "Éveil des Légendes (2008)",
+    "pocket": false
   },
   {
+    "id": "dp5",
     "value": "MD",
-    "label": "Aube Majestueuse (2008)"
+    "label": "Aube Majestueuse (2008)",
+    "pocket": false
   },
   {
+    "id": "pop7",
     "value": "P7",
-    "label": "POP Série 7 (2008)"
+    "label": "POP Série 7 (2008)",
+    "pocket": false
   },
   {
+    "id": "dp4",
     "value": "GE",
-    "label": "Duels au Sommets (2008)"
+    "label": "Duels au Sommets (2008)",
+    "pocket": false
   },
   {
+    "id": "dp3",
     "value": "SW",
-    "label": "Merveilles Secrètes (2007)"
+    "label": "Merveilles Secrètes (2007)",
+    "pocket": false
   },
   {
+    "id": "tk-dp-m",
     "value": "TK3M",
-    "label": "DP Kit dresseur (Manaphy) (2007)"
+    "label": "DP Kit dresseur (Manaphy) (2007)",
+    "pocket": false
   },
   {
+    "id": "tk-dp-l",
     "value": "TK3L",
-    "label": "DP Kit dresseur (Lucario) (2007)"
+    "label": "DP Kit dresseur (Lucario) (2007)",
+    "pocket": false
   },
   {
+    "id": "dp2",
     "value": "MT",
-    "label": "Trésors Mystérieux (2007)"
+    "label": "Trésors Mystérieux (2007)",
+    "pocket": false
   },
   {
-    "value": "DP",
-    "label": "Diamant & Perle (2007)"
-  },
-  {
+    "id": "dpp",
     "value": "Promo DP",
-    "label": "Promo DP (2007)"
+    "label": "Promo DP (2007)",
+    "pocket": false
   },
   {
+    "id": "dp1",
+    "value": "DP",
+    "label": "Diamant & Perle (2007)",
+    "pocket": false
+  },
+  {
+    "id": "ex16",
     "value": "PK",
-    "label": "EX Gardiens du Pouvoir (2007)"
+    "label": "EX Gardiens du Pouvoir (2007)",
+    "pocket": false
   },
   {
+    "id": "ex15",
     "value": "DF",
-    "label": "EX Île des Dragons (2006)"
+    "label": "EX Île des Dragons (2006)",
+    "pocket": false
   },
   {
+    "id": "ex14",
     "value": "CG",
-    "label": "EX Gardiens de Cristal (2006)"
+    "label": "EX Gardiens de Cristal (2006)",
+    "pocket": false
   },
   {
+    "id": "pop4",
     "value": "P4",
-    "label": "POP Série 4 (2006)"
+    "label": "POP Série 4 (2006)",
+    "pocket": false
   },
   {
+    "id": "ex13",
     "value": "HP",
-    "label": "EX Fantômes Holon (2006)"
+    "label": "EX Fantômes Holon (2006)",
+    "pocket": false
   },
   {
+    "id": "pop3",
     "value": "P3",
-    "label": "POP Série 3 (2006)"
+    "label": "POP Série 3 (2006)",
+    "pocket": false
   },
   {
-    "value": "TK2P",
-    "label": "EX Kit dresseur (Positi) (2006)"
-  },
-  {
+    "id": "tk-ex-m",
     "value": "TK2M",
-    "label": "EX Kit dresseur (Négapi) (2006)"
+    "label": "EX Kit dresseur (Négapi) (2006)",
+    "pocket": false
   },
   {
+    "id": "tk-ex-p",
+    "value": "TK2P",
+    "label": "EX Kit dresseur (Positi) (2006)",
+    "pocket": false
+  },
+  {
+    "id": "ex12",
     "value": "LM",
-    "label": "EX Créateurs de légendes (2006)"
+    "label": "EX Créateurs de légendes (2006)",
+    "pocket": false
   },
   {
+    "id": "ex11",
     "value": "DS",
-    "label": "EX Espèces Delta (2005)"
+    "label": "EX Espèces Delta (2005)",
+    "pocket": false
   },
   {
+    "id": "exu",
     "value": "EX Forces Cachées Collection Zarbi",
-    "label": "EX Forces Cachées Collection Zarbi (2005)"
+    "label": "EX Forces Cachées Collection Zarbi (2005)",
+    "pocket": false
   },
   {
+    "id": "ex10",
     "value": "UF",
-    "label": "EX Forces Cachées (2005)"
+    "label": "EX Forces Cachées (2005)",
+    "pocket": false
   },
   {
+    "id": "pop2",
     "value": "P2",
-    "label": "POP Série 2 (2005)"
+    "label": "POP Série 2 (2005)",
+    "pocket": false
   },
   {
+    "id": "ex9",
     "value": "EM",
-    "label": "EX Émeraude (2005)"
+    "label": "EX Émeraude (2005)",
+    "pocket": false
   },
   {
+    "id": "ex8",
     "value": "DX",
-    "label": "EX Deoxys (2005)"
+    "label": "EX Deoxys (2005)",
+    "pocket": false
   },
   {
+    "id": "ex6",
     "value": "RG",
-    "label": "EX Rouge Feu & Vert Feuille (2004)"
+    "label": "EX Rouge Feu & Vert Feuille (2004)",
+    "pocket": false
   },
   {
+    "id": "pop1",
     "value": "P1",
-    "label": "POP Série 1 (2004)"
+    "label": "POP Série 1 (2004)",
+    "pocket": false
   },
   {
-    "value": "TK1O",
-    "label": "EX Kit dresseur (Latios) (2004)"
-  },
-  {
+    "id": "tk-ex-latia",
     "value": "TK1A",
-    "label": "EX Kit dresseur (Latias) (2004)"
+    "label": "EX Kit dresseur (Latias) (2004)",
+    "pocket": false
   },
   {
+    "id": "tk-ex-latio",
+    "value": "TK1O",
+    "label": "EX Kit dresseur (Latios) (2004)",
+    "pocket": false
+  },
+  {
+    "id": "ex5",
     "value": "HL",
-    "label": "EX Légendes Oubliées (2004)"
+    "label": "EX Légendes Oubliées (2004)",
+    "pocket": false
   },
   {
+    "id": "ex4",
     "value": "MA",
-    "label": "EX Team Magma vs Team Aqua (2004)"
+    "label": "EX Team Magma vs Team Aqua (2004)",
+    "pocket": false
   },
   {
+    "id": "ex3",
     "value": "DR",
-    "label": "EX Dragon (2003)"
+    "label": "EX Dragon (2003)",
+    "pocket": false
   },
   {
+    "id": "np",
     "value": "Promo Nintendo",
-    "label": "Promo Nintendo (2003)"
+    "label": "Promo Nintendo (2003)",
+    "pocket": false
   },
   {
+    "id": "ex2",
     "value": "SS",
-    "label": "EX Tempête de sable (2003)"
+    "label": "EX Tempête de sable (2003)",
+    "pocket": false
   },
   {
+    "id": "ex1",
     "value": "RS",
-    "label": "EX Rubis & Saphir (2003)"
+    "label": "EX Rubis & Saphir (2003)",
+    "pocket": false
   },
   {
+    "id": "ecard2",
     "value": "AQ",
-    "label": "Aquapolis (2003)"
+    "label": "Aquapolis (2003)",
+    "pocket": false
   },
   {
+    "id": "ecard1",
     "value": "EX",
-    "label": "Expedition (2002)"
+    "label": "Expedition (2002)",
+    "pocket": false
   },
   {
+    "id": "neo4",
     "value": "N4",
-    "label": "Neo Destiny (2002)"
+    "label": "Neo Destiny (2002)",
+    "pocket": false
   },
   {
+    "id": "neo3",
     "value": "N3",
-    "label": "Neo Revelation (2001)"
+    "label": "Neo Revelation (2001)",
+    "pocket": false
   },
   {
+    "id": "neo2",
     "value": "N2",
-    "label": "Neo Discovery (2001)"
+    "label": "Neo Discovery (2001)",
+    "pocket": false
   },
   {
+    "id": "neo1",
     "value": "N1",
-    "label": "Neo Genesis (2000)"
+    "label": "Neo Genesis (2000)",
+    "pocket": false
   },
   {
+    "id": "base5",
     "value": "RO",
-    "label": "Team Rocket (2000)"
+    "label": "Team Rocket (2000)",
+    "pocket": false
   },
   {
+    "id": "jumbo",
     "value": "Cartes Jumbo",
-    "label": "Cartes Jumbo (2000)"
+    "label": "Cartes Jumbo (2000)",
+    "pocket": false
   },
   {
+    "id": "base3",
     "value": "FO",
-    "label": "Fossile (1999)"
+    "label": "Fossile (1999)",
+    "pocket": false
   },
   {
+    "id": "wp",
     "value": "W Promotional",
-    "label": "W Promotional (1999)"
+    "label": "W Promotional (1999)",
+    "pocket": false
   },
   {
+    "id": "basep",
     "value": "Wizards Black Star Promos",
-    "label": "Wizards Black Star Promos (1999)"
+    "label": "Wizards Black Star Promos (1999)",
+    "pocket": false
   },
   {
+    "id": "base2",
     "value": "JU",
-    "label": "Jungle (1999)"
+    "label": "Jungle (1999)",
+    "pocket": false
   },
   {
+    "id": "base1",
     "value": "BS",
-    "label": "Set de Base (1999)"
+    "label": "Set de Base (1999)",
+    "pocket": false
   }
 ]

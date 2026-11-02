@@ -83,6 +83,7 @@
             <th>N°</th>
             <th>Image</th>
             <th>Nom</th>
+            <th>Carte</th>
             <th>Possédé</th>
             <th>Extension</th>
             <th>N° carte</th>
@@ -95,6 +96,18 @@
       </table>
     </div>
   </section>
+
+  <dialog id="picker">
+    <div class="picker-head">
+      <h2 id="picker-titre">Cartes</h2>
+      <div class="picker-actions">
+        <button id="picker-clear" type="button" class="ghost">Retirer la carte</button>
+        <button id="picker-close" type="button" class="ghost" aria-label="Fermer">✕</button>
+      </div>
+    </div>
+    <p id="picker-info" class="msg"></p>
+    <div id="picker-grille" class="grille"></div>
+  </dialog>
 
   <datalist id="extensions"></datalist>
   <datalist id="raretes"></datalist>

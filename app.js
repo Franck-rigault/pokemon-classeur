@@ -6,7 +6,12 @@ const PAGE = 1000;
 const ARTWORK_URL =
   "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
 
+const TCGDEX = "https://api.tcgdex.net/v2/fr";
+
 let cartes = [];
+const extParId = new Map(); // id d'extension TCGdex -> { value, label }
+const ordreExt = new Map(); // id d'extension -> rang (0 = la plus récente)
+const cacheCartes = new Map(); // nom du Pokémon -> cartes existantes
 
 const normalise = (s) =>
   String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
@@ -24,14 +29,19 @@ function message(texte, type = "") {
 
 async function chargerExtensions() {
   try {
-    const liste = await (await fetch("extensions.json")).json();
+    const liste = await (await fetch("extensions.json", { cache: "no-cache" })).json();
     const dl = $("extensions");
-    for (const e of liste) {
+    const vus = new Set();
+    liste.forEach((e, i) => {
+      extParId.set(e.id, e);
+      ordreExt.set(e.id, i);
+      if (e.pocket || vus.has(e.value)) return;
+      vus.add(e.value);
       const o = document.createElement("option");
       o.value = e.value;
       o.label = e.label;
       dl.append(o);
-    }
+    });
   } catch {
     // La liste est facultative : la saisie libre reste possible.
   }
@@ -39,7 +49,7 @@ async function chargerExtensions() {
 
 async function chargerRaretes() {
   try {
-    const liste = await (await fetch("raretes.json")).json();
+    const liste = await (await fetch("raretes.json", { cache: "no-cache" })).json();
     const dl = $("raretes");
     for (const r of liste) {
       const o = document.createElement("option");
@@ -162,6 +172,24 @@ function dessiner() {
     cbPos.addEventListener("change", () => maj(c, { possede: cbPos.checked }));
     tdPos.append(cbPos);
 
+    const tdCarte = document.createElement("td");
+    tdCarte.className = "carte";
+    if (c.image_url) {
+      const miniature = document.createElement("img");
+      miniature.className = "carte-img";
+      miniature.loading = "lazy";
+      miniature.alt = "Carte " + c.nom;
+      miniature.src = c.image_url;
+      miniature.addEventListener("click", () => ouvrirSelecteur(c));
+      tdCarte.append(miniature);
+    }
+    const btCarte = document.createElement("button");
+    btCarte.type = "button";
+    btCarte.className = "ghost";
+    btCarte.textContent = c.carte_id ? "Changer" : "Choisir la carte";
+    btCarte.addEventListener("click", () => ouvrirSelecteur(c));
+    tdCarte.append(btCarte);
+
     const tdExt = document.createElement("td");
     const inExt = document.createElement("input");
     inExt.type = "text";
@@ -221,7 +249,7 @@ function dessiner() {
     cbWl.addEventListener("change", () => maj(c, { wishlist: cbWl.checked }));
     tdWl.append(cbWl);
 
-    tr.append(tdNum, tdArt, tdNom, tdPos, ...tdInfos, tdVal, tdWl);
+    tr.append(tdNum, tdArt, tdNom, tdCarte, tdPos, ...tdInfos, tdVal, tdWl);
     corps.append(tr);
   }
 
@@ -233,6 +261,115 @@ function dessiner() {
     cartes.filter((c) => c.possede).reduce((s, c) => s + Number(c.valeur || 0), 0)
   );
 }
+
+// ---------- Choix de la carte exacte (TCGdex) ----------
+
+const echapper = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+async function cartesDe(nom) {
+  if (cacheCartes.has(nom)) return cacheCartes.get(nom);
+  const rep = await fetch(TCGDEX + "/cards?name=" + encodeURIComponent(nom));
+  if (!rep.ok) throw new Error("TCGdex a répondu " + rep.status);
+  // « Mew » ne doit pas ramener « Mewtwo » : on garde les cartes dont le nom contient ce mot entier
+  const mot = new RegExp("(?<![\\p{L}\\p{N}])" + echapper(normalise(nom)) + "(?![\\p{L}\\p{N}])", "u");
+  const idExt = (k) => k.id.slice(0, k.id.lastIndexOf("-"));
+  const liste = (await rep.json())
+    .filter((k) => mot.test(normalise(k.name)))
+    .sort(
+      (a, b) =>
+        (ordreExt.get(idExt(a)) ?? 9999) - (ordreExt.get(idExt(b)) ?? 9999) ||
+        (parseInt(a.localId) || 0) - (parseInt(b.localId) || 0)
+    );
+  liste.forEach((k) => (k.idExt = idExt(k)));
+  cacheCartes.set(nom, liste);
+  return liste;
+}
+
+let selecteurCourant = null;
+
+async function ouvrirSelecteur(carte) {
+  const dlg = $("picker");
+  selecteurCourant = carte;
+  $("picker-titre").textContent = "Cartes de " + carte.nom;
+  $("picker-clear").hidden = !carte.carte_id;
+  $("picker-info").textContent = "Chargement des cartes…";
+  $("picker-grille").textContent = "";
+  if (!dlg.open) dlg.showModal();
+
+  try {
+    const liste = await cartesDe(carte.nom);
+    if (selecteurCourant !== carte) return;
+    $("picker-info").textContent = liste.length + " cartes trouvées, de la plus récente à la plus ancienne.";
+    const grille = $("picker-grille");
+    for (const k of liste) {
+      const tuile = document.createElement("button");
+      tuile.type = "button";
+      tuile.className = "tuile" + (k.id === carte.carte_id ? " choisie" : "");
+
+      const sansImage = () => {
+        const vide = document.createElement("div");
+        vide.className = "sans-image";
+        vide.textContent = "Pas d'image";
+        return vide;
+      };
+
+      if (k.image) {
+        const img = document.createElement("img");
+        img.loading = "lazy";
+        img.alt = k.name;
+        img.src = k.image + "/low.webp";
+        img.addEventListener("error", () => img.replaceWith(sansImage()));
+        tuile.append(img);
+      } else {
+        tuile.append(sansImage());
+      }
+
+      const legende = document.createElement("span");
+      const ext = extParId.get(k.idExt);
+      legende.textContent = (ext ? ext.label : k.idExt) + " · n° " + k.localId;
+      tuile.append(legende);
+
+      tuile.addEventListener("click", () => choisirCarte(carte, k));
+      grille.append(tuile);
+    }
+    grille.scrollTop = 0;
+  } catch (err) {
+    $("picker-info").textContent = "Impossible de charger les cartes : " + err.message;
+  }
+}
+
+async function choisirCarte(carte, k) {
+  $("picker-info").textContent = "Enregistrement…";
+  try {
+    const rep = await fetch(TCGDEX + "/cards/" + encodeURIComponent(k.id));
+    if (!rep.ok) throw new Error("TCGdex a répondu " + rep.status);
+    const d = await rep.json();
+    const ext = extParId.get(d.set.id);
+    const total = d.set.cardCount && d.set.cardCount.official;
+    $("picker").close();
+    await maj(carte, {
+      carte_id: d.id,
+      image_url: d.image ? d.image + "/low.webp" : null,
+      extension: ext ? ext.value : d.set.name,
+      numero_carte: d.localId + (total ? "/" + total : ""),
+      rarete: d.rarity || null,
+    });
+    message("✔ " + carte.nom + " : " + (ext ? ext.label : d.set.name) + ", n° " + d.localId, "ok");
+  } catch (err) {
+    $("picker-info").textContent = "Échec : " + err.message;
+  }
+}
+
+$("picker-close").addEventListener("click", () => $("picker").close());
+$("picker").addEventListener("click", (e) => {
+  if (e.target === $("picker")) $("picker").close(); // clic sur le fond
+});
+$("picker").addEventListener("close", () => (selecteurCourant = null));
+$("picker-clear").addEventListener("click", async () => {
+  const carte = selecteurCourant;
+  $("picker").close();
+  if (carte) await maj(carte, { carte_id: null, image_url: null, extension: null, numero_carte: null, rarete: null });
+});
 
 // ---------- Ajout à la wishlist par le nom (remplace F2 / F3) ----------
 

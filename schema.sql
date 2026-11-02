@@ -8,6 +8,8 @@ create table if not exists pokemon (
   extension text,
   numero_carte text,
   rarete text,
+  carte_id text,
+  image_url text,
   possede boolean not null default false,
   wishlist boolean not null default false,
   valeur numeric(10,2) not null default 0,

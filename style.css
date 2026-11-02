@@ -287,6 +287,79 @@ button.clear {
 
 button.clear:hover { color: var(--ko); border-color: var(--ko); }
 
+/* ---------- Choix de la carte ---------- */
+
+td.carte { display: table-cell; }
+td.carte button { padding: 5px 10px; font-size: 0.85rem; }
+
+.carte-img {
+  display: inline-block;
+  height: 64px;
+  margin-right: 10px;
+  vertical-align: middle;
+  border-radius: 5px;
+  cursor: zoom-in;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+  transition: transform 0.15s;
+}
+
+.carte-img:hover { transform: scale(1.5); position: relative; z-index: 5; }
+
+dialog#picker {
+  width: min(1100px, 94vw);
+  max-height: 90vh;
+  padding: 18px;
+  color: var(--text);
+  background: linear-gradient(180deg, var(--panel), var(--navy-2));
+  border: 3px solid var(--blue);
+  border-radius: 18px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+}
+
+dialog#picker::backdrop { background: rgba(5, 6, 20, 0.75); backdrop-filter: blur(3px); }
+dialog#picker[open] { display: flex; flex-direction: column; }
+
+.picker-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.picker-head h2 {
+  margin: 0;
+  font-family: "Lilita One", system-ui, sans-serif;
+  font-weight: 400;
+  color: var(--yellow);
+  letter-spacing: 1px;
+}
+
+.picker-actions { display: flex; gap: 8px; }
+
+#picker-info { color: var(--muted); margin: 6px 0 12px; }
+
+.grille {
+  overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  padding: 4px;
+}
+
+.tuile {
+  display: grid;
+  gap: 6px;
+  padding: 8px;
+  text-align: center;
+  font-weight: 400;
+  font-size: 0.78rem;
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.25);
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  box-shadow: none;
+}
+
+.tuile:hover { border-color: var(--yellow); transform: translateY(-3px); filter: none; }
+.tuile.choisie { border-color: var(--ok); background: rgba(61, 220, 132, 0.18); }
+.tuile img { width: 100%; aspect-ratio: 245 / 342; object-fit: contain; border-radius: 6px; }
+.tuile .sans-image { aspect-ratio: 245 / 342; display: grid; place-items: center; color: var(--muted); }
+
 /* ---------- Mobile ---------- */
 
 @media (max-width: 700px) {
