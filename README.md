@@ -25,7 +25,7 @@ Les données des cartes viennent de [TCGdex](https://tcgdex.dev).
 - **Tableau de bord** : valeur, extensions les plus avancées, raretés, plus chères, **rentabilité** (achat / valeur), courbe de valeur.
 
 **Fake Booster (jeu)**
-- **Pack gratuit et illimité** de l'extension jouable la plus récente (choisie automatiquement) : paquet à déchirer, cartes révélées une par une (la meilleure en dernier), badge **NEW** sur les cartes pas encore possédées, halos, confettis, bruitages et vibrations. Mode « ×10 rapide » avec résumé.
+- **Pack gratuit et illimité** de l'extension jouable la plus récente (choisie automatiquement) : paquet à déchirer, cartes révélées une par une (la meilleure en dernier), badge **NEW** sur les cartes pas encore possédées, halos, confettis, bruitages et vibrations. Le pack gratuit s'ouvre un booster à la fois ; le « ×10 rapide » existe seulement dans la boutique.
 - **1 pièce 🪙 par doublon.** Les pièces servent dans la **boutique** à acheter des boosters des autres extensions (117 jouables).
 - **Prix de la boutique** = valeur moyenne d'un booster (≈ 1 € = 1 pièce), calculée d'après les prix Cardmarket de toutes les cartes de l'extension et les probabilités du jeu. Recalculée **chaque nuit** par `.github/workflows/prix-boosters.yml` (script `scripts/maj-prix-boosters.mjs`), publiée sur la branche `donnees` ; `data/prix-boosters.json` sert de copie de secours.
 - Structure des boosters et probabilités propres à chaque époque (`js/jeu-regles.js`). **Les taux de drop officiels n'existent pas** : ce sont des estimations inspirées des statistiques de la communauté, faciles à ajuster.

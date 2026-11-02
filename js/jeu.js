@@ -317,7 +317,7 @@ function sceneResume(ext, paquets, bilan, options) {
     meilleure ? h("p", {}, "Meilleure carte : ", h("b", {}, meilleure.name), " (" + (meilleure.rarete || "") + (meilleure.prix != null ? ", " + euros(meilleure.prix) : "") + ")") : null,
     h("div", { class: "jeu-grille" }, affichees.map(tuile)),
     lot && tries.length > 24 ? h("p", { class: "muted" }, "… et " + (tries.length - 24) + " autres cartes (les moins rares).") : null,
-    h("div", { class: "row tools centre-boutons" }, encore(1, false), lot ? null : encore(10, true), h("button", { type: "button", class: "ghost", onclick: () => fenetre().close() }, "Fermer"))
+    h("div", { class: "row tools centre-boutons" }, encore(1, false), lot || options.gratuit ? null : encore(10, true), h("button", { type: "button", class: "ghost", onclick: () => fenetre().close() }, "Fermer"))
   ));
 }
 
@@ -410,8 +410,7 @@ function pageOuvrir(corps) {
           h("h3", {}, gratuite.nom),
           h("p", { class: "muted" }, "L'extension la plus récente. Chaque doublon vous rapporte " + PIECES_PAR_DOUBLON + " 🪙 à dépenser dans la boutique."),
           h("div", { class: "row tools" },
-            h("button", { type: "button", class: "gros", onclick: () => ouvrir(gratuite, 1, false, true) }, "🎁 Ouvrir un booster"),
-            h("button", { type: "button", class: "ghost", title: "Ouvre 10 boosters d'un coup et affiche un résumé", onclick: () => ouvrir(gratuite, 10, true, true) }, "⚡ ×10 rapide")
+            h("button", { type: "button", class: "gros", onclick: () => ouvrir(gratuite, 1, false, true) }, "🎁 Ouvrir un booster")
           )
         ))
     : null;
