@@ -305,7 +305,7 @@ td.carte button { padding: 5px 10px; font-size: 0.85rem; }
 
 .carte-img:hover { transform: scale(1.5); position: relative; z-index: 5; }
 
-dialog#picker {
+dialog.modal {
   width: min(1100px, 94vw);
   max-height: 90vh;
   padding: 18px;
@@ -316,8 +316,8 @@ dialog#picker {
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
 }
 
-dialog#picker::backdrop { background: rgba(5, 6, 20, 0.75); backdrop-filter: blur(3px); }
-dialog#picker[open] { display: flex; flex-direction: column; }
+dialog.modal::backdrop { background: rgba(5, 6, 20, 0.75); backdrop-filter: blur(3px); }
+dialog.modal[open] { display: flex; flex-direction: column; }
 
 .picker-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 
@@ -360,9 +360,178 @@ dialog#picker[open] { display: flex; flex-direction: column; }
 .tuile img { width: 100%; aspect-ratio: 245 / 342; object-fit: contain; border-radius: 6px; }
 .tuile .sans-image { aspect-ratio: 245 / 342; display: grid; place-items: center; color: var(--muted); }
 
+/* ---------- Barre d'outils ---------- */
+
+.row-btn { display: flex; gap: 8px; flex-wrap: wrap; }
+
+button.scan {
+  color: #2b2100;
+  background: linear-gradient(180deg, #ffe066, var(--yellow));
+  border-color: #c79a00;
+  box-shadow: 0 3px 0 #c79a00;
+  font-size: 1rem;
+}
+
+.outils { display: grid; gap: 8px; }
+.outils select { max-width: 100%; }
+
+.lecture-banner, .print-titre { display: none; margin: 0; font-weight: 700; }
+
+/* ---------- Mode lecture seule ---------- */
+
+body.lecture .edit-only,
+body.lecture td.carte button,
+body.lecture button.clear { display: none !important; }
+
+body.lecture .lecture-banner {
+  display: block;
+  padding: 6px 12px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+body.lecture td input:disabled { opacity: 1; cursor: default; }
+body.lecture td.carte .carte-img { cursor: default; }
+
+/* ---------- Fenêtres génériques ---------- */
+
+dialog.modal.petit { width: min(520px, 94vw); }
+
+.dash-contenu { overflow: auto; display: grid; gap: 10px; align-content: start; padding: 4px; }
+.dash-contenu h3 { margin: 12px 0 0; font-family: "Lilita One", system-ui, sans-serif; font-weight: 400; color: var(--yellow); letter-spacing: 1px; }
+.dash-contenu p { margin: 0; }
+
+.dash-tuiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.dash-tuile { display: grid; gap: 2px; padding: 12px; background: rgba(0, 0, 0, 0.28); border-left: 5px solid var(--yellow); border-radius: 12px; }
+.dash-tuile span { font-family: "Lilita One", system-ui, sans-serif; font-size: 1.5rem; }
+.dash-tuile small { color: var(--muted); }
+
+.barre-ligne { display: grid; grid-template-columns: 70px 1fr 80px; gap: 10px; align-items: center; }
+.barre-nom { font-weight: 700; }
+.barre-val { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+.barre { height: 14px; background: rgba(0, 0, 0, 0.35); border-radius: 999px; overflow: hidden; }
+.barre-rempli { height: 100%; background: linear-gradient(90deg, var(--blue), var(--yellow)); border-radius: 999px; }
+
+.top-liste { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.top-liste li { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; align-items: center; padding: 6px 10px; background: rgba(0, 0, 0, 0.25); border-radius: 10px; }
+.top-liste li.avec-image { grid-template-columns: 44px 1fr auto; }
+.top-liste img { grid-row: span 2; width: 44px; border-radius: 4px; }
+.top-liste span { color: var(--muted); font-size: 0.85rem; grid-column: 1; }
+.top-liste li.avec-image span { grid-column: 2; }
+.top-liste em { grid-row: 1 / span 2; grid-column: -2; font-style: normal; font-weight: 700; color: var(--ok); }
+
+.graphe { width: 100%; height: auto; background: rgba(0, 0, 0, 0.25); border-radius: 12px; }
+.graphe text { fill: var(--muted); font-size: 11px; }
+.graphe-ligne { fill: none; stroke: var(--yellow); stroke-width: 3; stroke-linejoin: round; }
+.graphe-aire { fill: rgba(255, 203, 5, 0.15); }
+
+#partage-contenu input[type="text"] { width: 100%; }
+
+/* ---------- Scanner ---------- */
+
+.aide { margin: 4px 0 8px; color: var(--muted); font-size: 0.9rem; }
+
+.scan-cadre {
+  position: relative;
+  width: 100%;
+  max-height: 52vh;
+  margin: 0 auto;
+  background: #000;
+  border-radius: 14px;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+}
+
+.scan-cadre video { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+.scan-guide {
+  position: absolute;
+  left: 30%; width: 40%; top: 5%; height: 90%;
+  border: 3px dashed var(--yellow);
+  border-radius: 12px;
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+
+.scan-actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0 4px; }
+
+.bouton-fichier {
+  cursor: pointer;
+  padding: 9px 14px;
+  font-weight: 700;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.scan-manuel { margin: 4px 0 10px; }
+.scan-manuel summary { cursor: pointer; color: var(--muted); }
+.scan-manuel form { margin-top: 8px; }
+
+#scan-resultat.grille { max-height: 42vh; }
+#scan-resultat.confirmation { grid-template-columns: minmax(150px, 220px) 1fr; align-items: center; }
+.scan-confirm-actions { display: grid; gap: 10px; align-content: center; }
+
+dialog#scan { max-height: 96vh; overflow: auto; }
+
+/* ---------- Impression de la wishlist ---------- */
+
+@media print {
+  body.impression { background: #fff !important; color: #000 !important; }
+  html:has(body.impression), body.impression, body.impression #app { height: auto !important; }
+  body.impression #app { display: block; }
+  body.impression .top > :not(.print-titre):not(.stats) { display: none !important; }
+  body.impression .print-titre { display: block; font-size: 1.6rem; color: #000; }
+  body.impression .top { background: #fff; color: #000; box-shadow: none; border: 0; padding: 0 0 8px; }
+  body.impression .stats div { background: #fff; border: 1px solid #999; color: #000; }
+  body.impression .stats small { color: #333; }
+  body.impression .table-wrap { overflow: visible; padding: 0; }
+  body.impression table { border-spacing: 0; }
+  body.impression thead th { position: static; background: #eee; color: #000; border-bottom: 2px solid #000; }
+  body.impression tbody td { background: #fff !important; color: #000; border: 0; border-bottom: 1px solid #bbb; }
+  body.impression tbody tr { break-inside: avoid; transform: none; }
+  body.impression th:nth-child(2), body.impression td:nth-child(2),
+  body.impression th:nth-child(4), body.impression td:nth-child(4),
+  body.impression th:nth-child(5), body.impression td:nth-child(5),
+  body.impression th:nth-child(6), body.impression td:nth-child(6),
+  body.impression th:nth-child(7), body.impression td:nth-child(7),
+  body.impression th:nth-child(8), body.impression td:nth-child(8) { display: none; }
+  body.impression td input { border: 0; background: none; color: #000; width: auto; padding: 0; }
+  body.impression td input[type="checkbox"] { width: 14px; height: 14px; border: 2px solid #000; border-radius: 3px; background: #fff; }
+  body.impression td input[type="checkbox"]::after { display: none; }
+  body.impression dialog { display: none !important; }
+}
+
 /* ---------- Mobile ---------- */
 
 @media (max-width: 700px) {
+  /* L'en-tête défile avec la page : tout l'écran reste disponible pour la liste */
+  #app { display: block; height: auto; }
+  .table-wrap { overflow: visible; padding: 0 6px 24px; }
+  .top { padding: 10px 12px; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+
+  /* Colonnes secondaires masquées : N°, Extension, N° carte, Rareté (visibles sur ordinateur) */
+  th:nth-child(1), td:nth-child(1),
+  th:nth-child(6), td:nth-child(6),
+  th:nth-child(7), td:nth-child(7),
+  th:nth-child(8), td:nth-child(8) { display: none; }
+
+  tbody td { padding: 6px 6px; }
+  tbody td:nth-child(2) { border-left: 4px solid var(--blue); border-radius: 12px 0 0 12px; }
+  tr.possede td:nth-child(2) { border-left-color: var(--ok); }
+  td.nom { font-size: 0.95rem; white-space: normal; }
+  td.carte { white-space: normal; }
+  td.carte button { font-size: 0.75rem; padding: 4px 6px; }
+  .carte-img { height: 44px; margin: 0 6px 4px 0; }
+  td input[type="number"] { width: 58px; padding: 4px; }
+  td.art { width: 52px; padding: 4px; }
+  .art-img { width: 46px; height: 46px; }
+  td.nom { font-size: 0.85rem; }
+  td.carte button { max-width: 64px; }
+  tbody td, thead th { padding-left: 4px; padding-right: 4px; }
+  thead th { padding-top: 8px; padding-bottom: 8px; font-size: 0.65rem; letter-spacing: 0; }
+
   .logo-main { font-size: 1.7rem; -webkit-text-stroke-width: 5px; }
   .logo-ball { width: 36px; height: 36px; }
   td.art { width: 64px; }

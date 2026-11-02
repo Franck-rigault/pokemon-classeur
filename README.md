@@ -32,3 +32,19 @@ python -m http.server 8000
 ```
 
 Puis ouvrir http://localhost:8000
+
+## Fonctionnalités
+
+- **Scanner** : caméra (ou photo) → lecture du nom et du numéro de la carte (OCR Tesseract) → carte exacte TCGdex → ajoutée comme possédée avec son prix.
+- **Choisir la carte** : liste de toutes les cartes d'un Pokémon, avec aperçu.
+- **Prix** : prix moyen Cardmarket (30 jours) à la sélection, bouton « Actualiser les prix ».
+- **Tableau de bord** : complétion, progression par génération, cartes les plus chères, courbe de valeur (un point par jour).
+- **Tri et filtres** : génération, extension, rareté, possédés, wishlist.
+- **Partage** : lien en lecture seule (désactivable).
+- **Export CSV** et **impression de la wishlist**.
+- **Application installable** sur téléphone (PWA).
+
+## SQL à lancer dans Supabase
+
+1. `schema.sql` (installation initiale)
+2. `schema-v2.sql` (historique + partage) — peut être relancé sans risque.

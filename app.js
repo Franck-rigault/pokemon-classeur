@@ -8,16 +8,37 @@ const ARTWORK_URL =
 
 const TCGDEX = "https://api.tcgdex.net/v2/fr";
 
+const GENERATIONS = [
+  { nom: "Kanto", de: 1, a: 151 },
+  { nom: "Johto", de: 152, a: 251 },
+  { nom: "Hoenn", de: 252, a: 386 },
+  { nom: "Sinnoh", de: 387, a: 493 },
+  { nom: "Unys", de: 494, a: 649 },
+  { nom: "Kalos", de: 650, a: 721 },
+  { nom: "Alola", de: 722, a: 809 },
+  { nom: "Galar", de: 810, a: 905 },
+  { nom: "Paldea", de: 906, a: 1025 },
+];
+
+// Lien de partage : ?partage=<jeton> ouvre la collection en lecture seule, sans connexion
+const JETON_PARTAGE = new URLSearchParams(location.search).get("partage");
+const lectureSeule = !!JETON_PARTAGE;
+
 let cartes = [];
+let utilisateur = null;
+let demarre = false;
 const extParId = new Map(); // id d'extension TCGdex -> { value, label }
 const ordreExt = new Map(); // id d'extension -> rang (0 = la plus récente)
 const cacheCartes = new Map(); // nom du Pokémon -> cartes existantes
+const cacheDetails = new Map(); // id de carte -> détail TCGdex
 
 const normalise = (s) =>
-  String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+  String(s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
 
 const euros = (n) =>
   new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(n || 0);
+
+const generationDe = (numero) => GENERATIONS.findIndex((g) => numero >= g.de && numero <= g.a);
 
 function message(texte, type = "") {
   const el = $("msg");
@@ -25,7 +46,7 @@ function message(texte, type = "") {
   el.className = "msg " + type;
 }
 
-// ---------- Authentification ----------
+// ---------- Listes d'aide (extensions, raretés) ----------
 
 async function chargerExtensions() {
   try {
@@ -61,7 +82,10 @@ async function chargerRaretes() {
   }
 }
 
+// ---------- Démarrage et authentification ----------
+
 function erreurAffichee(texte) {
+  if (demarre) return message(texte, "ko"); // l'appli est déjà à l'écran : on ne la masque pas
   $("login").hidden = false;
   $("app").hidden = true;
   $("login-msg").textContent = texte;
@@ -71,6 +95,15 @@ function erreurAffichee(texte) {
 async function init() {
   chargerExtensions();
   chargerRaretes();
+
+  if (lectureSeule) {
+    document.body.classList.add("lecture");
+    $("login").hidden = true;
+    $("app").hidden = false;
+    demarre = true;
+    return charger();
+  }
+
   try {
     // getSession peut rester bloquée si la session stockée est abîmée : on abandonne au bout de 6 s
     const { data } = await Promise.race([
@@ -92,9 +125,13 @@ window.addEventListener("unhandledrejection", (e) =>
 );
 
 async function afficher(session) {
+  utilisateur = session ? session.user : null;
   $("login").hidden = !!session;
   $("app").hidden = !session;
-  if (session) await charger();
+  if (session) {
+    demarre = true;
+    await charger();
+  }
 }
 
 $("login-form").addEventListener("submit", async (e) => {
@@ -118,47 +155,107 @@ async function charger() {
   message("Chargement…");
   const tout = [];
   for (let debut = 0; ; debut += PAGE) {
-    const { data, error } = await db
-      .from("pokemon")
-      .select("*")
-      .order("numero", { ascending: true, nullsFirst: false })
-      .order("id", { ascending: true })
-      .range(debut, debut + PAGE - 1);
+    const requete = lectureSeule
+      ? db.rpc("collection_partagee", { p_token: JETON_PARTAGE })
+      : db
+          .from("pokemon")
+          .select("*")
+          .order("numero", { ascending: true, nullsFirst: false })
+          .order("id", { ascending: true });
+    const { data, error } = await requete.range(debut, debut + PAGE - 1);
     if (error) return message("Erreur de chargement : " + error.message, "ko");
     tout.push(...data);
     if (data.length < PAGE) break;
   }
   cartes = tout;
-  message(cartes.length + " cartes chargées.");
+  message(lectureSeule ? "Collection partagée en lecture seule." : cartes.length + " cartes chargées.");
+  remplirFiltres();
   dessiner();
+  if (!lectureSeule) enregistrerInstantane();
 }
 
-async function maj(carte, champs) {
+async function maj(carte, champs, redessiner = true) {
+  if (lectureSeule) return;
   const ancien = { ...carte };
   Object.assign(carte, champs);
-  dessiner();
+  if (redessiner) dessiner();
+  if ("extension" in champs || "rarete" in champs) remplirFiltres();
   const { error } = await db.from("pokemon").update(champs).eq("id", carte.id);
   if (error) {
     Object.assign(carte, ancien);
     dessiner();
     message("Échec de la sauvegarde : " + error.message, "ko");
+    return false;
   }
+  planifierInstantane();
+  return true;
 }
 
-// ---------- Affichage ----------
+// ---------- Filtres et tri ----------
+
+const tris = {
+  numero: (a, b) => (a.numero ?? 1e9) - (b.numero ?? 1e9) || a.id - b.id,
+  nom: (a, b) => a.nom.localeCompare(b.nom, "fr"),
+  valeur: (a, b) => Number(b.valeur || 0) - Number(a.valeur || 0) || tris.numero(a, b),
+  extension: (a, b) => (a.extension || "~").localeCompare(b.extension || "~", "fr") || tris.numero(a, b),
+};
+
+function remplirSelect(select, premier, valeurs) {
+  const courant = select.value;
+  select.textContent = "";
+  select.append(new Option(premier, ""));
+  for (const v of valeurs) select.append(new Option(v, v));
+  select.value = valeurs.includes(courant) ? courant : "";
+}
+
+function remplirFiltres() {
+  const uniques = (champ) =>
+    [...new Set(cartes.map((c) => c[champ]).filter(Boolean))].sort((a, b) => a.localeCompare(b, "fr"));
+  remplirSelect($("ext-select"), "Toutes les extensions", uniques("extension"));
+  remplirSelect($("rar-select"), "Toutes les raretés", uniques("rarete"));
+
+  const gen = $("gen-select");
+  if (gen.options.length <= 1) {
+    GENERATIONS.forEach((g, i) => gen.append(new Option(`${g.nom} (${g.de}–${g.a})`, String(i))));
+  }
+}
 
 function visibles() {
   const filtre = normalise($("filter-input").value);
   const mode = $("filter-select").value;
-  return cartes.filter((c) => {
-    if (filtre && !normalise(c.nom).includes(filtre) && String(c.numero ?? "") !== filtre) return false;
-    if (mode === "possede") return c.possede;
-    if (mode === "manquant") return !c.possede;
-    if (mode === "wishlist") return c.wishlist;
-    if (mode === "wishlist-manquant") return c.wishlist && !c.possede;
-    return true;
-  });
+  const gen = $("gen-select").value;
+  const ext = $("ext-select").value;
+  const rar = $("rar-select").value;
+
+  return cartes
+    .filter((c) => {
+      if (filtre && !normalise(c.nom).includes(filtre) && String(c.numero ?? "") !== filtre) return false;
+      if (mode === "possede" && !c.possede) return false;
+      if (mode === "manquant" && c.possede) return false;
+      if (mode === "wishlist" && !c.wishlist) return false;
+      if (mode === "wishlist-manquant" && !(c.wishlist && !c.possede)) return false;
+      if (gen !== "" && generationDe(c.numero) !== Number(gen)) return false;
+      if (ext && c.extension !== ext) return false;
+      if (rar && c.rarete !== rar) return false;
+      return true;
+    })
+    .sort(tris[$("tri-select").value] || tris.numero);
 }
+
+function statistiques() {
+  const possedees = cartes.filter((c) => c.possede);
+  const wl = cartes.filter((c) => c.wishlist && !c.possede);
+  const somme = (l) => l.reduce((s, c) => s + Number(c.valeur || 0), 0);
+  return {
+    total: cartes.length,
+    possedes: possedees.length,
+    valeurPossedee: somme(possedees),
+    nbWishlist: wl.length,
+    valeurWishlist: somme(wl),
+  };
+}
+
+// ---------- Affichage ----------
 
 function dessiner() {
   const corps = $("rows");
@@ -275,13 +372,13 @@ function dessiner() {
     corps.append(tr);
   }
 
-  const wl = cartes.filter((c) => c.wishlist && !c.possede);
-  $("stat-possedes").textContent = cartes.filter((c) => c.possede).length + " / " + cartes.length;
-  $("stat-wl-nb").textContent = wl.length;
-  $("stat-wl-val").textContent = euros(wl.reduce((s, c) => s + Number(c.valeur || 0), 0));
-  $("stat-total-val").textContent = euros(
-    cartes.filter((c) => c.possede).reduce((s, c) => s + Number(c.valeur || 0), 0)
-  );
+  if (lectureSeule) corps.querySelectorAll("input, button").forEach((e) => (e.disabled = true));
+
+  const s = statistiques();
+  $("stat-possedes").textContent = s.possedes + " / " + s.total;
+  $("stat-wl-nb").textContent = s.nbWishlist;
+  $("stat-wl-val").textContent = euros(s.valeurWishlist);
+  $("stat-total-val").textContent = euros(s.valeurPossedee);
 }
 
 // ---------- Choix de la carte exacte (TCGdex) ----------
@@ -307,9 +404,75 @@ async function cartesDe(nom) {
   return liste;
 }
 
+async function detailCarte(id) {
+  if (cacheDetails.has(id)) return cacheDetails.get(id);
+  const rep = await fetch(TCGDEX + "/cards/" + encodeURIComponent(id));
+  if (!rep.ok) throw new Error("TCGdex a répondu " + rep.status);
+  const d = await rep.json();
+  cacheDetails.set(id, d);
+  return d;
+}
+
+// Prix moyen Cardmarket sur 30 jours (à défaut : moyenne du jour) ; null si aucun prix
+const prixDe = (d) => {
+  const cm = d.pricing && d.pricing.cardmarket;
+  return cm ? cm.avg30 ?? cm.avg ?? null : null;
+};
+
+// Enregistre la carte choisie sur la ligne du Pokémon ; `extra` ajoute d'autres champs (ex. possede)
+async function appliquerCarte(carte, idCarte, extra = {}) {
+  const d = await detailCarte(idCarte);
+  const ext = extParId.get(d.set.id);
+  const total = d.set.cardCount && d.set.cardCount.official;
+  const prix = prixDe(d);
+  await maj(carte, {
+    carte_id: d.id,
+    image_url: d.image ? d.image + "/low.webp" : null,
+    extension: ext ? ext.value : d.set.name,
+    numero_carte: d.localId + (total ? "/" + total : ""),
+    rarete: d.rarity || null,
+    ...(prix !== null ? { valeur: prix } : {}),
+    ...extra,
+  });
+  return { d, ext, prix };
+}
+
+function creerTuile(k, selectionnee, auClic) {
+  const tuile = document.createElement("button");
+  tuile.type = "button";
+  tuile.className = "tuile" + (selectionnee ? " choisie" : "");
+
+  const sansImage = () => {
+    const vide = document.createElement("div");
+    vide.className = "sans-image";
+    vide.textContent = "Pas d'image";
+    return vide;
+  };
+
+  if (k.image) {
+    const img = document.createElement("img");
+    img.loading = "lazy";
+    img.alt = k.name;
+    img.src = k.image + "/low.webp";
+    img.addEventListener("error", () => img.replaceWith(sansImage()));
+    tuile.append(img);
+  } else {
+    tuile.append(sansImage());
+  }
+
+  const legende = document.createElement("span");
+  const ext = extParId.get(k.idExt);
+  legende.textContent = (ext ? ext.label : k.idExt) + " · n° " + k.localId;
+  tuile.append(legende);
+
+  tuile.addEventListener("click", () => auClic(k));
+  return tuile;
+}
+
 let selecteurCourant = null;
 
 async function ouvrirSelecteur(carte) {
+  if (lectureSeule) return;
   const dlg = $("picker");
   selecteurCourant = carte;
   $("picker-titre").textContent = "Cartes de " + carte.nom;
@@ -324,35 +487,7 @@ async function ouvrirSelecteur(carte) {
     $("picker-info").textContent = liste.length + " cartes trouvées, de la plus récente à la plus ancienne.";
     const grille = $("picker-grille");
     for (const k of liste) {
-      const tuile = document.createElement("button");
-      tuile.type = "button";
-      tuile.className = "tuile" + (k.id === carte.carte_id ? " choisie" : "");
-
-      const sansImage = () => {
-        const vide = document.createElement("div");
-        vide.className = "sans-image";
-        vide.textContent = "Pas d'image";
-        return vide;
-      };
-
-      if (k.image) {
-        const img = document.createElement("img");
-        img.loading = "lazy";
-        img.alt = k.name;
-        img.src = k.image + "/low.webp";
-        img.addEventListener("error", () => img.replaceWith(sansImage()));
-        tuile.append(img);
-      } else {
-        tuile.append(sansImage());
-      }
-
-      const legende = document.createElement("span");
-      const ext = extParId.get(k.idExt);
-      legende.textContent = (ext ? ext.label : k.idExt) + " · n° " + k.localId;
-      tuile.append(legende);
-
-      tuile.addEventListener("click", () => choisirCarte(carte, k));
-      grille.append(tuile);
+      grille.append(creerTuile(k, k.id === carte.carte_id, () => choisirCarte(carte, k)));
     }
     grille.scrollTop = 0;
   } catch (err) {
@@ -363,30 +498,15 @@ async function ouvrirSelecteur(carte) {
 async function choisirCarte(carte, k) {
   $("picker-info").textContent = "Enregistrement…";
   try {
-    const rep = await fetch(TCGDEX + "/cards/" + encodeURIComponent(k.id));
-    if (!rep.ok) throw new Error("TCGdex a répondu " + rep.status);
-    const d = await rep.json();
-    const ext = extParId.get(d.set.id);
-    const total = d.set.cardCount && d.set.cardCount.official;
-    // Prix moyen Cardmarket sur 30 jours (à défaut : moyenne du jour) ; sans prix, la valeur reste inchangée
-    const cm = d.pricing && d.pricing.cardmarket;
-    const prix = cm ? cm.avg30 ?? cm.avg ?? null : null;
     $("picker").close();
-    await maj(carte, {
-      carte_id: d.id,
-      image_url: d.image ? d.image + "/low.webp" : null,
-      extension: ext ? ext.value : d.set.name,
-      numero_carte: d.localId + (total ? "/" + total : ""),
-      rarete: d.rarity || null,
-      ...(prix !== null ? { valeur: prix } : {}),
-    });
+    const { d, ext, prix } = await appliquerCarte(carte, k.id);
     message(
       "✔ " + carte.nom + " : " + (ext ? ext.label : d.set.name) + ", n° " + d.localId +
         (prix !== null ? " · prix moyen " + euros(prix) : " · pas de prix disponible, valeur inchangée"),
       "ok"
     );
   } catch (err) {
-    $("picker-info").textContent = "Échec : " + err.message;
+    message("Échec : " + err.message, "ko");
   }
 }
 
@@ -418,8 +538,15 @@ $("wish-input").addEventListener("keydown", async (e) => {
 
 // ---------- Filtres ----------
 
-$("filter-input").addEventListener("input", dessiner);
-$("filter-select").addEventListener("change", dessiner);
+["filter-input"].forEach((id) => $(id).addEventListener("input", dessiner));
+["filter-select", "tri-select", "gen-select", "ext-select", "rar-select"].forEach((id) =>
+  $(id).addEventListener("change", dessiner)
+);
+
+$("outils-toggle").addEventListener("click", () => {
+  $("outils").hidden = !$("outils").hidden;
+});
+if (window.innerWidth < 700) $("outils").hidden = true;
 
 // ---------- Ajout d'un Pokémon ----------
 
@@ -440,10 +567,11 @@ $("add-form").addEventListener("submit", async (e) => {
   const { data, error } = await db.from("pokemon").insert(nouvelle).select().single();
   if (error) return message("Échec de l'ajout : " + error.message, "ko");
   cartes.push(data);
-  cartes.sort((a, b) => (a.numero ?? 1e9) - (b.numero ?? 1e9) || a.id - b.id);
   e.target.reset();
+  remplirFiltres();
   dessiner();
   message("✔ " + data.nom + " ajouté.", "ok");
 });
 
-init();
+// On attend que outils.js et scan.js soient chargés avant de démarrer
+document.addEventListener("DOMContentLoaded", init);

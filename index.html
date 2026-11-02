@@ -2,8 +2,11 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Classeur Pokémon</title>
+  <meta name="theme-color" content="#ee1515">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
@@ -21,6 +24,7 @@
       <path d="M22 34a32 32 0 0 1 14-13" stroke="#fff" stroke-width="6" stroke-linecap="round" fill="none" opacity=".7"/>
     </symbol>
   </svg>
+
   <section id="login" class="login">
     <form id="login-form">
       <div class="logo big" role="img" aria-label="Classeur Pokémon">
@@ -41,8 +45,14 @@
           <svg class="logo-ball"><use href="#ball"/></svg>
           <div class="logo-text"><span class="logo-main">Pokémon</span><span class="logo-sub">Classeur</span></div>
         </div>
-        <button id="logout" type="button" class="ghost">Déconnexion</button>
+        <div class="row-btn">
+          <button id="btn-scan" type="button" class="scan edit-only">📷 Scanner une carte</button>
+          <button id="logout" type="button" class="ghost edit-only">Déconnexion</button>
+        </div>
       </div>
+
+      <p class="lecture-banner">👀 Collection partagée en lecture seule</p>
+      <p class="print-titre">Ma wishlist Pokémon</p>
 
       <div class="stats">
         <div><span id="stat-possedes">0</span><small>Possédés</small></div>
@@ -51,18 +61,44 @@
         <div><span id="stat-total-val">0 €</span><small>Valeur possédée</small></div>
       </div>
 
-      <div class="row tools">
+      <div class="row tools edit-only">
         <input id="wish-input" type="text" placeholder="Nom à ajouter à la wishlist, puis Entrée" autocomplete="off">
-        <input id="filter-input" type="search" placeholder="Filtrer par nom ou n°" autocomplete="off">
-        <select id="filter-select">
-          <option value="all">Tous</option>
-          <option value="possede">Possédés</option>
-          <option value="manquant">Manquants</option>
-          <option value="wishlist">Wishlist</option>
-          <option value="wishlist-manquant">Wishlist non possédés</option>
-        </select>
-        <button id="add-toggle" type="button" class="ghost">+ Ajouter</button>
+        <button id="add-toggle" type="button" class="ghost">+ Ajouter un Pokémon</button>
       </div>
+
+      <div class="row tools">
+        <input id="filter-input" type="search" placeholder="Rechercher un nom ou un n°" autocomplete="off">
+        <button id="outils-toggle" type="button" class="ghost">⚙ Filtres et outils</button>
+      </div>
+
+      <div id="outils" class="outils">
+        <div class="row tools">
+          <select id="filter-select" aria-label="Afficher">
+            <option value="all">Tous</option>
+            <option value="possede">Possédés</option>
+            <option value="manquant">Manquants</option>
+            <option value="wishlist">Wishlist</option>
+            <option value="wishlist-manquant">Wishlist non possédés</option>
+          </select>
+          <select id="tri-select" aria-label="Trier par">
+            <option value="numero">Tri : n° Pokédex</option>
+            <option value="nom">Tri : nom A → Z</option>
+            <option value="valeur">Tri : valeur décroissante</option>
+            <option value="extension">Tri : extension</option>
+          </select>
+          <select id="gen-select" aria-label="Génération"><option value="">Toutes les générations</option></select>
+          <select id="ext-select" aria-label="Extension"><option value="">Toutes les extensions</option></select>
+          <select id="rar-select" aria-label="Rareté"><option value="">Toutes les raretés</option></select>
+        </div>
+        <div class="row tools">
+          <button id="btn-dash" type="button" class="ghost">📊 Tableau de bord</button>
+          <button id="btn-prix" type="button" class="ghost edit-only">💶 Actualiser les prix</button>
+          <button id="btn-partage" type="button" class="ghost edit-only">🔗 Partager</button>
+          <button id="btn-export" type="button" class="ghost">⬇ Exporter (CSV)</button>
+          <button id="btn-print" type="button" class="ghost">🖨 Imprimer la wishlist</button>
+        </div>
+      </div>
+
       <p id="msg" class="msg"></p>
 
       <form id="add-form" class="row tools" hidden>
@@ -97,7 +133,8 @@
     </div>
   </section>
 
-  <dialog id="picker">
+  <!-- Choix d'une carte pour un Pokémon -->
+  <dialog id="picker" class="modal">
     <div class="picker-head">
       <h2 id="picker-titre">Cartes</h2>
       <div class="picker-actions">
@@ -109,11 +146,61 @@
     <div id="picker-grille" class="grille"></div>
   </dialog>
 
+  <!-- Scanner -->
+  <dialog id="scan" class="modal">
+    <div class="picker-head">
+      <h2>Scanner une carte</h2>
+      <button id="scan-close" type="button" class="ghost" aria-label="Fermer">✕</button>
+    </div>
+    <p class="aide">Placez la carte <b>bien à plat, entière dans le cadre</b>, avec une lumière uniforme, puis appuyez sur « Lire la carte ».</p>
+    <div id="scan-cadre" class="scan-cadre">
+      <video id="scan-video" playsinline muted></video>
+      <div id="scan-guide" class="scan-guide"></div>
+    </div>
+    <div class="scan-actions">
+      <button id="scan-capture" type="button">📷 Lire la carte</button>
+      <label class="bouton-fichier">🖼 Photo / image
+        <input id="scan-fichier" type="file" accept="image/*" hidden>
+      </label>
+    </div>
+    <p id="scan-info" class="msg"></p>
+    <details class="scan-manuel">
+      <summary>Corriger ou saisir à la main</summary>
+      <form id="scan-manuel" class="row tools">
+        <input id="scan-nom" type="text" list="noms-pokemon" placeholder="Nom du Pokémon" autocomplete="off" required>
+        <input id="scan-num" type="text" placeholder="N° (ex. 018/091)" autocomplete="off">
+        <button type="submit">Rechercher</button>
+      </form>
+    </details>
+    <div id="scan-resultat" class="grille"></div>
+  </dialog>
+
+  <!-- Tableau de bord -->
+  <dialog id="dash" class="modal">
+    <div class="picker-head">
+      <h2>Tableau de bord</h2>
+      <button id="dash-close" type="button" class="ghost" aria-label="Fermer">✕</button>
+    </div>
+    <div id="dash-contenu" class="dash-contenu"></div>
+  </dialog>
+
+  <!-- Partage -->
+  <dialog id="partage" class="modal petit">
+    <div class="picker-head">
+      <h2>Partager ma collection</h2>
+      <button id="partage-close" type="button" class="ghost" aria-label="Fermer">✕</button>
+    </div>
+    <div id="partage-contenu" class="dash-contenu"></div>
+  </dialog>
+
   <datalist id="extensions"></datalist>
   <datalist id="raretes"></datalist>
+  <datalist id="noms-pokemon"></datalist>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>
+  <script src="outils.js"></script>
+  <script src="scan.js"></script>
 </body>
 </html>
