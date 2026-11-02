@@ -12,6 +12,8 @@ export function exporterCsv() {
     ["Rareté", (c) => c.rarete],
     ["Variante", (c) => c.variante],
     ["État", (c) => c.etat],
+    ["Gradation", (c) => (c.grade_societe ? c.grade_societe + " " + (c.grade_note ?? "") : "")],
+    ["Rangement", (c) => c.emplacement],
     ["Quantité", (c) => c.quantite],
     ["Valeur unitaire (€)", (c) => (c.valeur == null ? "" : String(c.valeur).replace(".", ","))],
     ["Valeur totale (€)", (c) => (c.valeur == null ? "" : String(Number(c.valeur) * c.quantite).replace(".", ","))],

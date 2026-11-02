@@ -8,21 +8,33 @@ import { vueCartes } from "./vue-cartes.js";
 import { vueWishlist } from "./vue-wishlist.js";
 import { vueDashboard } from "./vue-dashboard.js";
 import { vueClasseur } from "./vue-classeur.js";
+import { vueClasseurs } from "./vue-classeurs.js";
+import { vueProduits } from "./vue-produits.js";
+import { vueBoosters } from "./vue-boosters.js";
+import { ouvrirImport } from "./import.js";
 import "./dialogue-carte.js";
 import { ouvrirScan } from "./scan.js";
 import { ouvrirPartage } from "./partage.js";
 import { exporterCsv } from "./export.js";
 
 const JETON_PARTAGE = new URLSearchParams(location.search).get("partage");
-const VUES = { extensions: vueExtensions, recherche: vueRecherche, cartes: vueCartes, wishlist: vueWishlist, dashboard: vueDashboard, classeur: vueClasseur };
+const VUES = {
+  extensions: vueExtensions, recherche: vueRecherche, cartes: vueCartes, wishlist: vueWishlist,
+  classeurs: vueClasseurs, scelles: vueProduits, boosters: vueBoosters, dashboard: vueDashboard, classeur: vueClasseur,
+};
 const ONGLETS = [
   ["extensions", "📚 Extensions"],
   ["recherche", "🔎 Rechercher"],
   ["cartes", "🃏 Mes cartes"],
   ["wishlist", "❤ Wishlist"],
+  ["classeurs", "📘 Mes classeurs"],
+  ["scelles", "📦 Scellés"],
+  ["boosters", "🎁 Boosters"],
   ["dashboard", "📊 Tableau de bord"],
-  ["classeur", "📒 Classeur"],
+  ["classeur", "📒 Classeur Pokémon"],
 ];
+// Sections privées : réservées à son propre compte (ni collection de l'autre, ni lien de partage)
+const PRIVEES = new Set(["classeurs", "scelles", "boosters"]);
 
 let demarre = false;
 let vueCourante = null;
@@ -51,6 +63,7 @@ function onglets() {
     ...ONGLETS.filter(([nom]) => {
       if (nom === "classeur") return classeurDisponible();
       if (nom === "wishlist") return !S.partage;
+      if (PRIVEES.has(nom)) return !S.partage && !S.lectureSeule;
       return true;
     }).map(([nom, titre]) => h("a", { href: "#/" + nom, "data-vue": nom }, titre))
   );
@@ -63,7 +76,7 @@ function routeCourante() {
 
 async function afficherVue() {
   let { nom, param } = routeCourante();
-  if (!VUES[nom] || (nom === "classeur" && !classeurDisponible()) || (nom === "wishlist" && S.partage)) {
+  if (!VUES[nom] || (nom === "classeur" && !classeurDisponible()) || (nom === "wishlist" && S.partage) || (PRIVEES.has(nom) && (S.partage || S.lectureSeule))) {
     nom = "extensions";
     param = undefined;
   }
@@ -75,7 +88,7 @@ async function afficherVue() {
 
 window.addEventListener("hashchange", () => { if (!$("app").hidden) afficherVue(); });
 
-for (const nom of ["collection", "souhaits"]) {
+for (const nom of ["collection", "souhaits", "produits", "ouvertures", "classeurs", "classeur_cases"]) {
   evenements.addEventListener(nom, () => {
     if (vueCourante && vueCourante.rafraichir) vueCourante.rafraichir();
     if (!S.lectureSeule && !S.partage) D.planifierInstantane();
@@ -101,6 +114,7 @@ async function choisirCible(id) {
   onglets();
   await afficherVue();
   if (!S.lectureSeule) {
+    S.extraCharge = false; // les données privées (scellés, boosters, classeurs) se rechargent à la demande
     D.enregistrerInstantane();
     D.completerDetails();
   }
@@ -151,6 +165,13 @@ $("btn-scan").addEventListener("click", ouvrirScan);
 $("btn-prix").addEventListener("click", () => { $("menu").open = false; essayer(D.actualiserPrix); });
 $("btn-partage").addEventListener("click", () => { $("menu").open = false; ouvrirPartage(); });
 $("btn-export").addEventListener("click", () => { $("menu").open = false; exporterCsv(); });
+$("btn-import").addEventListener("click", () => { $("menu").open = false; ouvrirImport(); });
+
+// Toutes les fenêtres : bouton ✕ et clic sur le fond
+document.querySelectorAll("dialog.modal").forEach((d) => {
+  d.addEventListener("click", (e) => { if (e.target === d) d.close(); });
+  d.querySelectorAll("[data-fermer]").forEach((b) => b.addEventListener("click", () => d.close()));
+});
 
 // Les en-têtes de tableau collants se placent juste sous l'en-tête de la page
 const entete = document.querySelector(".top");

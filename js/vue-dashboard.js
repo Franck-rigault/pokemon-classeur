@@ -2,6 +2,7 @@
 import { h, db, euros, imageCarte, libelleExt, annee } from "./api.js";
 import { S } from "./etat.js";
 import * as D from "./donnees.js";
+import { chargerExtra } from "./donnees-extra.js";
 
 function barre(pct, texteDroite, texteGauche) {
   const rempli = h("div", { class: "barre-rempli" });
@@ -67,6 +68,46 @@ export const vueDashboard = {
     // Cartes les plus chères
     const top = [...S.collection].filter((c) => c.valeur > 0).sort((a, b) => Number(b.valeur) - Number(a.valeur)).slice(0, 5);
 
+    // Rentabilité : prix d'achat contre valeur actuelle (données privées : seulement pour sa propre collection)
+    let panneauRentabilite = null;
+    if (!S.lectureSeule && !S.partage) {
+      try { await chargerExtra(); } catch { /* tables absentes : le panneau n'affiche que les cartes */ }
+      const somme = (liste, f) => liste.reduce((s, x) => s + f(x), 0);
+      const achetees = S.collection.filter((c) => c.prix_achat != null);
+      const investiCartes = somme(achetees, (c) => Number(c.prix_achat) * c.quantite);
+      const valeurAchetees = somme(achetees, (c) => Number(c.valeur || 0) * c.quantite);
+      const investiScelles = somme(S.produits, (p) => Number(p.prix_achat || 0) * p.quantite);
+      const valeurScelles = somme(S.produits, (p) => Number(p.valeur || 0) * p.quantite);
+      const coutBoosters = somme(S.ouvertures, (o) => Number(o.cout || 0));
+      const plusValue = valeurAchetees - investiCartes;
+      const gain = (c) => (Number(c.valeur || 0) - Number(c.prix_achat)) * c.quantite;
+      const gains = [...achetees].sort((a, b) => gain(b) - gain(a));
+      const ligneGain = (c) => h("li", { class: c.image ? "avec-image" : "" },
+        c.image ? h("img", { src: imageCarte(c.image), alt: c.nom, loading: "lazy" }) : null,
+        h("b", {}, c.nom),
+        h("span", {}, "acheté " + euros(c.prix_achat) + " · vaut " + euros(c.valeur)),
+        h("em", { class: gain(c) < 0 ? "perte" : "" }, (gain(c) >= 0 ? "+" : "") + euros(gain(c)))
+      );
+      panneauRentabilite = h("section", { class: "panneau" },
+        h("h3", {}, "Rentabilité"),
+        h("div", { class: "dash-tuiles" },
+          [
+            [euros(investiCartes), "Investi dans les cartes (" + achetees.length + " lignes avec prix d'achat)"],
+            [euros(valeurAchetees), "Valeur actuelle de ces cartes"],
+            [(plusValue >= 0 ? "+" : "") + euros(plusValue), "Plus-value sur ces cartes"],
+            [euros(investiScelles + coutBoosters), "Investi en scellés et boosters"],
+          ].map(([v, l]) => h("div", { class: "dash-tuile" }, h("span", {}, v), h("small", {}, l)))
+        ),
+        S.produits.length ? h("p", { class: "muted" }, "Produits scellés : " + euros(valeurScelles) + " de valeur actuelle pour " + euros(investiScelles) + " investis.") : null,
+        achetees.length
+          ? h("div", { class: "dash-colonnes" },
+              h("div", {}, h("h3", {}, "Plus gros gains"), h("ol", { class: "top-liste" }, gains.slice(0, 5).filter((c) => gain(c) > 0).map(ligneGain))),
+              h("div", {}, h("h3", {}, "Plus grosses pertes"), h("ol", { class: "top-liste" }, gains.slice(-5).reverse().filter((c) => gain(c) < 0).map(ligneGain)))
+            )
+          : h("p", { class: "muted" }, "Renseignez le prix d'achat de vos cartes (dans la fenêtre de la carte) pour suivre leur rentabilité.")
+      );
+    }
+
     const placeGraphe = h("p", { class: "muted" }, "Chargement de l'historique…");
 
     conteneur.replaceChildren(
@@ -97,6 +138,7 @@ export const vueDashboard = {
               )))
           : h("p", { class: "muted" }, "Aucune carte avec un prix pour l'instant.")
       ),
+      panneauRentabilite,
       S.lectureSeule || S.partage
         ? null
         : h("section", { class: "panneau" }, h("h3", {}, "Évolution de la valeur"), placeGraphe)

@@ -9,6 +9,11 @@ export const S = {
   partage: false, // vrai en mode lien de partage public
   collection: [], // lignes de la table « collection » de la cible
   souhaits: [], // lignes de la table « souhaits » de la cible
+  produits: [], // produits scellés (privés)
+  ouvertures: [], // journal d'ouverture de boosters (privé)
+  classeurs: [], // classeurs virtuels (privés)
+  cases: [], // contenu des classeurs virtuels
+  extraCharge: false, // vrai quand les quatre listes ci-dessus sont chargées
   extensions: [], // référentiel des extensions (extensions.json), de la plus récente à la plus ancienne
   extParId: new Map(),
   ordreExt: new Map(), // id d'extension -> rang (0 = la plus récente)

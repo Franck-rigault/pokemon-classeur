@@ -132,7 +132,7 @@ select p.user_id,
        nullif(p.valeur, 0)
 from pokemon p
 where p.possede and p.carte_id is not null
-on conflict (user_id, carte_id, variante, etat) do nothing;
+on conflict do nothing;
 
 -- ---------- Partage public (lien) : désormais la collection complète ----------
 drop function if exists collection_partagee(uuid);

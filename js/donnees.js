@@ -64,6 +64,25 @@ export function champsCarte(d) {
     image: d.image || null,
     dex_ids: d.dexId || [],
     valeur: prixDe(d),
+    types: d.types || [],
+    illustrateur: d.illustrator || null,
+    pv: d.hp ? parseInt(d.hp, 10) || null : null,
+    stade: d.stage || null,
+    complet: true,
+  };
+}
+
+// Champs de la table « souhaits » (moins riche que la collection)
+export function champsSouhait(d) {
+  return {
+    carte_id: d.id,
+    set_id: d.set.id,
+    nom: d.name,
+    local_id: d.localId,
+    categorie: d.category || null,
+    rarete: d.rarity || null,
+    image: d.image || null,
+    valeur: prixDe(d),
   };
 }
 
@@ -79,21 +98,32 @@ export function champsCarteCourte(k) {
     image: k.image || null,
     dex_ids: [],
     valeur: null,
+    complet: false,
   };
 }
 
+// Options : quantite, etat, variante, prix_achat, emplacement, grade_societe, grade_note
 async function ajouter(champs, options = {}) {
   ecriture();
-  const { quantite = 1, etat = "Neuf", variante = "Normale", prix_achat = null } = options;
+  const {
+    quantite = 1, etat = "Neuf", variante = "Normale", prix_achat = null,
+    emplacement = null, grade_societe = null, grade_note = null,
+  } = options;
   const existante = S.collection.find(
-    (c) => c.carte_id === champs.carte_id && c.variante === variante && c.etat === etat
+    (c) =>
+      c.carte_id === champs.carte_id && c.variante === variante && c.etat === etat &&
+      (c.emplacement || null) === (emplacement || null) &&
+      (c.grade_societe || null) === (grade_societe || null) &&
+      (c.grade_note ?? null) === (grade_note ?? null)
   );
   let ligne;
   if (existante) {
     await changerQuantite(existante, existante.quantite + quantite);
     ligne = existante;
   } else {
-    [ligne] = await stockage.inserer("collection", { ...champs, quantite, etat, variante, prix_achat });
+    [ligne] = await stockage.inserer("collection", {
+      ...champs, quantite, etat, variante, prix_achat, emplacement, grade_societe, grade_note,
+    });
     S.collection.push(ligne);
     emettre("collection");
   }
@@ -110,7 +140,7 @@ export async function ajouterCarte(d, options) {
 
 export async function ajouterCarteCourte(k, options) {
   const ligne = await ajouter(champsCarteCourte(k), options);
-  if (!ligne.categorie) completerDetails([ligne]);
+  if (!ligne.complet) completerDetails([ligne]);
   return ligne;
 }
 
@@ -174,8 +204,7 @@ export async function supprimerEntree(ligne) {
 export async function souhaiter(d) {
   ecriture();
   if (S.souhaits.some((x) => x.carte_id === d.id)) return;
-  const { dex_ids, ...champs } = champsCarte(d); // la table des souhaits n'a pas de colonne dex_ids
-  const [ligne] = await stockage.inserer("souhaits", champs);
+  const [ligne] = await stockage.inserer("souhaits", champsSouhait(d));
   S.souhaits.unshift(ligne);
   emettre("souhaits");
 }
@@ -192,7 +221,7 @@ export async function retirerSouhait(ligne) {
 
 let completionEnCours = false;
 
-export async function completerDetails(lignes = S.collection.filter((c) => !c.categorie)) {
+export async function completerDetails(lignes = S.collection.filter((c) => !c.complet)) {
   if (S.lectureSeule || completionEnCours || !lignes.length) return;
   completionEnCours = true;
   const file = [...lignes];

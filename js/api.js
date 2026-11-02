@@ -37,7 +37,7 @@ export function h(tag, attrs, ...enfants) {
     if (k === "class") e.className = v;
     else if (k === "texte") e.textContent = v;
     else if (k.startsWith("on")) e.addEventListener(k.slice(2), v);
-    else if (k === "list" || k === "style" || k.startsWith("aria-") || k.startsWith("data-")) e.setAttribute(k, v);
+    else if (k === "list" || k === "style" || k === "draggable" || k.startsWith("aria-") || k.startsWith("data-")) e.setAttribute(k, v);
     else if (k in e) e[k] = v;
     else e.setAttribute(k, v === true ? "" : v);
   }
@@ -46,6 +46,15 @@ export function h(tag, attrs, ...enfants) {
     e.append(c.nodeType ? c : document.createTextNode(String(c)));
   }
   return e;
+}
+
+// replaceChildren / append écrivent « null » en toutes lettres : on ignore plutôt les valeurs vides,
+// ce qui permet d'écrire  cond ? élément : null  dans les listes d'enfants.
+for (const methode of ["replaceChildren", "append"]) {
+  const origine = Element.prototype[methode];
+  Element.prototype[methode] = function (...noeuds) {
+    return origine.apply(this, noeuds.flat().filter((n) => n !== null && n !== undefined && n !== false));
+  };
 }
 
 export function message(texte, type = "") {
@@ -126,6 +135,78 @@ export async function cartesParNom(nom) {
   cacheNoms.set(nom, liste);
   return liste;
 }
+
+// Données utiles de toutes les cartes d'une extension (rareté, prix, variantes, type…).
+// Récupérées carte par carte (une seule fois), puis gardées 7 jours dans le navigateur.
+const CLE_EXT = "classeur:ext:v1:";
+
+function compact(d) {
+  const cm = d.pricing && d.pricing.cardmarket;
+  return {
+    id: d.id,
+    localId: d.localId,
+    name: d.name,
+    image: d.image || null,
+    rarete: d.rarity || null,
+    categorie: d.category || null,
+    variantes: variantesDe(d),
+    prix: prixDe(d),
+    produit: cm && cm.idProduct ? cm.idProduct : null,
+    types: d.types || [],
+    illustrateur: d.illustrator || null,
+  };
+}
+
+// Détails déjà gardés dans le navigateur (sans réseau), ou null
+export function lireCacheExtension(setId) {
+  try {
+    const c = JSON.parse(localStorage.getItem(CLE_EXT + setId));
+    return c && Date.now() - c.t < 7 * 864e5 ? c.cartes : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function detailsExtension(setId, auProgres, force = false) {
+  const cle = CLE_EXT + setId;
+  if (!force) {
+    try {
+      const c = JSON.parse(localStorage.getItem(cle));
+      if (c && Date.now() - c.t < 7 * 864e5) return c.cartes;
+    } catch {
+      // pas de cache utilisable : on récupère tout
+    }
+  }
+  const { cartes } = await cartesDExtension(setId);
+  const file = [...cartes];
+  const resultats = new Map();
+  let faits = 0;
+  const travailleur = async () => {
+    while (file.length) {
+      const k = file.shift();
+      try {
+        resultats.set(k.id, compact(await detailCarte(k.id)));
+      } catch {
+        resultats.set(k.id, { id: k.id, localId: k.localId, name: k.name, image: k.image, rarete: null, categorie: null, variantes: ["Normale"], prix: null, produit: null, types: [], illustrateur: null });
+      }
+      faits++;
+      if (auProgres) auProgres(faits, cartes.length);
+    }
+  };
+  await Promise.all(Array.from({ length: 8 }, travailleur));
+  const liste = cartes.map((k) => resultats.get(k.id));
+  try {
+    localStorage.setItem(cle, JSON.stringify({ t: Date.now(), cartes: liste }));
+  } catch {
+    // stockage plein ou indisponible : on garde seulement en mémoire
+  }
+  return liste;
+}
+
+// Recherche de la carte sur Cardmarket (page de résultats : fiable même sans identifiant de produit)
+export const lienCardmarket = (nom, extension, localId) =>
+  "https://www.cardmarket.com/fr/Pokemon/Products/Search?searchString=" +
+  encodeURIComponent([nom, extension, localId].filter(Boolean).join(" "));
 
 const cacheRecherches = new Map(); // texte -> cartes
 

@@ -15,6 +15,17 @@ export const vueCartes = {
     const choixRar = h("select", { "aria-label": "Rareté" });
     const choixVar = h("select", { "aria-label": "Variante" }, h("option", { value: "" }, "Toutes les variantes"), VARIANTES.map((v) => h("option", { value: v }, v)));
     const choixEtat = h("select", { "aria-label": "État" }, h("option", { value: "" }, "Tous les états"), ETATS.map((v) => h("option", { value: v }, v)));
+    const choixEmpl = h("select", { "aria-label": "Rangement" });
+    const choixCat = h("select", { "aria-label": "Catégorie" });
+    const choixType = h("select", { "aria-label": "Type" });
+    const champIllus = h("input", { type: "search", placeholder: "Illustrateur", autocomplete: "off", list: "illustrateurs" });
+    const listeIllus = h("datalist", { id: "illustrateurs" });
+    const pvMin = h("input", { type: "number", min: "0", step: "10", placeholder: "PV min", "aria-label": "PV minimum" });
+    const choixGrade = h("select", { "aria-label": "Gradation" },
+      h("option", { value: "" }, "Gradées ou non"),
+      h("option", { value: "oui" }, "Gradées seulement"),
+      h("option", { value: "non" }, "Non gradées")
+    );
     const choixTri = h("select", { "aria-label": "Trier par" },
       h("option", { value: "recent" }, "Tri : ajoutées récemment"),
       h("option", { value: "nom" }, "Tri : nom A → Z"),
@@ -44,7 +55,15 @@ export const vueCartes = {
       remplirChoix(choixExt, "Toutes les extensions", sets, (id) => libelleExt(id));
       remplirChoix(choixRar, "Toutes les raretés", [...new Set(S.collection.map((c) => c.rarete).filter(Boolean))].sort((a, b) => a.localeCompare(b, "fr")));
 
+      remplirChoix(choixEmpl, "Tous les rangements", [...new Set(S.collection.map((c) => c.emplacement).filter(Boolean))].sort((a, b) => a.localeCompare(b, "fr")));
+      remplirChoix(choixCat, "Toutes les catégories", [...new Set(S.collection.map((c) => c.categorie).filter(Boolean))].sort((a, b) => a.localeCompare(b, "fr")));
+      remplirChoix(choixType, "Tous les types", [...new Set(S.collection.flatMap((c) => c.types || []))].sort((a, b) => a.localeCompare(b, "fr")));
+      const illus = [...new Set(S.collection.map((c) => c.illustrateur).filter(Boolean))].sort((a, b) => a.localeCompare(b, "fr"));
+      if (listeIllus.children.length !== illus.length) listeIllus.replaceChildren(...illus.map((i) => new Option(i, i)));
+
       const q = normalise(recherche.value);
+      const qIllus = normalise(champIllus.value);
+      const pv = Number(pvMin.value) || 0;
       const lignes = S.collection
         .filter((c) => {
           if (q && !normalise(c.nom).includes(q) && !normalise(c.local_id).includes(q)) return false;
@@ -52,6 +71,13 @@ export const vueCartes = {
           if (choixRar.value && c.rarete !== choixRar.value) return false;
           if (choixVar.value && c.variante !== choixVar.value) return false;
           if (choixEtat.value && c.etat !== choixEtat.value) return false;
+          if (choixEmpl.value && c.emplacement !== choixEmpl.value) return false;
+          if (choixCat.value && c.categorie !== choixCat.value) return false;
+          if (choixType.value && !(c.types || []).includes(choixType.value)) return false;
+          if (qIllus && !normalise(c.illustrateur || "").includes(qIllus)) return false;
+          if (pv && (c.pv || 0) < pv) return false;
+          if (choixGrade.value === "oui" && !c.grade_societe) return false;
+          if (choixGrade.value === "non" && c.grade_societe) return false;
           return true;
         })
         .sort(tris[choixTri.value]);
@@ -80,7 +106,8 @@ export const vueCartes = {
         h("div", { class: "tuile-info" },
           h("b", { title: l.nom }, l.nom),
           h("span", { class: "num" }, [ext ? ext.code || ext.nom : l.set_id, "n° " + l.local_id].join(" · ")),
-          h("span", { class: "num" }, [l.variante !== "Normale" ? l.variante : null, l.etat !== "Neuf" ? l.etat : null, l.rarete].filter(Boolean).join(" · ")),
+          h("span", { class: "num" }, [l.variante !== "Normale" ? l.variante : null, l.grade_societe ? l.grade_societe + " " + (l.grade_note ?? "") : l.etat !== "Neuf" ? l.etat : null, l.rarete].filter(Boolean).join(" · ")),
+          l.emplacement ? h("span", { class: "num", title: "Rangement" }, "📍 " + l.emplacement) : null,
           l.valeur != null ? h("span", { class: "prix" }, euros(D.valeurLigne(l))) : null
         ),
         S.lectureSeule
@@ -96,12 +123,15 @@ export const vueCartes = {
     conteneur.replaceChildren(
       stats,
       h("div", { class: "filtres" }, recherche, choixExt, choixRar, choixVar, choixEtat, choixTri),
+      h("details", { class: "filtres-plus" }, h("summary", {}, "Filtres avancés (rangement, catégorie, type, illustrateur, PV, gradation)"),
+        h("div", { class: "filtres" }, choixEmpl, choixCat, choixType, champIllus, listeIllus, pvMin, choixGrade)),
       compte,
       grille,
       h("div", { class: "centre" }, plus)
     );
     recherche.addEventListener("input", () => { limite = PAS; dessiner(); });
-    [choixExt, choixRar, choixVar, choixEtat, choixTri].forEach((s) => s.addEventListener("change", () => { limite = PAS; dessiner(); }));
+    [choixExt, choixRar, choixVar, choixEtat, choixTri, choixEmpl, choixCat, choixType, choixGrade].forEach((s) => s.addEventListener("change", () => { limite = PAS; dessiner(); }));
+    [champIllus, pvMin].forEach((s) => s.addEventListener("input", () => { limite = PAS; dessiner(); }));
     redessiner = dessiner;
     dessiner();
   },

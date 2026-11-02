@@ -544,6 +544,85 @@ body.partage .hors-partage { display: none !important; }
   body.impression .tuile-info .prix { color: #000; }
 }
 
+/* ---------- Extensions : coût, master set, liste d'achat ---------- */
+
+.case { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 600; }
+.case input[type="checkbox"] { width: 18px; height: 18px; padding: 0; accent-color: var(--yellow); }
+
+.lien { color: var(--yellow); font-weight: 700; text-decoration: none; }
+.lien:hover { text-decoration: underline; }
+
+.pastilles { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+.pastille { padding: 2px 8px; font-size: 0.75rem; border-radius: 999px; border-color: var(--line); background: rgba(255, 255, 255, 0.06); color: var(--muted); box-shadow: none; }
+.pastille.ok { background: var(--ok); border-color: var(--ok); color: #0b2a17; }
+.pastille:not(.ok):hover { border-color: var(--yellow); color: var(--text); }
+
+.achat-liste { display: grid; gap: 6px; max-height: 50vh; overflow: auto; }
+.achat-ligne { display: grid; grid-template-columns: auto 40px 1fr auto auto; gap: 10px; align-items: center; padding: 6px 8px; background: rgba(0, 0, 0, 0.22); border-radius: 10px; cursor: pointer; }
+.achat-ligne img, .achat-ligne .sans-image { width: 40px; aspect-ratio: 245 / 342; object-fit: contain; border-radius: 4px; }
+.achat-ligne input { width: 18px; height: 18px; padding: 0; accent-color: var(--yellow); }
+.achat-nom { min-width: 0; }
+.achat-prix { font-weight: 700; color: var(--ok); font-variant-numeric: tabular-nums; }
+
+.filtres-plus { padding: 8px 12px; background: rgba(0, 0, 0, 0.18); border-radius: 12px; }
+.filtres-plus summary { cursor: pointer; color: var(--muted); font-weight: 600; }
+.filtres-plus .filtres { margin-top: 8px; }
+
+/* ---------- Scellés et boosters ---------- */
+
+.produits, .ouvertures { display: grid; gap: 10px; }
+
+.produit, .ouverture { display: grid; gap: 8px; padding: 12px; background: var(--panel); border: 2px solid var(--line); border-radius: 14px; }
+.produit-tete { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; justify-content: space-between; }
+.produit-champs { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.produit-champs input { width: 120px; }
+.quantite { display: flex; align-items: center; gap: 6px; }
+
+.vignettes { display: flex; flex-wrap: wrap; gap: 6px; }
+.vignette { position: relative; width: 54px; padding: 0; border: 0; background: none; box-shadow: none; }
+.vignette img { display: block; width: 100%; border-radius: 4px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5); }
+.vignette .sans-image { width: 54px; aspect-ratio: 245 / 342; font-size: 0.6rem; }
+.vignette.retirable { cursor: pointer; }
+
+.table-simple { display: grid; gap: 4px; }
+.table-simple .ligne { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; padding: 6px 10px; background: rgba(0, 0, 0, 0.22); border-radius: 8px; }
+.cartes-grille.compacte { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); max-height: 40vh; overflow: auto; }
+
+.top-liste em.perte { color: var(--ko); }
+
+/* ---------- Classeurs virtuels ---------- */
+
+.ext-visuel.apercu { display: flex; gap: 4px; justify-content: center; }
+.ext-visuel.apercu img { height: 64px; border-radius: 4px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5); }
+
+.classeur-page { display: grid; gap: 8px; max-width: 900px; padding: 12px; background: rgba(0, 0, 0, 0.3); border: 3px solid var(--blue); border-radius: 14px; }
+
+.case-classeur { position: relative; aspect-ratio: 245 / 342; display: grid; background: rgba(255, 255, 255, 0.05); border: 2px dashed var(--line); border-radius: 10px; overflow: hidden; }
+.case-classeur.pleine { border-style: solid; border-color: transparent; background: none; cursor: grab; }
+.case-classeur .tuile-img { width: 100%; height: 100%; }
+.case-classeur .tuile-img img { height: 100%; object-fit: contain; }
+
+.case-vide { width: 100%; height: 100%; font-size: 2rem; color: var(--muted); background: none; border: 0; box-shadow: none; }
+.case-vide:hover { color: var(--yellow); background: rgba(255, 255, 255, 0.05); }
+
+.case-actions { position: absolute; right: 4px; bottom: 4px; display: flex; gap: 4px; }
+.case-actions button { padding: 2px 8px; background: rgba(0, 0, 0, 0.75); }
+
+/* ---------- Import CSV ---------- */
+
+.import-mapping { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.import-champ { display: grid; gap: 4px; font-weight: 600; }
+.import-table { max-height: 45vh; overflow: auto; }
+.import-table table { border-spacing: 0; font-size: 0.85rem; }
+.import-table td { padding: 4px 8px; border-bottom: 1px solid var(--line); background: none; }
+.import-table td:first-child { border-left: 0; border-radius: 0; }
+.import-table tr.ok td:nth-child(3) { color: var(--ok); }
+.import-table tr.verifier td:nth-child(3) { color: var(--yellow); }
+.import-table tr.introuvable td:nth-child(3) { color: var(--ko); }
+.import-table input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--yellow); }
+
+.scan-continu { margin: 8px 0 0; font-size: 0.85rem; color: var(--muted); font-weight: 400; align-items: flex-start; }
+
 /* ---------- Mobile ---------- */
 
 @media (max-width: 700px) {
@@ -563,6 +642,9 @@ body.partage .hors-partage { display: none !important; }
   .ext-grille { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
   .barre-ligne { grid-template-columns: minmax(80px, 120px) 1fr 60px; }
   thead th { top: 0; }
+  .achat-ligne { grid-template-columns: auto 34px 1fr auto auto; gap: 6px; }
+  .produit-champs input { width: 96px; }
+  .classeur-page { padding: 6px; gap: 4px; }
 
   /* Classeur : colonnes secondaires masquées (N°, Extension, N° carte, Rareté) */
   th:nth-child(1), td:nth-child(1),

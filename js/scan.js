@@ -10,8 +10,11 @@ const HAUTEUR_GUIDE = 0.9; // part de la hauteur de l'image occupée par le cadr
 let fluxCamera = null;
 let moteur = null;
 let analyseEnCours = false;
+let attenteChoix = false; // vrai tant que l'utilisateur doit choisir une carte (la lecture continue est alors en pause)
+let derniereAuto = { id: null, t: 0 };
 
 const video = $("scan-video");
+const continu = () => $("scan-continu").checked;
 
 function info(texte, type = "") {
   const el = $("scan-info");
@@ -198,6 +201,35 @@ function devinerNom(texte) {
 function viderResultats() {
   $("scan-resultat").replaceChildren();
   $("scan-resultat").classList.remove("confirmation");
+  attenteChoix = false;
+}
+
+// Mode continu : relit une carte quelques secondes plus tard, tant que rien n'attend l'utilisateur
+function boucle() {
+  if (!continu() || !$("scan").open || analyseEnCours || attenteChoix || !video.videoWidth) return;
+  lancerAnalyse(carteDepuisCamera());
+}
+const relancerSiContinu = (delai = 2200) => { if (continu()) setTimeout(boucle, delai); };
+
+// Ajout automatique d'une carte reconnue sans ambiguïté (1re variante disponible, état Neuf), annulable
+async function ajoutAuto(k) {
+  if (derniereAuto.id === k.id && Date.now() - derniereAuto.t < 10000) return info("« " + k.name + " » vient d'être ajoutée : présentez une autre carte.");
+  const d = await detailCarte(k.id);
+  const ligne = await D.ajouterCarte(d, { variante: variantesDe(d)[0], etat: "Neuf" });
+  derniereAuto = { id: k.id, t: Date.now() };
+  const texte = "✔ " + d.name + " ajoutée (" + libelleExt(d.set.id) + ", n° " + d.localId + ")";
+  message(texte, "ok");
+  info(texte, "ok");
+  const annuler = h("button", {
+    type: "button", class: "ghost",
+    onclick: () => essayer(async () => {
+      await D.changerQuantite(ligne, ligne.quantite - 1);
+      derniereAuto = { id: null, t: 0 };
+      annuler.remove();
+      info("Ajout annulé.");
+    }),
+  }, "↩ Annuler cet ajout");
+  $("scan-resultat").replaceChildren(annuler);
 }
 
 function tuile(k, auClic) {
@@ -271,6 +303,11 @@ async function rechercher(recherche) {
   const { liste, toutes, devine } = await candidates(recherche);
   const zone = $("scan-resultat");
 
+  // Mode continu : une seule carte possible et lecture complète (numéro + nom ou extension) -> ajout automatique
+  if (continu() && liste.length === 1 && !devine && recherche.numero && (recherche.nom || recherche.ext)) {
+    return ajoutAuto(liste[0]);
+  }
+  attenteChoix = true;
   if (liste.length === 1) {
     info("Trouvé : est-ce la bonne carte ?", "ok");
     return afficherConfirmation(liste[0], toutes);
@@ -322,6 +359,7 @@ async function afficherConfirmation(k, toutes) {
       viderResultats();
       info(texte + ". Carte suivante !", "ok");
       message(texte, "ok");
+      relancerSiContinu(1500);
     }),
   }, "✔ Ajouter à ma collection");
 
@@ -400,6 +438,7 @@ async function lancerAnalyse(carteCanvas) {
     $("scan-num").value = lecture.numero ? lecture.numero.num + "/" + lecture.numero.total : "";
     $("scan-ext").value = lecture.ext ? lecture.ext.code : "";
     if (!lecture.nom && !lecture.ext && !lecture.numero) {
+      if (continu()) return info("En attente d'une carte : présentez-la bien à plat, entière dans le cadre.");
       info("Carte non reconnue : approchez-la pour qu'elle remplisse le cadre, évitez les reflets, ou cherchez-la par son nom.", "ko");
       $("scan-resultat").append(h("button", { type: "button", onclick: () => versRecherche(devinerNom(lecture.texteNom) || "") }, "🔎 Chercher par nom"));
       $("scan-manuel").parentElement.open = true;
@@ -411,8 +450,16 @@ async function lancerAnalyse(carteCanvas) {
   } finally {
     analyseEnCours = false;
     $("scan-capture").disabled = false;
+    if (!attenteChoix) relancerSiContinu();
   }
 }
+
+$("scan-continu").addEventListener("change", () => {
+  if (continu()) {
+    info("Mode continu : présentez les cartes une par une devant la caméra.");
+    relancerSiContinu(500);
+  }
+});
 
 // ---------- Branchements ----------
 
