@@ -3,6 +3,9 @@
 //   qui renvoie un dos de carte quand la carte est inconnue : c'est donc la dernière source)
 // Un seul écouteur (en phase de capture) sert toute l'application : aucune vue n'a besoin de s'en occuper.
 
+import { S } from "./etat.js";
+
+const RE_LOGO = /^https:\/\/assets\.tcgdex\.net\/(\w+)\/([^/]+)\/([^/]+)\/logo\.(?:webp|png)$/;
 const RE_TCGDEX = /^https:\/\/assets\.tcgdex\.net\/(\w+)\/([^/]+)\/([^/]+)\/([^/]+)\/(low|high)\.(?:webp|png|jpg)$/;
 const RE_PTCG = /^https:\/\/images\.pokemontcg\.io\/([^/]+)\/([^/_.]+)(_hires)?\.png$/;
 const RE_SCRYDEX = /^https:\/\/images\.scrydex\.com\/pokemon\/([^/]+)-([^/-]+)\/(small|large)$/;
@@ -21,20 +24,35 @@ export const imageReelle = (image) => (image && !/images\.(pokemontcg\.io|scryde
 const versPtcg = (set, num, haute) => "https://images.pokemontcg.io/" + set + "/" + num + (haute ? "_hires" : "") + ".png";
 const versScrydex = (set, num, haute) => "https://images.scrydex.com/pokemon/" + set + "-" + num + "/" + (haute ? "large" : "small");
 
+// Code de l'extension en minuscules (ex. « 30c ») : Scrydex s'en sert pour les extensions récentes ou spéciales
+const codeExtension = (fait) => {
+  const e = S.extensions.find((x) => idExtensionPtcg(x.id) === fait || x.id === fait);
+  const code = e && e.code ? e.code.toLowerCase() : null;
+  return code && code !== fait ? code : null;
+};
+
 // Autres adresses à essayer pour une image, dans l'ordre
 export function alternatives(url) {
-  let m = RE_TCGDEX.exec(url);
+  let m = RE_LOGO.exec(url);
+  if (m) return m[1] !== "en" ? ["https://assets.tcgdex.net/en/" + m[2] + "/" + m[3] + "/logo.webp"] : []; // les logos récents existent parfois seulement en anglais
+  m = RE_TCGDEX.exec(url);
   if (m) {
     const [, langue, serie, ext, num, taille] = m;
     const haute = taille === "high";
     const set = idExtensionPtcg(ext), n = numeroPtcg(num);
     const liste = [];
     if (langue !== "en") liste.push("https://assets.tcgdex.net/en/" + serie + "/" + ext + "/" + num + "/" + taille + ".webp");
-    liste.push(versScrydex(set, n, haute), versPtcg(set, n, haute));
+    const code = codeExtension(set);
+    liste.push(versScrydex(set, n, haute));
+    if (code) liste.push(versScrydex(code, n, haute));
+    liste.push(versPtcg(set, n, haute));
     return liste;
   }
   m = RE_SCRYDEX.exec(url);
-  if (m) return [versPtcg(m[1], m[2], m[3] === "large")];
+  if (m) {
+    const code = codeExtension(m[1]);
+    return [...(code ? [versScrydex(code, m[2], m[3] === "large")] : []), versPtcg(m[1], m[2], m[3] === "large")];
+  }
   return [];
 }
 
@@ -73,3 +91,21 @@ function surErreur(ev) {
 }
 
 document.addEventListener("error", surErreur, true);
+
+// Quand elles ne connaissent pas une carte, Scrydex et la Pokémon TCG API répondent « 200 » avec un dos de carte,
+// toujours de ces tailles (les vraies images font 245 × 342 ou 733 × 1024) : on passe à la source suivante, puis à notre image de remplacement.
+const TAILLES_DOS = new Set(["640x892", "245x341", "367x511"]);
+document.addEventListener("load", (ev) => {
+  const img = ev.target;
+  if (!(img instanceof HTMLImageElement) || FINIES.has(img) || !TAILLES_DOS.has(img.naturalWidth + "x" + img.naturalHeight)) return;
+  if (!/^https:\/\/images\.(scrydex\.com|pokemontcg\.io)\//.test(img.src)) return;
+  if (!img._secours) img._secours = alternatives(img.src);
+  const suivante = img._secours.shift();
+  if (suivante) {
+    img.src = suivante;
+    return;
+  }
+  FINIES.add(img);
+  img.classList.add("image-absente");
+  img.src = IMAGE_ABSENTE;
+}, true);
