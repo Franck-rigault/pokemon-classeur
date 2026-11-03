@@ -1,6 +1,7 @@
 // Vue « Classeur » (réservée aux comptes qui l'ont activé) : une ligne par Pokémon, reliée à la collection.
 import { h, $, db, normalise, euros, essayer, message, ARTWORK_URL, imageCarte, detailCarte, cartesParNom, prixDe, libelleExt, fermerAuFond } from "./api.js";
 import { S } from "./etat.js";
+import { ajouterCarte } from "./donnees.js";
 
 const GENERATIONS = [
   { nom: "Kanto", de: 1, a: 151 }, { nom: "Johto", de: 152, a: 251 }, { nom: "Hoenn", de: 252, a: 386 },
@@ -81,6 +82,20 @@ async function synchroniser(silencieux = false) {
   if (!silencieux || aMarquer.length) message(aMarquer.length ? "✔ " + aMarquer.length + " Pokémon marqués comme possédés d'après votre collection." : "Le classeur est déjà à jour avec votre collection.", "ok");
 }
 
+// Une ligne cochée « possédé » avec une carte choisie doit aussi exister dans la collection (sens classeur → collection)
+async function versCollection(ligne) {
+  if (!ligne.possede || !ligne.carte_id || S.collection.some((c) => c.carte_id === ligne.carte_id)) return false;
+  await ajouterCarte(await detailCarte(ligne.carte_id));
+  return true;
+}
+
+async function envoyerVersCollection() {
+  let n = 0;
+  for (const l of lignes) if (await versCollection(l)) n++;
+  const sansCarte = lignes.filter((l) => l.possede && !l.carte_id).length;
+  message((n ? "✔ " + n + " carte(s) ajoutée(s) à votre collection." : "Rien à ajouter à votre collection.") + (sansCarte ? " " + sansCarte + " Pokémon possédé(s) n'ont pas de carte choisie : impossible de les ajouter." : ""), n ? "ok" : "");
+}
+
 // ---------- Choix d'une carte pour un Pokémon ----------
 
 function tuileCarte(k, selectionnee, auClic) {
@@ -106,6 +121,7 @@ async function ouvrirSelecteur(ligne) {
   const choisir = (k) => essayer(async () => {
     dlg.close();
     await appliquerCarte(ligne, k.id || k.carte_id);
+    if (await versCollection(ligne)) message("✔ " + ligne.nom + " ajouté à votre collection.", "ok");
     redessiner();
   });
 
@@ -142,7 +158,7 @@ export const vueClasseur = {
     const stats = h("div", { class: "dash-tuiles" });
     const corps = h("tbody");
 
-    const bSync = h("button", { type: "button", class: "ghost", title: "Coche les Pokémon dont vous avez au moins une carte", onclick: () => essayer(async () => { await synchroniser(); redessinerTout(); }) }, "↻ Synchroniser avec ma collection");
+    const bSync = h("button", { type: "button", class: "ghost", title: "Dans les deux sens : coche les Pokémon de votre collection et ajoute à votre collection les cartes cochées du classeur", onclick: () => essayer(async () => { await synchroniser(); await envoyerVersCollection(); redessinerTout(); }) }, "↻ Synchroniser avec ma collection");
 
     function visibles() {
       const q = normalise(recherche.value);
@@ -180,7 +196,12 @@ export const vueClasseur = {
           c.image_url ? h("img", { class: "carte-img", loading: "lazy", alt: "Carte " + c.nom, src: c.image_url, onclick: () => ouvrirSelecteur(c) }) : null,
           h("button", { type: "button", class: "ghost", onclick: () => ouvrirSelecteur(c) }, c.carte_id ? "Changer" : "Choisir la carte")
         ),
-        h("td", {}, h("input", { type: "checkbox", checked: c.possede, onchange: async (e) => { await maj(c, { possede: e.target.checked }); dessiner(); } })),
+        h("td", {}, h("input", { type: "checkbox", checked: c.possede, onchange: (e) => essayer(async () => {
+          await maj(c, { possede: e.target.checked });
+          if (e.target.checked && !c.carte_id) message("Choisissez la carte exacte pour l'ajouter à votre collection.", "");
+          else if (await versCollection(c)) message("✔ " + c.nom + " ajouté à votre collection.", "ok");
+          dessiner();
+        }) })),
         champTexte("extension", "—"),
         champTexte("numero_carte", "ex. 189/159"),
         champTexte("rarete", "ex. Gold"),
