@@ -1,5 +1,6 @@
 // Vue « Extensions » : liste des extensions par série avec progression, puis grille des cartes d'une extension.
 import { $, h, boutonCardmarket, normalise, cartesDExtension, detailsExtension, lireCacheExtension, detailCarte, lienCardmarket, imageCarte, essayer, message, annee, euros, squelette } from "./api.js";
+import { monterAccueil } from "./accueil.js";
 import { S } from "./etat.js";
 import * as D from "./donnees.js";
 import { ouvrirCarte } from "./dialogue-carte.js";
@@ -48,6 +49,7 @@ function monterListe(conteneur) {
   );
   const zone = h("div", { class: "ext-zone" });
   const resume = h("p", { class: "muted" });
+  const accueil = h("div", { class: "accueil-zone" });
 
   function dessiner() {
     const parSet = comptes();
@@ -81,10 +83,12 @@ function monterListe(conteneur) {
   }
 
   conteneur.replaceChildren(
+    accueil,
     h("div", { class: "filtres" }, recherche, choixSerie, choixEtat),
     resume,
     zone
   );
+  monterAccueil(accueil);
   [recherche].forEach((x) => x.addEventListener("input", dessiner));
   [choixSerie, choixEtat].forEach((x) => x.addEventListener("change", dessiner));
   redessiner = dessiner;

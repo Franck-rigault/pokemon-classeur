@@ -19,7 +19,7 @@ export function couleurType(types) {
 // Enveloppe une image de carte (ou tout élément) dans le conteneur interactif
 export function carte3D(contenu, options = {}) {
   const reflet = h("div", { class: "carte3d-reflet" });
-  const boite = h("div", { class: "carte3d" + (options.holo === false ? "" : " holo") }, contenu, reflet);
+  const boite = h("div", { class: "inclinable" + (options.holo === false ? "" : " holo") }, contenu, reflet);
   const zone = h("div", { class: "carte3d-zone" }, boite);
 
   const incliner = (e) => {

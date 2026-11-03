@@ -2,6 +2,7 @@
 // jeu Fake Booster et historique de valeur. La restauration peut fusionner (ajouter ce qui manque) ou tout remplacer.
 import { $, h, db, essayer, message } from "./api.js";
 import { S } from "./etat.js";
+import { chargerPrefs, toutesPrefs, remplacerPrefs } from "./prefs.js";
 
 const FORMAT = "classeur-pokemon-sauvegarde";
 const VERSION = 1;
@@ -76,9 +77,11 @@ export async function creerSauvegarde() {
       manquantes.push(table);
     }
   }
+  await chargerPrefs();
   return {
     sauvegarde: { format: FORMAT, version: VERSION, date: new Date().toISOString(), compte: S.profil ? S.profil.nom : null, manquantes },
     tables,
+    preferences: toutesPrefs(), // objectifs, vues enregistrées
   };
 }
 
@@ -235,6 +238,11 @@ export async function restaurer(s, mode) {
     const lignes = T.historique.map((l) => ({ ...nettoyer(l), user_id: S.moi.id }));
     await stock.upsertIgnorer("historique", lignes, "user_id,jour");
     ajoutes.historique = lignes.length;
+  }
+  // Préférences : objectifs et vues enregistrées (en fusion, on garde celles déjà présentes)
+  if (s.preferences && typeof s.preferences === "object" && Object.keys(s.preferences).length) {
+    await remplacerPrefs(s.preferences, { ecraser: mode === "remplace" });
+    ajoutes.preferences = Object.keys(s.preferences).length;
   }
   return ajoutes;
 }

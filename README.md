@@ -31,7 +31,22 @@ Les données des cartes viennent de [TCGdex](https://tcgdex.dev).
 - Structure des boosters et probabilités propres à chaque époque (`js/jeu-regles.js`). **Les taux de drop officiels n'existent pas** : ce sont des estimations inspirées des statistiques de la communauté, faciles à ajuster.
 - Inventaire de jeu **sans doublon**, séparé de la vraie collection ; **classement** entre les joueurs (valeur de l'inventaire).
 - **Succès** : 38 quêtes (boosters ouverts, doublons, cartes et extensions réunies, valeur, raretés « illustration spéciale rare »…) qui rapportent des pièces à récupérer (`js/jeu-quetes.js`, colonne ajoutée par `schema-v7.sql`).
+- **Duel** : chacun ouvre un booster gratuit, la carte qui vaut le plus gagne 5 🪙 (égalité : 1 🪙 chacun). Le défi est lancé à l'autre compte, qui le relève quand il veut (`schema-v8.sql`).
 - **Réinitialiser mon jeu** : efface cartes, pièces, compteurs et succès du jeu (double confirmation ; la vraie collection n'est pas touchée).
+
+**Au quotidien**
+- **Recherche globale** (🔍 en haut, touche « / » ou Ctrl + K) : collection, wishlist, extensions, scellés et classeurs d'un coup.
+- **Sélection multiple** dans « Mes cartes » (état, variante, rangement, favori, retrait en lot) et **vues enregistrées** (combinaisons de filtres rappelées en un clic).
+- **Annuler** : après un retrait ou une modification en lot, un message propose « ↩ Annuler » pendant quelques secondes (ou Ctrl + Z) ; plus de fenêtre de confirmation.
+- **⭐ Coups de cœur** : une vitrine avec vos cartes préférées. **🔁 Doublons** : les exemplaires en trop, avec un bouton pour les ranger ailleurs.
+- **🎯 Objectifs** (compléter une extension ou une série, toutes les cartes d'un Pokémon, nombre de cartes, valeur), **collections thématiques** (types, illustrations rares, Pokémon de départ, illustrateurs, avec les manquantes) et **défi à deux** (comparaison avec l'autre compte).
+- **Accueil** : carte du jour, objectifs en cours et nouvelles extensions apparues chez TCGdex avec les cartes des Pokémon que vous suivez.
+- **Fiche carte** : note personnelle, **fiche d'achat** (boutique, date, lien de la facture), **photos de votre propre carte**, noms anglais et japonais.
+- **Journal d'activité** (menu ☰), **image à partager** (top 10, chiffres, progression d'une extension), **contrôle des données** (doublons exacts, informations manquantes, cartes ou images introuvables).
+- **Accessibilité** (menu ☰) : taille du texte, contraste élevé, animations réduites, focus clavier renforcé ; lien « Aller au contenu ».
+- Une bannière verte annonce quand une **nouvelle version** de l'application est disponible.
+
+**Images de cartes** : si une image TCGdex ne charge pas, l'application essaie automatiquement TCGdex en anglais, puis Scrydex, puis la Pokémon TCG API (`js/images.js`) ; sans image du tout chez TCGdex, elle tente directement ces sources.
 
 **Comptes et données**
 - Plusieurs comptes : chacun a sa collection ; on peut consulter celle de l'autre en lecture seule. Classeurs virtuels et scellés restent privés.
@@ -43,7 +58,7 @@ Les données des cartes viennent de [TCGdex](https://tcgdex.dev).
 
 ## Mise en route
 
-1. **Supabase** : créer un projet, lancer dans SQL Editor, dans l'ordre : `schema.sql`, `schema-v2.sql`, `schema-v3.sql`, `schema-v4.sql`, `schema-v5.sql` (jeu), `schema-v6.sql` (pièces), `schema-v7.sql` (succès).
+1. **Supabase** : créer un projet, lancer dans SQL Editor, dans l'ordre : `schema.sql`, `schema-v2.sql`, `schema-v3.sql`, `schema-v4.sql`, `schema-v5.sql` (jeu), `schema-v6.sql` (pièces), `schema-v7.sql` (succès), `schema-v8.sql` (favoris, notes, achats, préférences, journal, photos, duels).
 2. **Comptes** : Authentication > Users > Add user (e-mail + mot de passe, cocher « Auto Confirm User »), un par personne.
    Désactiver les inscriptions publiques (Authentication > Sign In / Providers > « Allow new users to sign up »).
    Un profil est créé automatiquement. Le compte le plus ancien reçoit le classeur Pokémon ; pour l'activer ou le retirer :
@@ -81,6 +96,6 @@ Remarque : GitHub désactive les travaux planifiés d'un dépôt resté sans act
 ## Structure
 
 - `index.html`, `style.css`, `config.js`
-- `js/` : modules (`main` navigation et comptes, `donnees` / `donnees-extra` données, `horsligne` file d'attente et copie locale, `api` TCGdex, `vue-*` écrans, `album`, `graphiques`, `carte3d`, `theme`, `sauvegarde`, `jeu` / `jeu-regles` / `jeu-quetes`, `scan`, `import`, `dialogue-carte`, `partage`, `export`)
+- `js/` : modules (`main` navigation et comptes, `donnees` / `donnees-extra` données, `horsligne` file d'attente et copie locale, `api` TCGdex, `vue-*` écrans, `album`, `graphiques`, `carte3d`, `theme`, `sauvegarde`, `images` (sources de secours), `prefs`, `journal`, `annuler`, `accueil`, `vue-objectifs`, `vue-favoris`, `vue-doublons`, `recherche-globale`, `partage-image`, `sante`, `acces`, `photos`, `jeu` / `jeu-regles` / `jeu-quetes`, `scan`, `import`, `dialogue-carte`, `partage`, `export`)
 - `extensions.json`, `pokemon.json`, `raretes.json` : référentiels
 - `sw.js`, `manifest.json`, `icon-*.png` : application installable

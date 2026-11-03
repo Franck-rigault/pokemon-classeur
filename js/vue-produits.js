@@ -31,6 +31,9 @@ export const vueProduits = {
     const valeur = h("input", { type: "number", min: "0", step: "0.01", placeholder: "Valeur actuelle € (unité)", "aria-label": "Valeur" });
     const date = h("input", { type: "date", "aria-label": "Date d'achat", value: new Date().toLocaleDateString("sv-SE") });
     const rangement = h("input", { type: "text", list: "emplacements", placeholder: "📍 Rangement", autocomplete: "off" });
+    const boutique = h("input", { type: "text", list: "boutiques", placeholder: "🏪 Boutique", autocomplete: "off", "aria-label": "Boutique" });
+    const facture = h("input", { type: "url", placeholder: "🧾 Lien de la facture", "aria-label": "Lien de la facture" });
+    const colonnesAchat = S.produits.length === 0 || "boutique" in S.produits[0]; // colonnes de schema-v8.sql
 
     const formulaire = h("details", { class: "filtres-plus", open: S.produits.length === 0 },
       h("summary", {}, "+ Ajouter un produit scellé"),
@@ -45,13 +48,14 @@ export const vueProduits = {
               prix_achat: prix.value === "" ? null : Number(prix.value),
               valeur: valeur.value === "" ? null : Number(valeur.value),
               date_achat: date.value || null, emplacement: rangement.value.trim() || null,
+              ...(colonnesAchat ? { boutique: boutique.value.trim() || null, facture: facture.value.trim() || null } : {}),
             });
             e.target.reset();
             date.value = new Date().toLocaleDateString("sv-SE");
             message("✔ Produit ajouté.", "ok");
           });
         },
-      }, nom, type, extension, quantite, prix, valeur, date, rangement, h("button", { type: "submit" }, "Enregistrer"))
+      }, nom, type, extension, quantite, prix, valeur, date, rangement, colonnesAchat ? boutique : null, colonnesAchat ? facture : null, h("button", { type: "submit" }, "Enregistrer"))
     );
 
     function dessiner() {
@@ -77,7 +81,7 @@ export const vueProduits = {
       return h("div", { class: "produit" },
         h("div", { class: "produit-tete" },
           h("b", {}, p.nom),
-          h("span", { class: "muted" }, [p.type, p.set_id ? libelleExt(p.set_id) : null, p.date_achat ? new Date(p.date_achat).toLocaleDateString("fr-FR") : null].filter(Boolean).join(" · "))
+          h("span", { class: "muted" }, [p.type, p.set_id ? libelleExt(p.set_id) : null, p.date_achat ? new Date(p.date_achat).toLocaleDateString("fr-FR") : null, p.boutique ? "🏪 " + p.boutique : null].filter(Boolean).join(" · "), p.facture ? h("a", { href: p.facture, target: "_blank", rel: "noopener noreferrer", title: "Ouvrir la facture" }, " 🧾") : null)
         ),
         h("div", { class: "produit-champs" },
           h("div", { class: "quantite" },

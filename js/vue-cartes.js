@@ -1,8 +1,9 @@
 // Vue « Mes cartes » : toute la collection à plat, avec recherche, filtres et tri.
-import { h, boutonCardmarket, normalise, imageCarte, essayer, euros, libelleExt, ETATS, VARIANTES } from "./api.js";
+import { h, boutonCardmarket, normalise, imageCarte, essayer, euros, libelleExt, message, ETATS, VARIANTES } from "./api.js";
 import { S } from "./etat.js";
 import * as D from "./donnees.js";
 import { ouvrirCarte } from "./dialogue-carte.js";
+import { chargerPrefs, lirePref, ecrirePref, schemaV8 } from "./prefs.js";
 
 const PAS = 120;
 let redessiner = null;
@@ -32,6 +33,12 @@ export const vueCartes = {
       h("option", { value: "extension" }, "Tri : extension"),
       h("option", { value: "valeur" }, "Tri : valeur décroissante")
     );
+    let modeSelection = false;
+    let visibles = []; // lignes correspondant aux filtres
+    const selection = new Set(); // identifiants des lignes cochées
+    const barreSelection = h("div", { class: "barre-selection", hidden: true });
+    const boutonSelection = h("button", { type: "button", class: "ghost", onclick: () => basculerSelection() }, "☑ Sélectionner");
+    const choixVue = h("select", { "aria-label": "Mes vues enregistrées", title: "Filtres enregistrés" });
     const stats = h("div", { class: "dash-tuiles" });
     const compte = h("p", { class: "muted" });
     const grille = h("div", { class: "cartes-grille" });
@@ -82,6 +89,9 @@ export const vueCartes = {
         })
         .sort(tris[choixTri.value]);
 
+      visibles = lignes;
+      for (const id of [...selection]) if (!S.collection.some((c) => c.id === id)) selection.delete(id);
+      majBarre();
       const st = D.statistiques(lignes);
       stats.replaceChildren(
         ...[[st.exemplaires, "Exemplaires"], [st.distinctes, "Cartes différentes"], [euros(st.valeur), "Valeur"]].map(([v, l]) =>
@@ -98,8 +108,16 @@ export const vueCartes = {
 
     function tuile(l) {
       const ext = S.extParId.get(l.set_id);
-      return h("div", { class: "tuile-carte possedee" },
-        h("button", { type: "button", class: "tuile-img", title: "Voir la carte", onclick: () => ouvrirCarte(l.carte_id) },
+      const cochee = selection.has(l.id);
+      return h("div", { class: "tuile-carte possedee" + (cochee ? " cochee" : "") },
+        modeSelection ? h("span", { class: "tuile-coche", "aria-hidden": "true" }, cochee ? "☑" : "☐") : null,
+        !modeSelection && !S.lectureSeule && "favori" in l
+          ? h("button", {
+              type: "button", class: "tuile-etoile" + (l.favori ? " active" : ""), title: l.favori ? "Retirer des coups de cœur" : "Ajouter aux coups de cœur", "aria-pressed": l.favori ? "true" : "false",
+              onclick: (ev) => { ev.stopPropagation(); essayer(() => D.modifierEntree(l, { favori: !l.favori })); },
+            }, l.favori ? "★" : "☆")
+          : null,
+        h("button", { type: "button", class: "tuile-img", title: modeSelection ? "Cocher / décocher" : "Voir la carte", onclick: () => (modeSelection ? cocher(l) : ouvrirCarte(l.carte_id)) },
           l.image ? h("img", { loading: "lazy", alt: l.nom, src: imageCarte(l.image), onerror: (ev) => ev.target.replaceWith(h("div", { class: "sans-image" }, "Pas d'image")) }) : h("div", { class: "sans-image" }, "Pas d'image"),
           l.quantite > 1 ? h("span", { class: "badge-qte" }, "×" + l.quantite) : null
         ),
@@ -113,18 +131,100 @@ export const vueCartes = {
         S.lectureSeule
           ? h("span", { class: "qte" }, "× " + l.quantite)
           : h("div", { class: "tuile-actions" },
-              h("button", { type: "button", class: "ghost", "aria-label": "Retirer un exemplaire", onclick: () => essayer(() => (l.quantite === 1 && !confirm("Retirer " + l.nom + " de la collection ?") ? null : D.changerQuantite(l, l.quantite - 1))) }, "−"),
+              h("button", { type: "button", class: "ghost", "aria-label": "Retirer un exemplaire", onclick: () => essayer(() => D.changerQuantite(l, l.quantite - 1)) }, "−"),
               h("b", {}, l.quantite),
               h("button", { type: "button", class: "ghost", "aria-label": "Ajouter un exemplaire", onclick: () => essayer(() => D.changerQuantite(l, l.quantite + 1)) }, "+")
             )
       );
     }
 
+
+    // ---------- Sélection multiple ----------
+    const rangementSel = h("input", { type: "text", list: "emplacements", placeholder: "📍 Rangement", autocomplete: "off", "aria-label": "Rangement" });
+    function basculerSelection() {
+      modeSelection = !modeSelection;
+      selection.clear();
+      boutonSelection.textContent = modeSelection ? "✕ Terminer la sélection" : "☑ Sélectionner";
+      dessiner();
+    }
+    function cocher(l) {
+      if (selection.has(l.id)) selection.delete(l.id);
+      else selection.add(l.id);
+      dessiner();
+    }
+    const choisies = () => S.collection.filter((c) => selection.has(c.id));
+    function majBarre() {
+      barreSelection.hidden = !modeSelection;
+      if (!modeSelection) return;
+      const n = selection.size;
+      const appliquer = (champs, libelle) => essayer(async () => {
+        const { faites, refusees } = await D.modifierLot(choisies(), champs, libelle);
+        if (refusees) message(refusees + " ligne(s) n'ont pas pu être modifiées (une ligne identique existe peut-être déjà).", "ko");
+        else if (faites) message("✔ " + faites + " ligne(s) modifiée(s).", "ok");
+      });
+      const etat = h("select", { "aria-label": "Changer l'état", disabled: !n, onchange: (e) => e.target.value && appliquer({ etat: e.target.value }, "État « " + e.target.value + " »") },
+        h("option", { value: "" }, "État…"), ETATS.map((v) => h("option", { value: v }, v)));
+      const variante = h("select", { "aria-label": "Changer la variante", disabled: !n, onchange: (e) => e.target.value && appliquer({ variante: e.target.value }, "Variante « " + e.target.value + " »") },
+        h("option", { value: "" }, "Variante…"), VARIANTES.map((v) => h("option", { value: v }, v)));
+      const rangement = rangementSel;
+      rangement.disabled = !n;
+      barreSelection.replaceChildren(
+        h("b", {}, n + " sélectionnée(s)"),
+        h("button", { type: "button", class: "ghost", onclick: () => { visibles.forEach((l) => selection.add(l.id)); dessiner(); } }, "Tout sélectionner (" + visibles.length + ")"),
+        h("button", { type: "button", class: "ghost", disabled: !n, onclick: () => { selection.clear(); dessiner(); } }, "Aucune"),
+        etat, variante, rangement,
+        h("button", { type: "button", class: "ghost", disabled: !n, onclick: () => appliquer({ emplacement: rangement.value.trim() || null }, "Rangement") }, "Ranger"),
+        schemaV8() ? h("button", { type: "button", class: "ghost", disabled: !n, onclick: () => appliquer({ favori: true }, "Coups de cœur") }, "★ Favori") : null,
+        h("button", { type: "button", class: "ghost danger", disabled: !n, onclick: () => essayer(() => D.supprimerLot(choisies())) }, "🗑 Retirer")
+      );
+    }
+
+    // ---------- Vues enregistrées (combinaisons de filtres) ----------
+    const CHAMPS = { q: recherche, ext: choixExt, rar: choixRar, var: choixVar, etat: choixEtat, empl: choixEmpl, cat: choixCat, type: choixType, illus: champIllus, pv: pvMin, grade: choixGrade, tri: choixTri };
+    const lireVues = () => lirePref("vues", []);
+    function majChoixVue(courante = "") {
+      choixVue.replaceChildren(h("option", { value: "" }, "📑 Mes vues…"), ...lireVues().map((v, i) => h("option", { value: String(i) }, v.nom)));
+      choixVue.value = courante;
+    }
+    function appliquerVue(v) {
+      dessiner(); // les listes de choix se remplissent d'après la collection
+      for (const [k, el] of Object.entries(CHAMPS)) el.value = v.filtres[k] ?? (k === "tri" ? "recent" : "");
+      limite = PAS;
+      dessiner();
+    }
+    choixVue.addEventListener("change", () => { const v = lireVues()[Number(choixVue.value)]; if (v) appliquerVue(v); });
+    const enregistrerVue = () => essayer(async () => {
+      const filtres = Object.fromEntries(Object.entries(CHAMPS).map(([k, el]) => [k, el.value]).filter(([, v]) => v !== ""));
+      if (!Object.keys(filtres).length) return message("Choisissez d'abord des filtres à enregistrer.", "ko");
+      const nom = (prompt("Nom de cette vue ? (ex. Feu, rareté ultra, non gradées)") || "").trim();
+      if (!nom) return;
+      const vues = lireVues().filter((v) => v.nom !== nom).concat({ nom, filtres });
+      await ecrirePref("vues", vues);
+      majChoixVue(String(vues.length - 1));
+      message("✔ Vue « " + nom + " » enregistrée.", "ok");
+    });
+    const supprimerVue = () => essayer(async () => {
+      const i = Number(choixVue.value);
+      const v = choixVue.value !== "" && lireVues()[i];
+      if (!v) return message("Choisissez d'abord une vue à supprimer.", "ko");
+      await ecrirePref("vues", lireVues().filter((_, j) => j !== i));
+      majChoixVue();
+      message("Vue « " + v.nom + " » supprimée.", "ok");
+    });
+    const barreVues = S.lectureSeule ? null : h("div", { class: "row tools barre-vues" },
+      choixVue,
+      h("button", { type: "button", class: "ghost", onclick: enregistrerVue, title: "Enregistre les filtres actuels" }, "💾 Enregistrer cette vue"),
+      h("button", { type: "button", class: "ghost danger", onclick: supprimerVue, title: "Supprime la vue choisie" }, "🗑"),
+      boutonSelection
+    );
+
     conteneur.replaceChildren(
       stats,
       h("div", { class: "filtres" }, recherche, choixExt, choixRar, choixVar, choixEtat, choixTri),
       h("details", { class: "filtres-plus" }, h("summary", {}, "Filtres avancés (rangement, catégorie, type, illustrateur, PV, gradation)"),
         h("div", { class: "filtres" }, choixEmpl, choixCat, choixType, champIllus, listeIllus, pvMin, choixGrade)),
+      barreVues,
+      barreSelection,
       compte,
       grille,
       h("div", { class: "centre" }, plus)
@@ -134,6 +234,7 @@ export const vueCartes = {
     [champIllus, pvMin].forEach((s) => s.addEventListener("input", () => { limite = PAS; dessiner(); }));
     redessiner = dessiner;
     dessiner();
+    if (!S.lectureSeule) chargerPrefs().then(() => majChoixVue());
   },
   rafraichir() {
     if (redessiner) redessiner();

@@ -374,7 +374,160 @@ function sceneResume(ext, paquets, bilan, options) {
 // ---------- La vue « Fake Booster » ----------
 
 let courante = null;
-const PAGES = ["ouvrir", "collection", "succes", "classement"];
+// ---------- Duels : chacun ouvre un booster gratuit, la meilleure carte (en valeur) gagne ----------
+
+const RECOMPENSE_DUEL = 5;
+const RECOMPENSE_NUL = 1;
+
+// Accès réseau des duels (table jeu_duels, schema-v8.sql)
+const duelsStock = {
+  async lister() {
+    const { data, error } = await db.from("jeu_duels").select("*").order("created_at", { ascending: false }).limit(30);
+    if (error) throw error;
+    return data;
+  },
+  async creer(ligne) {
+    const { data, error } = await db.from("jeu_duels").insert(ligne).select().single();
+    if (error) throw error;
+    return data;
+  },
+  // Met à jour seulement si la condition est encore vraie ; retourne la ligne modifiée (ou null si quelqu'un a été plus rapide)
+  async majSi(id, condition, champs) {
+    let q = db.from("jeu_duels").update(champs).eq("id", id);
+    for (const [k, v] of Object.entries(condition)) q = q.eq(k, v);
+    const { data, error } = await q.select();
+    if (error) throw error;
+    return data[0] || null;
+  },
+  async supprimer(id) {
+    const { error } = await db.from("jeu_duels").delete().eq("id", id);
+    if (error) throw error;
+  },
+};
+
+async function boosterDuel(ext, info) {
+  const details = await detailsExtension(ext.id, (faits, total) => { if (info) info.textContent = "Préparation de l'extension… " + faits + " / " + total; });
+  const cartes = tirerBooster(details, ext).map((c) => ({ nom: c.name, image: c.image, valeur: Number(c.prix || 0), rarete: c.rarete || null, variante: c.variante }));
+  return { cartes, score: Math.max(0, ...cartes.map((c) => c.valeur)) };
+}
+
+const meilleureCarte = (cartes) => (cartes || []).reduce((m, c) => (!m || c.valeur > m.valeur ? c : m), null);
+
+function boosterApercu(cartes) {
+  const meilleure = meilleureCarte(cartes);
+  return h("div", { class: "duel-cartes" }, (cartes || []).map((c) => h("div", { class: "duel-carte" + (c === meilleure ? " meilleure" : "") },
+    c.image ? h("img", { src: imageCarte(c.image), alt: c.nom, loading: "lazy" }) : h("span", { class: "sans-image" }, c.nom),
+    h("small", {}, euros(c.valeur)))));
+}
+
+function pageDuel(corps) {
+  const autre = S.profils.find((p) => p.user_id !== S.moi.id);
+  const nomDe = (id) => (id === S.moi.id ? "Vous" : (S.profils.find((p) => p.user_id === id) || {}).nom || "L'autre joueur");
+  if (!autre) return corps.replaceChildren(h("p", { class: "muted" }, "Le duel apparaît dès qu'un deuxième compte existe."));
+  const ext = extensionGratuite();
+  const info = h("p", { class: "jeu-chargement" });
+  const liste = h("div", { class: "duels" });
+  const enCours = new Set();
+
+  const gain = (d) => {
+    const moi = d.createur === S.moi.id ? "createur" : "adversaire";
+    if (d.statut !== "termine" || d["recompense_" + moi]) return 0;
+    return d.gagnant === null ? RECOMPENSE_NUL : d.gagnant === S.moi.id ? RECOMPENSE_DUEL : 0;
+  };
+
+  const recuperer = (d) => essayer(async () => {
+    const moi = d.createur === S.moi.id ? "createur" : "adversaire";
+    const montant = gain(d);
+    if (!montant || enCours.has(d.id)) return;
+    enCours.add(d.id);
+    try {
+      // La récompense n'est marquée « prise » qu'une seule fois, même en cas de double clic ou de deux onglets
+      const ligne = await duelsStock.majSi(d.id, { ["recompense_" + moi]: false }, { ["recompense_" + moi]: true });
+      if (!ligne) return;
+      const j = jeu.joueur;
+      j.pieces += montant;
+      try {
+        await stockage.maj("jeu_joueurs", j.id, { pieces: j.pieces });
+      } catch (e) {
+        j.pieces -= montant;
+        await duelsStock.majSi(d.id, {}, { ["recompense_" + moi]: false }).catch(() => {});
+        throw e;
+      }
+      message("🪙 +" + montant + " pièce(s) pour ce duel !", "ok");
+      emettre("jeu");
+    } finally {
+      enCours.delete(d.id);
+    }
+  });
+
+  const lancer = () => essayer(async () => {
+    if (!ext) return message("Aucune extension jouable pour le moment.", "ko");
+    lancerBouton.disabled = true;
+    try {
+      const { cartes, score } = await boosterDuel(ext, info);
+      await duelsStock.creer({ adversaire: autre.user_id, ext_id: ext.id, cartes_createur: cartes, score_createur: score });
+      info.textContent = "";
+      message("⚔ Défi envoyé à " + autre.nom + " ! Votre meilleure carte : " + euros(score) + ".", "ok");
+      emettre("jeu");
+    } finally {
+      lancerBouton.disabled = false;
+      info.textContent = "";
+    }
+  });
+
+  const relever = (d) => essayer(async () => {
+    if (enCours.has(d.id)) return;
+    enCours.add(d.id);
+    try {
+      const e = S.extParId.get(d.ext_id) || ext;
+      const { cartes, score } = await boosterDuel(e, info);
+      const gagnant = score > Number(d.score_createur) ? S.moi.id : score < Number(d.score_createur) ? d.createur : null;
+      const ligne = await duelsStock.majSi(d.id, { statut: "attente" }, { cartes_adversaire: cartes, score_adversaire: score, statut: "termine", gagnant, termine_le: new Date().toISOString() });
+      if (!ligne) return message("Ce duel a déjà été joué.", "ko");
+      message(gagnant === S.moi.id ? "🏆 Vous gagnez le duel ! (" + euros(score) + " contre " + euros(d.score_createur) + ")" : gagnant === null ? "🤝 Égalité parfaite !" : "Perdu (" + euros(score) + " contre " + euros(d.score_createur) + ").", gagnant === S.moi.id ? "ok" : "");
+      emettre("jeu");
+    } finally {
+      enCours.delete(d.id);
+      info.textContent = "";
+    }
+  });
+
+  const lancerBouton = h("button", { type: "button", onclick: lancer }, "⚔ Défier " + autre.nom);
+
+  const ligneDuel = (d) => {
+    const createurMoi = d.createur === S.moi.id;
+    const statut = d.statut === "termine"
+      ? d.gagnant === null ? "🤝 Égalité" : d.gagnant === S.moi.id ? "🏆 Victoire" : "💔 Défaite"
+      : createurMoi ? "⏳ En attente de " + nomDe(d.adversaire) : "🔔 " + nomDe(d.createur) + " vous défie !";
+    const montant = gain(d);
+    const e = S.extParId.get(d.ext_id);
+    return h("details", { class: "duel", open: d.statut === "attente" && !createurMoi },
+      h("summary", {},
+        h("b", {}, statut), " · " + (e ? e.nom : d.ext_id) + " · " + new Date(d.created_at).toLocaleDateString("fr-FR"),
+        d.statut === "termine" ? h("span", { class: "muted" }, " · " + euros(d.score_createur) + " (" + nomDe(d.createur) + ") contre " + euros(d.score_adversaire) + " (" + nomDe(d.adversaire) + ")") : null),
+      h("div", { class: "duel-corps" },
+        h("h4", {}, nomDe(d.createur) + (d.createur === S.moi.id ? "" : "") + " : " + euros(d.score_createur)),
+        boosterApercu(d.cartes_createur),
+        d.cartes_adversaire ? [h("h4", {}, nomDe(d.adversaire) + " : " + euros(d.score_adversaire)), boosterApercu(d.cartes_adversaire)] : null,
+        h("div", { class: "row tools" },
+          d.statut === "attente" && !createurMoi ? h("button", { type: "button", onclick: () => relever(d) }, "⚔ Relever le défi (ouvrir mon booster)") : null,
+          montant ? h("button", { type: "button", onclick: () => recuperer(d) }, "🪙 Récupérer " + montant + " pièce(s)") : null,
+          createurMoi ? h("button", { type: "button", class: "ghost danger", onclick: () => essayer(async () => { await duelsStock.supprimer(d.id); emettre("jeu"); }) }, "🗑 Supprimer") : null)
+      )
+    );
+  };
+
+  corps.replaceChildren(
+    h("p", { class: "muted" }, "Chacun ouvre un booster gratuit" + (ext ? " de « " + ext.nom + " »" : "") + " : la carte qui vaut le plus gagne. Victoire : " + RECOMPENSE_DUEL + " 🪙, égalité : " + RECOMPENSE_NUL + " 🪙 chacun. Les cartes du duel ne sont pas ajoutées à votre collection de jeu."),
+    h("div", { class: "row tools" }, lancerBouton), info, liste
+  );
+  liste.replaceChildren(squelette(1, "Chargement des duels…"));
+  duelsStock.lister().then((duels) => {
+    liste.replaceChildren(...(duels.length ? duels.map(ligneDuel) : [h("p", { class: "muted" }, "Aucun duel pour l'instant : lancez un défi !")]));
+  }).catch((e) => liste.replaceChildren(h("p", { class: "msg ko" }, "Duels indisponibles : " + e.message + " — la migration schema-v8.sql a-t-elle été lancée ?")));
+}
+
+const PAGES = ["ouvrir", "collection", "succes", "duel", "classement"];
 
 export const vueJeu = {
   async monter(conteneur, param) {
@@ -412,7 +565,7 @@ export const vueJeu = {
         h("div", { class: "row-btn" }, boutonSon, h("button", { type: "button", class: "ghost danger", title: "Efface vos cartes, pièces et succès du jeu", onclick: () => essayer(reinitialiserJeu) }, "🗑 Réinitialiser mon jeu"))
       ),
       solde,
-      h("nav", { class: "onglets-jeu" }, [["ouvrir", "🎁 Ouvrir"], ["collection", "🗂 Ma collection de jeu"], ["succes", "🏅 Succès"], ["classement", "🏆 Classement"]].map(([p, t]) =>
+      h("nav", { class: "onglets-jeu" }, [["ouvrir", "🎁 Ouvrir"], ["collection", "🗂 Ma collection de jeu"], ["succes", "🏅 Succès"], ["duel", "⚔ Duel"], ["classement", "🏆 Classement"]].map(([p, t]) =>
         h("a", { href: "#/jeu/" + (p === "ouvrir" ? "" : p), class: p === page ? "actif" : "", "data-page": p }, t))),
       corps
     );
@@ -422,10 +575,11 @@ export const vueJeu = {
       if (page === "ouvrir") pageOuvrir(corps);
       else if (page === "collection") pageCollection(corps);
       else if (page === "succes") pageSucces(corps);
+      else if (page === "duel") pageDuel(corps);
       else pageClassement(corps);
     };
     courante = page === "classement" ? () => majSolde() : dessiner;
-    if (page === "succes") courante = dessiner;
+    if (page === "succes" || page === "duel") courante = dessiner;
     dessiner();
   },
   rafraichir() {

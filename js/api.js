@@ -21,7 +21,12 @@ export const echapper = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 export const euros = (n) =>
   new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(n || 0);
 
-export const imageCarte = (base, taille = "low") => (base ? base + "/" + taille + ".webp" : null);
+import { imageSecours } from "./images.js";
+export { imageSecours, imageReelle } from "./images.js";
+
+// Les adresses de secours (Scrydex) n'ont pas la même forme que celles de TCGdex
+export const imageCarte = (base, taille = "low") =>
+  !base ? null : base.startsWith("https://images.scrydex.com/") ? base + "/" + (taille === "high" ? "large" : "small") : base + "/" + taille + ".webp";
 
 // Prix moyen Cardmarket sur 30 jours (à défaut : moyenne du jour) ; null si aucun prix
 export const prixDe = (d) => {
@@ -110,7 +115,7 @@ export async function cartesDExtension(setId) {
     id: k.id,
     localId: k.localId,
     name: k.name,
-    image: k.image || null,
+    image: k.image || imageSecours(setId, k.localId),
     set_id: setId,
   }));
   const res = { set, cartes };
@@ -121,6 +126,7 @@ export async function cartesDExtension(setId) {
 export async function detailCarte(id, frais = false) {
   if (!frais && cacheDetails.has(id)) return cacheDetails.get(id);
   const d = await jsonTcgdex("/cards/" + encodeURIComponent(id));
+  if (!d.image && d.set) d.image = imageSecours(d.set.id, d.localId); // TCGdex n'a pas (encore) l'image : on tente d'autres sources
   cacheDetails.set(id, d);
   return d;
 }
@@ -134,7 +140,7 @@ export async function cartesParNom(nom) {
   const mot = new RegExp("(?<![\\p{L}\\p{N}])" + echapper(normalise(nom)) + "(?![\\p{L}\\p{N}])", "u");
   const liste = brutes
     .filter((k) => mot.test(normalise(k.name)))
-    .map((k) => ({ id: k.id, localId: k.localId, name: k.name, image: k.image || null, set_id: idExtDe(k.id) }))
+    .map((k) => ({ id: k.id, localId: k.localId, name: k.name, image: k.image || imageSecours(idExtDe(k.id), k.localId), set_id: idExtDe(k.id) }))
     .sort(
       (a, b) =>
         (S.ordreExt.get(a.set_id) ?? 9999) - (S.ordreExt.get(b.set_id) ?? 9999) ||
@@ -252,7 +258,7 @@ export async function chercherCartes(texte) {
   }
   // Les extensions numériques (Pocket) ont des identifiants commençant par une majuscule : on les écarte
   const liste = brutes
-    .map((k) => ({ id: k.id, localId: k.localId, name: k.name, image: k.image || null, set_id: idExtDe(k.id) }))
+    .map((k) => ({ id: k.id, localId: k.localId, name: k.name, image: k.image || imageSecours(idExtDe(k.id), k.localId), set_id: idExtDe(k.id) }))
     .filter((k) => S.extParId.has(k.set_id) || !/^[A-Z]/.test(k.set_id))
     .sort(
       (a, b) =>

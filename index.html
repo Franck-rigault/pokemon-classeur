@@ -14,8 +14,10 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="jeu.css">
   <script>try { if (localStorage.getItem("classeur:theme") === "light") document.documentElement.dataset.theme = "light"; } catch (e) {}</script>
+  <script>try { var a = JSON.parse(localStorage.getItem("classeur:acces") || "{}"), d = document.documentElement; if (a.texte && a.texte !== 100) d.style.fontSize = a.texte + "%"; if (a.contraste) d.setAttribute("data-contraste", ""); if (a.calme) d.setAttribute("data-calme", ""); if (a.focus) d.setAttribute("data-focus", ""); } catch (e) {}</script>
 </head>
 <body>
+  <a class="saut" href="#vue">Aller au contenu</a>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <symbol id="ball" viewBox="0 0 100 100">
       <circle cx="50" cy="50" r="46" fill="#fff" stroke="#10132e" stroke-width="7"/>
@@ -49,6 +51,7 @@
         </div>
         <div class="row-btn">
           <select id="cible-select" aria-label="Collection affichée" hidden></select>
+          <button id="btn-recherche" type="button" class="ghost recherche-btn" aria-label="Recherche globale" title="Recherche globale ( / )">🔍</button>
           <button id="btn-scan" type="button" class="scan edit-only">📷 Scanner</button>
           <details id="menu" class="menu">
             <summary aria-label="Menu">☰</summary>
@@ -58,7 +61,11 @@
               <button id="btn-import" type="button" class="ghost edit-only">⬆ Importer un CSV</button>
               <button id="btn-export" type="button" class="ghost">⬇ Exporter (CSV)</button>
               <button id="btn-sauvegarde" type="button" class="ghost edit-only hors-partage">💾 Sauvegarde complète…</button>
+              <button id="btn-journal" type="button" class="ghost edit-only hors-partage">🕘 Journal d'activité</button>
+              <button id="btn-partage-image" type="button" class="ghost hors-partage">🖼 Image à partager…</button>
+              <button id="btn-sante" type="button" class="ghost edit-only hors-partage">🩺 Contrôle des données</button>
               <button id="btn-theme" type="button" class="ghost"></button>
+              <button id="btn-acces" type="button" class="ghost">♿ Affichage et accessibilité</button>
               <button id="logout" type="button" class="ghost hors-partage">Déconnexion</button>
             </div>
           </details>
@@ -66,11 +73,12 @@
       </div>
       <p id="bandeau" class="lecture-banner" hidden></p>
       <p id="hors-ligne" class="lecture-banner hors-ligne" hidden></p>
+      <p id="maj-dispo" class="lecture-banner maj-dispo" hidden>🔄 Une nouvelle version de l'application est disponible. <button id="btn-maj" type="button">Recharger</button></p>
       <nav id="onglets" class="onglets" aria-label="Sections"></nav>
-      <p id="msg" class="msg"></p>
+      <p id="msg" class="msg" role="status" aria-live="polite"></p>
     </header>
 
-    <main id="vue" class="vue"></main>
+    <main id="vue" class="vue" tabindex="-1"></main>
   </section>
 
   <!-- Détail d'une carte -->
@@ -146,6 +154,30 @@
     <div id="sauvegarde-contenu" class="dash-contenu"></div>
   </dialog>
 
+  <!-- Journal d'activité -->
+  <dialog id="journal" class="modal">
+    <div class="picker-head"><h2>Journal d'activité</h2><button type="button" class="ghost" data-fermer aria-label="Fermer">✕</button></div>
+    <div id="journal-contenu" class="dash-contenu"></div>
+  </dialog>
+
+  <!-- Contrôle de santé des données -->
+  <dialog id="sante" class="modal">
+    <div class="picker-head"><h2>Contrôle des données</h2><button type="button" class="ghost" data-fermer aria-label="Fermer">✕</button></div>
+    <div id="sante-contenu" class="dash-contenu"></div>
+  </dialog>
+
+  <!-- Image à partager -->
+  <dialog id="partage-image" class="modal">
+    <div class="picker-head"><h2>Image à partager</h2><button type="button" class="ghost" data-fermer aria-label="Fermer">✕</button></div>
+    <div id="partage-image-contenu" class="dash-contenu"></div>
+  </dialog>
+
+  <!-- Accessibilité -->
+  <dialog id="acces" class="modal petit">
+    <div class="picker-head"><h2>Affichage et accessibilité</h2><button type="button" class="ghost" data-fermer aria-label="Fermer">✕</button></div>
+    <div id="acces-contenu" class="dash-contenu"></div>
+  </dialog>
+
   <!-- Import d'un fichier CSV -->
   <dialog id="import" class="modal">
     <div class="picker-head"><span></span><button type="button" class="ghost" data-fermer aria-label="Fermer">✕</button></div>
@@ -167,6 +199,7 @@
 
   <datalist id="noms-pokemon"></datalist>
   <datalist id="emplacements"></datalist>
+  <datalist id="boutiques"></datalist>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
   <script src="config.js"></script>

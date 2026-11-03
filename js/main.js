@@ -1,4 +1,5 @@
 // Point d'entrée : connexion, comptes, navigation par onglets, choix de la collection affichée.
+import "./images.js";
 import { $, db, h, chargerReferentiels, message, essayer } from "./api.js";
 import { S, evenements, emettre } from "./etat.js";
 import * as HL from "./horsligne.js";
@@ -19,16 +20,29 @@ import { ouvrirPartage } from "./partage.js";
 import { exporterCsv } from "./export.js";
 import { appliquerTheme, basculerTheme, libelleTheme } from "./theme.js";
 import { ouvrirSauvegarde } from "./sauvegarde.js";
+import { vueFavoris } from "./vue-favoris.js";
+import { vueDoublons } from "./vue-doublons.js";
+import { vueObjectifs } from "./vue-objectifs.js";
+import { ouvrirRechercheGlobale } from "./recherche-globale.js";
+import { ouvrirPartageImage } from "./partage-image.js";
+import { ouvrirSante } from "./sante.js";
+import { ouvrirAcces } from "./acces.js";
+import { ouvrirJournal, envoyer as envoyerJournal } from "./journal.js";
+import { oublierPrefs } from "./prefs.js";
 
 const JETON_PARTAGE = new URLSearchParams(location.search).get("partage");
 const VUES = {
   extensions: vueExtensions, recherche: vueRecherche, cartes: vueCartes, wishlist: vueWishlist,
   classeurs: vueClasseurs, scelles: vueProduits, jeu: vueJeu, dashboard: vueDashboard, classeur: vueClasseur,
+  favoris: vueFavoris, doublons: vueDoublons, objectifs: vueObjectifs,
 };
 const ONGLETS = [
   ["extensions", "📚 Extensions"],
   ["recherche", "🔎 Rechercher"],
   ["cartes", "🃏 Mes cartes"],
+  ["favoris", "⭐ Coups de cœur"],
+  ["doublons", "🔁 Doublons"],
+  ["objectifs", "🎯 Objectifs"],
   ["wishlist", "❤ Wishlist"],
   ["classeurs", "📘 Mes classeurs"],
   ["scelles", "📦 Scellés"],
@@ -38,6 +52,8 @@ const ONGLETS = [
 ];
 // Sections privées : réservées à son propre compte (ni collection de l'autre, ni lien de partage)
 const PRIVEES = new Set(["classeurs", "scelles", "jeu"]);
+// Vues qui ont besoin du compte (absentes d'un lien de partage public)
+const COMPTE = new Set(["favoris", "doublons", "objectifs"]);
 
 let demarre = false;
 let vueCourante = null;
@@ -65,7 +81,7 @@ function onglets() {
   $("onglets").replaceChildren(
     ...ONGLETS.filter(([nom]) => {
       if (nom === "classeur") return classeurDisponible();
-      if (nom === "wishlist") return !S.partage;
+      if (nom === "wishlist" || COMPTE.has(nom)) return !S.partage;
       if (PRIVEES.has(nom)) return !S.partage && !S.lectureSeule;
       return true;
     }).map(([nom, titre]) => h("a", { href: "#/" + nom, "data-vue": nom }, titre))
@@ -79,7 +95,7 @@ function routeCourante() {
 
 async function afficherVue() {
   let { nom, param } = routeCourante();
-  if (!VUES[nom] || (nom === "classeur" && !classeurDisponible()) || (nom === "wishlist" && S.partage) || (PRIVEES.has(nom) && (S.partage || S.lectureSeule))) {
+  if (!VUES[nom] || (nom === "classeur" && !classeurDisponible()) || ((nom === "wishlist" || COMPTE.has(nom)) && S.partage) || (PRIVEES.has(nom) && (S.partage || S.lectureSeule))) {
     nom = "extensions";
     param = undefined;
   }
@@ -88,7 +104,7 @@ async function afficherVue() {
     document.querySelectorAll("#onglets a").forEach((a) => a.classList.toggle("actif", a.dataset.vue === nom));
     return $("vue").replaceChildren(h("p", { class: "msg ko" }, "📴 Cette section demande une connexion. La collection, la wishlist, les scellés et les classeurs virtuels restent utilisables hors-ligne."));
   }
-  document.querySelectorAll("#onglets a").forEach((a) => a.classList.toggle("actif", a.dataset.vue === nom));
+  document.querySelectorAll("#onglets a").forEach((a) => { a.classList.toggle("actif", a.dataset.vue === nom); if (a.dataset.vue === nom) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
   window.scrollTo(0, 0);
   await essayer(() => vueCourante.monter($("vue"), param));
 }
@@ -189,6 +205,7 @@ $("login-form").addEventListener("submit", async (e) => {
 $("logout").addEventListener("click", async () => {
   if (HL.taille() && !confirm(HL.taille() + " modification(s) faites hors-ligne ne sont pas encore envoyées. Se déconnecter quand même ? (elles seront envoyées à votre prochaine connexion)")) return;
   HL.oublierCopieLocale();
+  oublierPrefs();
   db.auth.signOut();
 });
 
@@ -200,6 +217,11 @@ $("btn-partage").addEventListener("click", () => { $("menu").open = false; ouvri
 $("btn-export").addEventListener("click", () => { $("menu").open = false; exporterCsv(); });
 $("btn-import").addEventListener("click", () => { $("menu").open = false; ouvrirImport(); });
 $("btn-sauvegarde").addEventListener("click", () => { $("menu").open = false; ouvrirSauvegarde(); });
+$("btn-journal").addEventListener("click", () => { $("menu").open = false; essayer(ouvrirJournal); });
+$("btn-partage-image").addEventListener("click", () => { $("menu").open = false; ouvrirPartageImage(); });
+$("btn-sante").addEventListener("click", () => { $("menu").open = false; ouvrirSante(); });
+$("btn-acces").addEventListener("click", () => { $("menu").open = false; ouvrirAcces(); });
+$("btn-recherche").addEventListener("click", () => { $("menu").open = false; ouvrirRechercheGlobale(); });
 appliquerTheme();
 $("btn-theme").textContent = libelleTheme();
 $("btn-theme").addEventListener("click", () => { basculerTheme(); $("btn-theme").textContent = libelleTheme(); });
@@ -254,7 +276,7 @@ async function envoyerFile() {
 
 HL.surChangement(majBandeauHorsLigne);
 window.addEventListener("offline", () => { majBandeauHorsLigne(); message("📴 Connexion perdue : vos modifications seront envoyées au retour du réseau.", ""); });
-window.addEventListener("online", () => { majBandeauHorsLigne(); envoyerFile(); });
+window.addEventListener("online", () => { majBandeauHorsLigne(); envoyerFile(); envoyerJournal(); });
 setInterval(envoyerFile, 20000);
 majBandeauHorsLigne();
 
@@ -329,7 +351,14 @@ demarrer();
 
 export { onglets, afficherVue, choisirCible };
 
-// Installation sur téléphone (PWA)
+// Installation sur téléphone (PWA) et annonce des nouvelles versions
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-  navigator.serviceWorker.register("sw.js").catch(() => {});
+  const avaitUnWorker = !!navigator.serviceWorker.controller; // faux à la toute première visite : rien à annoncer
+  navigator.serviceWorker.register("sw.js").then((reg) => {
+    const chercher = () => reg.update().catch(() => {});
+    setInterval(chercher, 30 * 60 * 1000);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) chercher(); });
+  }).catch(() => {});
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if (avaitUnWorker) $("maj-dispo").hidden = false; });
+  $("btn-maj").addEventListener("click", () => location.reload());
 }

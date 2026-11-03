@@ -758,16 +758,16 @@ dialog[open] { animation: apparait 0.22s ease-out both; }
 .carte-detail .carte-visuel::before { content: ""; position: absolute; inset: 8% 6%; border-radius: 24px; background: var(--type, #8d96c9); filter: blur(34px); opacity: 0.45; z-index: 0; }
 
 .carte3d-zone { position: relative; z-index: 1; perspective: 800px; touch-action: pan-y; --rx: 0deg; --ry: 0deg; --mx: 50%; --my: 50%; }
-.carte3d { position: relative; border-radius: 12px; transform: rotateX(var(--rx)) rotateY(var(--ry)); transition: transform 0.35s ease-out; transform-style: preserve-3d; will-change: transform; }
-.carte3d-zone.actif .carte3d { transition: transform 0.06s linear; }
-.carte3d img { display: block; user-select: none; -webkit-user-drag: none; }
+.inclinable { position: relative; border-radius: 12px; transform: rotateX(var(--rx)) rotateY(var(--ry)); transition: transform 0.35s ease-out; transform-style: preserve-3d; will-change: transform; }
+.carte3d-zone.actif .inclinable { transition: transform 0.06s linear; }
+.inclinable img { display: block; user-select: none; -webkit-user-drag: none; }
 .carte3d-reflet { position: absolute; inset: 0; border-radius: 12px; pointer-events: none; opacity: 0; transition: opacity 0.25s; mix-blend-mode: soft-light;
   background:
     radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, 0.85), transparent 45%),
     linear-gradient(115deg, transparent 20%, rgba(255, 90, 160, 0.55) 35%, rgba(255, 220, 80, 0.55) 45%, rgba(80, 255, 180, 0.55) 55%, rgba(90, 150, 255, 0.55) 65%, transparent 80%) var(--mx) var(--my) / 220% 220%;
 }
 .carte3d-zone.actif .carte3d-reflet { opacity: 0.9; }
-.carte3d:not(.holo) .carte3d-reflet { background: radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, 0.6), transparent 50%); }
+.inclinable:not(.holo) .carte3d-reflet { background: radial-gradient(circle at var(--mx) var(--my), rgba(255, 255, 255, 0.6), transparent 50%); }
 /* ---------- Album (pages de classeur 3×3) ---------- */
 
 .album { display: grid; gap: 10px; outline: none; }
@@ -839,3 +839,141 @@ dialog[open] { animation: apparait 0.22s ease-out both; }
 .quete-texte { display: grid; gap: 4px; min-width: 0; }
 .quete button { padding: 5px 10px; font-size: 0.85rem; white-space: nowrap; }
 .succes-debloque { padding: 6px 10px; background: color-mix(in srgb, var(--accent) 18%, transparent); border-radius: 10px; }
+/* ---------- Accessibilité : lien d'évitement, focus, contraste, animations ---------- */
+
+.saut { position: absolute; left: 8px; top: -60px; z-index: 100; padding: 10px 14px; background: var(--yellow); color: #2b2100; border-radius: 8px; font-weight: 700; text-decoration: none; }
+.saut:focus { top: 8px; }
+.vue:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+:root[data-focus] :focus-visible { outline: 4px solid #3b9bff; outline-offset: 3px; box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.85); }
+:root[data-contraste] { --muted: #dfe3ff; --line: rgba(255, 255, 255, 0.45); --text: #ffffff; }
+:root[data-contraste][data-theme="light"] { --muted: #1b2150; --line: rgba(20, 24, 54, 0.6); --text: #000000; }
+:root[data-contraste] .ghost, :root[data-contraste] input, :root[data-contraste] select { border-width: 2px; }
+:root[data-calme] *, :root[data-calme] *::before, :root[data-calme] *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+:root[data-calme] .inclinable, :root[data-calme] .carte3d-zone { transform: none !important; }
+.acces-case { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; }
+.acces-case span { display: grid; gap: 2px; }
+.acces-taille { display: grid; gap: 6px; padding: 6px 0; }
+
+/* ---------- Message d'annulation, nouvelle version ---------- */
+
+.toast {
+  position: fixed; inset: auto 12px max(16px, env(safe-area-inset-bottom)) 12px; margin: 0 auto; width: fit-content; max-width: min(560px, calc(100vw - 24px));
+  display: flex; gap: 10px; align-items: center; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px;
+  background: #10132e; color: #fff; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); animation: apparait 0.25s ease both;
+}
+.toast button { padding: 5px 12px; white-space: nowrap; }
+.toast .toast-x { padding: 4px 8px; color: #c9cff0; }
+.maj-dispo { background: #3ddc84; color: #06341a; }
+.maj-dispo button { margin-left: 8px; padding: 3px 12px; }
+img.image-absente { object-fit: contain; background: transparent; }
+
+/* ---------- Recherche globale ---------- */
+
+.recherche-btn { padding: 8px 10px; font-size: 1.05rem; }
+dialog.recherche-globale { width: min(640px, 94vw); }
+.recherche-globale .picker-head { gap: 8px; }
+.recherche-globale .picker-head input { flex: 1; }
+.rg-resultats { overflow: auto; padding: 4px 2px 12px; display: grid; gap: 8px; }
+.rg-groupe h3 { margin: 8px 0 4px; font-size: 0.95rem; }
+.rg-ligne { display: flex; align-items: center; gap: 10px; width: 100%; padding: 6px 8px; text-align: left; background: var(--ov); border: 1px solid var(--line); border-radius: 10px; color: var(--text); cursor: pointer; margin-bottom: 4px; }
+.rg-ligne:hover, .rg-ligne:focus-visible { background: var(--ov-clair); border-color: var(--accent); }
+.rg-ligne img { width: 34px; height: 48px; object-fit: contain; flex: none; }
+.rg-icone { width: 34px; text-align: center; font-size: 1.3rem; flex: none; }
+.rg-texte { display: grid; min-width: 0; }
+.rg-texte b, .rg-texte small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ---------- Mes cartes : étoile, sélection multiple, vues ---------- */
+
+.tuile-carte { position: relative; }
+.tuile-etoile { position: absolute; left: 8px; top: 8px; z-index: 2; width: 30px; height: 30px; padding: 0; display: grid; place-items: center; border-radius: 999px; border: 0; cursor: pointer; font-size: 1.1rem; line-height: 1; background: rgba(0, 0, 0, 0.55); color: #fff; }
+.tuile-etoile.active, .etoile.active { color: #ffcb05; }
+.tuile-coche { position: absolute; left: 8px; top: 8px; z-index: 2; font-size: 1.6rem; line-height: 1; color: #fff; text-shadow: 0 1px 4px #000; pointer-events: none; }
+.tuile-carte.cochee { outline: 3px solid var(--accent); outline-offset: -3px; background: var(--ov-clair); }
+.barre-selection, .barre-doublons { position: sticky; top: calc(var(--top-h) + 4px); z-index: 5; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 8px 10px; margin: 8px 0; background: var(--panel); border: 1px solid var(--accent); border-radius: 12px; }
+.barre-vues { margin: 6px 0; }
+.etoile { font-size: 1.1rem; padding: 4px 9px; }
+
+/* ---------- Fiche carte : note, achat, photos, langues ---------- */
+
+.exemplaire-plus { margin: 2px 0 8px; font-size: 0.9rem; }
+.exemplaire-plus > summary { cursor: pointer; color: var(--muted); padding: 2px 0; }
+.exemplaire-plus-corps { display: grid; gap: 6px; padding: 6px 0; }
+.note-lecture { margin: 0 0 6px; }
+.photos { display: flex; gap: 8px; flex-wrap: wrap; }
+.photo { position: relative; }
+.photo img { width: 96px; height: 128px; object-fit: cover; border-radius: 8px; cursor: zoom-in; border: 1px solid var(--line); }
+.photo button { position: absolute; right: 2px; top: 2px; padding: 1px 6px; font-size: 0.75rem; }
+.langues { margin: 0; }
+
+/* ---------- Coups de cœur : vitrine ---------- */
+
+.vitrine { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; padding: 12px 0; }
+.vitrine-carte { margin: 0; display: grid; gap: 8px; justify-items: center; padding: 12px; border-radius: 16px; background: radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--type, #8d96c9) 35%, transparent), var(--ov)); border: 1px solid color-mix(in srgb, var(--type, #8d96c9) 55%, transparent); }
+.vitrine-carte img { width: 100%; max-width: 200px; display: block; }
+.vitrine-carte figcaption { display: grid; gap: 2px; justify-items: center; text-align: center; }
+.vide { text-align: center; padding: 30px 10px; }
+
+/* ---------- Doublons ---------- */
+
+.doublons { display: grid; gap: 8px; }
+.doublon { display: grid; grid-template-columns: 64px 1fr auto; gap: 12px; align-items: center; padding: 8px; background: var(--ov); border: 1px solid var(--line); border-radius: 12px; }
+.doublon-img { padding: 0; border: 0; background: none; cursor: pointer; }
+.doublon-img img { width: 64px; display: block; border-radius: 6px; }
+.doublon-info { display: grid; gap: 2px; min-width: 0; }
+@media (max-width: 600px) { .doublon { grid-template-columns: 52px 1fr; } .doublon-actions { grid-column: 1 / -1; } .doublon-img img { width: 52px; } }
+
+/* ---------- Accueil, objectifs, thèmes, défi ---------- */
+
+.accueil { display: grid; grid-template-columns: minmax(260px, 1fr) minmax(260px, 1.4fr); gap: 12px; margin-bottom: 12px; }
+.accueil-nouveautes { margin-bottom: 12px; }
+.accueil-nouveautes ul { margin: 0; padding-left: 18px; }
+.accueil-carte { display: grid; grid-template-columns: 110px 1fr; gap: 14px; align-items: center; background: radial-gradient(circle at 0% 0%, color-mix(in srgb, var(--type, #8d96c9) 30%, transparent), var(--ov)); }
+.accueil-visuel img { width: 100%; display: block; border-radius: 6px; }
+.accueil-texte { display: grid; gap: 4px; }
+.accueil-texte p { margin: 0; }
+.lien.gros { font-size: 1.2rem; text-align: left; background: none; border: 0; padding: 0; cursor: pointer; }
+@media (max-width: 700px) { .accueil { grid-template-columns: 1fr; } }
+.objectifs { display: grid; gap: 10px; }
+.objectif { display: grid; gap: 4px; position: relative; padding-right: 36px; }
+.objectif-tete { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.objectif.atteint .barre-rempli { background: linear-gradient(90deg, #3ddc84, #ffcb05); }
+.objectif > .danger { position: absolute; right: 0; top: 0; padding: 2px 8px; }
+.tuile-carte.mini { padding: 4px; cursor: pointer; background: none; }
+.tuile-carte.mini img { width: 100%; display: block; border-radius: 6px; }
+.tuile-carte.mini.manquante img { filter: grayscale(1); opacity: 0.4; }
+.defi-ligne { display: grid; gap: 4px; margin-bottom: 8px; }
+.defi-ligne h4 { margin: 4px 0 0; font-size: 0.9rem; color: var(--muted); }
+.defi-cote { display: grid; grid-template-columns: minmax(70px, 120px) 1fr auto; gap: 8px; align-items: center; }
+.defi-cote.gagne .defi-nom, .defi-cote.gagne b { color: var(--accent); }
+.defi-score { font-size: 1.15rem; font-weight: 700; }
+
+/* ---------- Journal, contrôle des données, image à partager ---------- */
+
+.journal-mois h3 { margin: 12px 0 4px; }
+.journal-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.journal-liste li { display: flex; gap: 10px; padding: 4px 0; border-bottom: 1px solid var(--line); }
+.journal-date { color: var(--muted); font-variant-numeric: tabular-nums; flex: none; }
+.sante-liste { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 8px; }
+.sante-liste li { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.partage-canvas { width: 100%; max-width: 420px; height: auto; border-radius: 12px; border: 1px solid var(--line); }
+
+/* ---------- Duels du jeu ---------- */
+
+.duels { display: grid; gap: 8px; margin-top: 8px; }
+.duel { background: var(--ov); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; }
+.duel > summary { cursor: pointer; }
+.duel-corps { display: grid; gap: 6px; padding-top: 8px; }
+.duel-corps h4 { margin: 4px 0 0; }
+.duel-cartes { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 6px; }
+.duel-carte { display: grid; gap: 2px; justify-items: center; text-align: center; font-size: 0.75rem; }
+.duel-carte img { width: 100%; border-radius: 5px; display: block; }
+.duel-carte.meilleure { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+/* Petits écrans : la ligne du haut (collection, recherche, scanner, menu) doit tenir sans déborder */
+@media (max-width: 480px) {
+  .row-btn { gap: 6px; }
+  #cible-select { max-width: 112px; }
+  .scan { padding: 8px 10px; font-size: 0.85rem; }
+  .recherche-btn { padding: 8px; }
+}

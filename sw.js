@@ -3,7 +3,7 @@
 //   les mises à jour du site sont donc visibles immédiatement.
 // - Ressources externes (bibliothèque Supabase, polices, images et fiches de cartes TCGdex) : « cache d'abord, mise à jour en
 //   arrière-plan », pour que la collection reste consultable hors-ligne avec ses images.
-const CACHE = "classeur-v8";
+const CACHE = "classeur-v9";
 const CACHE_EXTERNE = "classeur-externe-v1";
 const MAX_EXTERNE = 2500;
 const COQUILLE = [
@@ -12,12 +12,14 @@ const COQUILLE = [
   "js/export.js", "js/vue-extensions.js", "js/vue-recherche.js", "js/donnees-extra.js", "js/vue-classeurs.js", "js/vue-produits.js", "js/import.js",
   "js/jeu.js", "js/texte.js", "js/jeu-regles.js", "js/jeu-effets.js", "js/jeu-quetes.js", "js/vue-cartes.js", "js/vue-wishlist.js", "js/vue-dashboard.js",
   "js/vue-classeur.js", "js/theme.js", "js/carte3d.js", "js/album.js", "js/graphiques.js", "js/sauvegarde.js", "js/horsligne.js",
+  "js/images.js", "js/annuler.js", "js/prefs.js", "js/journal.js", "js/photos.js", "js/vue-favoris.js", "js/vue-doublons.js", "js/vue-objectifs.js", "js/accueil.js",
+  "js/recherche-globale.js", "js/partage-image.js", "js/sante.js", "js/acces.js",
 ];
 
 // Hôtes dont les réponses (GET) sont gardées pour le hors-ligne
 const EXTERNES = [
   "cdn.jsdelivr.net", "cdnjs.cloudflare.com", "fonts.googleapis.com", "fonts.gstatic.com", "assets.tcgdex.net", "api.tcgdex.net",
-  "raw.githubusercontent.com",
+  "raw.githubusercontent.com", "images.pokemontcg.io", "images.scrydex.com",
 ];
 // Données qui changent (prix des cartes, prix des boosters) : toujours le réseau d'abord, le cache ne sert qu'hors-ligne
 const FRAICHES = ["api.tcgdex.net", "raw.githubusercontent.com"];

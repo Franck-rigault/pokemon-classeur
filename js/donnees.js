@@ -1,8 +1,10 @@
 // Données de l'utilisateur : collection, wishlist, historique, prix. Toute écriture passe par `stockage`
 // (remplaçable pour les tests) puis met à jour l'état local et prévient les vues.
-import { db, detailCarte, prixDe, message, euros } from "./api.js";
+import { db, detailCarte, prixDe, message, euros, imageSecours, imageReelle } from "./api.js";
 import { S, emettre } from "./etat.js";
 import * as HL from "./horsligne.js";
+import { journaliser } from "./journal.js";
+import { proposerAnnulation } from "./annuler.js";
 
 const PAGE = 1000;
 
@@ -102,6 +104,8 @@ export async function chargerDonnees(userId) {
     stockage.lister("collection", userId, [["set_id", true], ["local_id", true], ["id", true]]),
     stockage.lister("souhaits", userId, [["created_at", false]]),
   ]);
+  // Sans image chez TCGdex : on tente une autre source (jamais enregistrée en base, seulement affichée)
+  for (const l of [...collection, ...souhaits]) if (!l.image) l.image = imageSecours(l.set_id, l.local_id);
   S.collection = collection;
   S.souhaits = souhaits;
   emettre("collection");
@@ -119,7 +123,7 @@ export function champsCarte(d) {
     local_id: d.localId,
     categorie: d.category || null,
     rarete: d.rarity || null,
-    image: d.image || null,
+    image: imageReelle(d.image),
     dex_ids: d.dexId || [],
     valeur: prixDe(d),
     types: d.types || [],
@@ -139,7 +143,7 @@ export function champsSouhait(d) {
     local_id: d.localId,
     categorie: d.category || null,
     rarete: d.rarity || null,
-    image: d.image || null,
+    image: imageReelle(d.image),
     valeur: prixDe(d),
   };
 }
@@ -153,19 +157,22 @@ export function champsCarteCourte(k) {
     local_id: k.localId,
     categorie: null,
     rarete: null,
-    image: k.image || null,
+    image: imageReelle(k.image),
     dex_ids: [],
     valeur: null,
     complet: false,
   };
 }
 
+const libelleExemplaire = (l) => [l.variante, l.grade_societe ? l.grade_societe + " " + (l.grade_note ?? "") : l.etat, l.set_id].filter(Boolean).join(" · ");
+
 // Options : quantite, etat, variante, prix_achat, emplacement, grade_societe, grade_note
 async function ajouter(champs, options = {}) {
   ecriture();
   const {
     quantite = 1, etat = "Neuf", variante = "Normale", prix_achat = null,
-    emplacement = null, grade_societe = null, grade_note = null,
+    emplacement = null, grade_societe = null, grade_note = null, silencieux = false,
+    boutique = null, date_achat = null, facture = null, note = null,
   } = options;
   const existante = S.collection.find(
     (c) =>
@@ -176,18 +183,24 @@ async function ajouter(champs, options = {}) {
   );
   let ligne;
   if (existante) {
-    await changerQuantite(existante, existante.quantite + quantite);
+    await changerQuantite(existante, existante.quantite + quantite, { silencieux: true });
     ligne = existante;
   } else {
+    const detailsAchat = {};
+    if (boutique) detailsAchat.boutique = boutique;
+    if (date_achat) detailsAchat.date_achat = date_achat;
+    if (facture) detailsAchat.facture = facture;
+    if (note) detailsAchat.note = note;
     [ligne] = await stockage.inserer("collection", {
-      ...champs, quantite, etat, variante, prix_achat, emplacement, grade_societe, grade_note,
+      ...champs, quantite, etat, variante, prix_achat, emplacement, grade_societe, grade_note, ...detailsAchat,
     });
     S.collection.push(ligne);
     emettre("collection");
   }
   // Une carte obtenue quitte la wishlist
   const voeu = S.souhaits.find((x) => x.carte_id === champs.carte_id);
-  if (voeu) await retirerSouhait(voeu).catch(() => {});
+  if (voeu) await retirerSouhait(voeu, { silencieux: true }).catch(() => {});
+  if (!silencieux) journaliser("ajout", "Ajout : " + champs.nom + (quantite > 1 ? " ×" + quantite : "") + " (" + libelleExemplaire(ligne) + ")", { carte_id: champs.carte_id, quantite });
   emettre("carte-ajoutee", { ligne, champs });
   return ligne;
 }
@@ -215,19 +228,21 @@ export async function ajouterLot(cartes) {
     emettre("collection");
   }
   const souhaitsLiees = S.souhaits.filter((x) => aAjouter.some((k) => k.id === x.carte_id));
-  for (const x of souhaitsLiees) await retirerSouhait(x).catch(() => {});
+  for (const x of souhaitsLiees) await retirerSouhait(x, { silencieux: true }).catch(() => {});
+  if (aAjouter.length) journaliser("ajout", "Ajout en lot : " + aAjouter.length + " carte(s)" + (aAjouter[0].set_id ? " de " + aAjouter[0].set_id : ""), { quantite: aAjouter.length });
   completerDetails();
   return aAjouter.length;
 }
 
-export async function changerQuantite(ligne, q) {
+export async function changerQuantite(ligne, q, { silencieux = false } = {}) {
   ecriture();
-  if (q < 1) return supprimerEntree(ligne);
+  if (q < 1) return supprimerEntree(ligne, { annulable: !silencieux, silencieux });
   const ancienne = ligne.quantite;
   ligne.quantite = q;
   emettre("collection");
   try {
     await stockage.maj("collection", ligne.id, { quantite: q });
+    if (!silencieux && q !== ancienne) journaliser(q > ancienne ? "ajout" : "retrait", (q > ancienne ? "Ajout : " : "Retrait : ") + ligne.nom + " ×" + Math.abs(q - ancienne) + " (" + libelleExemplaire(ligne) + ")", { carte_id: ligne.carte_id, quantite: Math.abs(q - ancienne) });
   } catch (e) {
     ligne.quantite = ancienne;
     emettre("collection");
@@ -249,12 +264,81 @@ export async function modifierEntree(ligne, champs) {
   }
 }
 
-export async function supprimerEntree(ligne) {
+const sansIdentite = (l) => Object.fromEntries(Object.entries(l).filter(([k]) => !["id", "user_id", "created_at"].includes(k)));
+
+// Remet une ligne supprimée dans la collection (annulation)
+async function restaurerLigne(copie) {
+  const [ligne] = await stockage.inserer("collection", sansIdentite(copie));
+  S.collection.push(ligne);
+  emettre("collection");
+  journaliser("ajout", "Annulation : " + copie.nom + " remise dans la collection", { carte_id: copie.carte_id, quantite: copie.quantite });
+  return ligne;
+}
+
+// `annulable` : propose « Annuler » pendant quelques secondes (au lieu d'une fenêtre de confirmation)
+export async function supprimerEntree(ligne, { annulable = true, silencieux = false } = {}) {
   ecriture();
+  const copie = { ...ligne };
   await stockage.supprimer("collection", ligne.id);
   const i = S.collection.indexOf(ligne);
   if (i >= 0) S.collection.splice(i, 1);
   emettre("collection");
+  if (!silencieux) journaliser("retrait", "Retrait : " + copie.nom + " ×" + copie.quantite + " (" + libelleExemplaire(copie) + ")", { carte_id: copie.carte_id, quantite: copie.quantite });
+  if (annulable) proposerAnnulation("« " + copie.nom + " » retirée de la collection.", () => restaurerLigne(copie));
+}
+
+// Supprime plusieurs lignes d'un coup (une seule annulation pour tout)
+export async function supprimerLot(lignes) {
+  ecriture();
+  const copies = lignes.map((l) => ({ ...l }));
+  const retirees = [];
+  for (let i = 0; i < lignes.length; i++) {
+    try {
+      await supprimerEntree(lignes[i], { annulable: false, silencieux: true });
+      retirees.push(copies[i]);
+    } catch { /* la ligne reste */ }
+  }
+  if (retirees.length) {
+    journaliser("retrait", "Retrait en lot : " + retirees.length + " ligne(s)", { quantite: retirees.length });
+    proposerAnnulation(retirees.length + " ligne(s) retirée(s) de la collection.", async () => { for (const c of retirees) await restaurerLigne(c); });
+  }
+  return retirees.length;
+}
+
+// Modifie plusieurs lignes d'un coup (état, rangement, variante, favori…). Retourne { faites, refusees }.
+export async function modifierLot(lignes, champs, libelle = "Modification") {
+  ecriture();
+  let refusees = 0;
+  const faites = [];
+  for (const l of lignes) {
+    const ancien = Object.fromEntries(Object.keys(champs).map((k) => [k, l[k]]));
+    try { await modifierEntree(l, champs); faites.push([l, ancien]); } catch { refusees++; }
+  }
+  if (faites.length) {
+    journaliser("modif", libelle + " : " + faites.length + " ligne(s)", { quantite: faites.length });
+    proposerAnnulation(libelle + " : " + faites.length + " ligne(s) modifiée(s).", async () => { for (const [l, ancien] of faites) await modifierEntree(l, ancien); });
+  }
+  return { faites: faites.length, refusees };
+}
+
+// Doublons : ne garde qu'un exemplaire sur la ligne et déplace les autres vers un rangement
+export async function separerExcedent(ligne, emplacement) {
+  ecriture();
+  const q = ligne.quantite;
+  const cible = (emplacement || "").trim() || null;
+  if (q < 2 || (ligne.emplacement || null) === cible) return null;
+  const champs = {
+    carte_id: ligne.carte_id, set_id: ligne.set_id, nom: ligne.nom, local_id: ligne.local_id, categorie: ligne.categorie, rarete: ligne.rarete,
+    image: imageReelle(ligne.image), dex_ids: ligne.dex_ids || [], valeur: ligne.valeur, types: ligne.types || [], illustrateur: ligne.illustrateur,
+    pv: ligne.pv, stade: ligne.stade, complet: ligne.complet,
+  };
+  await changerQuantite(ligne, 1, { silencieux: true });
+  const destination = await ajouter(champs, {
+    quantite: q - 1, etat: ligne.etat, variante: ligne.variante, prix_achat: ligne.prix_achat, emplacement: cible,
+    grade_societe: ligne.grade_societe, grade_note: ligne.grade_note, silencieux: true,
+  });
+  journaliser("modif", "Doublons rangés : " + ligne.nom + " ×" + (q - 1) + " → " + (cible || "sans rangement"), { carte_id: ligne.carte_id, quantite: q - 1 });
+  return { destination, ancienne: q, deplaces: q - 1 };
 }
 
 // ---------- Wishlist ----------
@@ -265,14 +349,24 @@ export async function souhaiter(d) {
   const [ligne] = await stockage.inserer("souhaits", champsSouhait(d));
   S.souhaits.unshift(ligne);
   emettre("souhaits");
+  journaliser("wishlist", "Wishlist : + " + d.name + " (" + d.set.id + ")", { carte_id: d.id });
 }
 
-export async function retirerSouhait(ligne) {
+export async function retirerSouhait(ligne, { silencieux = false } = {}) {
   ecriture();
   await stockage.supprimer("souhaits", ligne.id);
   const i = S.souhaits.indexOf(ligne);
   if (i >= 0) S.souhaits.splice(i, 1);
   emettre("souhaits");
+  if (!silencieux) {
+    journaliser("wishlist", "Wishlist : − " + ligne.nom + " (" + ligne.set_id + ")", { carte_id: ligne.carte_id });
+    const copie = sansIdentite(ligne);
+    proposerAnnulation("« " + ligne.nom + " » retirée de la wishlist.", async () => {
+      const [nouvelle] = await stockage.inserer("souhaits", copie);
+      S.souhaits.unshift(nouvelle);
+      emettre("souhaits");
+    });
+  }
 }
 
 // ---------- Compléter les détails des lignes ajoutées « en rapide » ou reprises du classeur ----------
@@ -292,6 +386,7 @@ export async function completerDetails(lignes = S.collection.filter((c) => !c.co
         const d = await detailCarte(l.carte_id);
         const { carte_id, set_id, ...champs } = champsCarte(d);
         Object.assign(l, champs);
+        if (!l.image) l.image = imageSecours(l.set_id, l.local_id);
         await stockage.maj("collection", l.id, champs);
       } catch {
         // on réessaiera au prochain chargement
