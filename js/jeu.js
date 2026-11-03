@@ -1,7 +1,7 @@
 // Jeu « Fake Booster » : ouverture de boosters virtuels (animation, une carte à la fois), inventaire sans doublon,
 // pack gratuit illimité de l'extension la plus récente, pièces gagnées avec les doublons, boutique de boosters
 // (prix recalculés chaque jour d'après les vrais prix des cartes) et classement entre les joueurs.
-import { $, h, db, essayer, message, euros, imageCarte, libelleExt, annee, detailsExtension, idExtDe, normalise } from "./api.js";
+import { $, h, db, essayer, message, euros, imageCarte, libelleExt, annee, detailsExtension, idExtDe, normalise, squelette } from "./api.js";
 import { S, evenements, emettre } from "./etat.js";
 import { stockage } from "./donnees.js";
 import { ouvrirCarte } from "./dialogue-carte.js";
@@ -10,6 +10,7 @@ import {
   tirerBooster, estHit, estJackpot, importance,
 } from "./jeu-regles.js";
 import { son, vibrer, sonActif, basculerSon } from "./jeu-effets.js";
+import { QUETES, statsJeu, progres, terminee, arecuperer } from "./jeu-quetes.js";
 
 // Accès réseau du jeu (remplaçable pour les tests)
 export const jeuStock = {
@@ -17,6 +18,16 @@ export const jeuStock = {
     const { data, error } = await db.rpc("classement_jeu");
     if (error) throw error;
     return data;
+  },
+  // Remet le jeu à zéro : cartes supprimées, compteurs et pièces à 0 (succes : seulement si la colonne existe)
+  async reinitialiser(userId, joueurId, avecSucces) {
+    const a = await db.from("jeu_cartes").delete().eq("user_id", userId);
+    if (a.error) throw a.error;
+    const champs = { paquets_total: 0, doublons: 0, pieces: 0, paquets_jour: 0 };
+    if (avecSucces) champs.succes = {};
+    const b = await db.from("jeu_joueurs").update(champs).eq("id", joueurId);
+    if (b.error) throw b.error;
+    return champs;
   },
   // Prix des boosters recalculés chaque nuit (travail GitHub) : on prend le plus récent entre la branche « donnees » et la copie du site
   async prix() {
@@ -99,6 +110,35 @@ async function enregistrer(nbPaquets, bilan, cout) {
   Object.assign(j, champs);
 }
 
+// ---------- Quêtes et succès ----------
+
+const statsCourantes = () => statsJeu(jeu.cartes, jeu.joueur);
+const succesDisponibles = () => "succes" in jeu.joueur; // la colonne existe une fois schema-v7.sql lancé
+
+// Récupère les pièces d'une ou plusieurs quêtes terminées
+async function reclamer(quetes) {
+  const j = jeu.joueur;
+  const succes = { ...(j.succes || {}) };
+  let gain = 0;
+  for (const q of quetes) {
+    if (succes[q.id]) continue;
+    succes[q.id] = new Date().toISOString();
+    gain += q.recompense;
+  }
+  if (!gain) return 0;
+  // Mise à jour locale immédiate : un second clic (ou un double clic) ne peut plus récupérer deux fois la même récompense
+  const avant = { pieces: j.pieces, succes: j.succes };
+  Object.assign(j, { pieces: j.pieces + gain, succes });
+  try {
+    await stockage.maj("jeu_joueurs", j.id, { pieces: j.pieces, succes });
+  } catch (e) {
+    Object.assign(j, avant);
+    throw e;
+  }
+  emettre("jeu");
+  return gain;
+}
+
 // ---------- Extensions et prix ----------
 
 const aujourdhui = () => new Date().toLocaleDateString("sv-SE");
@@ -130,7 +170,10 @@ function logoExtension(ext, classe = "ext-logo") {
 }
 
 // n boosters de l'extension ; `gratuit` : pack de l'extension la plus récente, sans limite et sans coût
+let ouvertureEnCours = false;
 async function ouvrir(ext, n = 1, rapide = false, gratuit = false) {
+  if (ouvertureEnCours) return; // un double clic ne doit pas dépenser deux fois les mêmes pièces
+  ouvertureEnCours = true;
   try {
     const cout = gratuit ? 0 : prixPieces(ext) * n;
     if (cout > jeu.joueur.pieces) return message("Il vous manque " + (cout - jeu.joueur.pieces) + " pièce(s) : récupérez-en avec les doublons du pack gratuit.", "ko");
@@ -144,7 +187,9 @@ async function ouvrir(ext, n = 1, rapide = false, gratuit = false) {
     const paquets = Array.from({ length: n }, () => tirerBooster(details, ext));
     const bilan = marquer(paquets);
     bilan.cout = cout;
-    await enregistrer(n, bilan, cout); // enregistré avant l'animation : fermer la fenêtre ne permet pas de « tricher »
+    const avant = new Set(arecuperer(statsCourantes(), jeu.joueur.succes || {}).map((q) => q.id));
+    await enregistrer(n, bilan, cout);
+    bilan.debloques = succesDisponibles() ? arecuperer(statsCourantes(), jeu.joueur.succes || {}).filter((q) => !avant.has(q.id)) : []; // enregistré avant l'animation : fermer la fenêtre ne permet pas de « tricher »
     emettre("jeu");
 
     const options = { gratuit };
@@ -153,6 +198,8 @@ async function ouvrir(ext, n = 1, rapide = false, gratuit = false) {
   } catch (e) {
     if (fenetre().open) fenetre().close();
     message("Ouverture impossible : " + (e && e.message ? e.message : e), "ko");
+  } finally {
+    ouvertureEnCours = false;
   }
 }
 
@@ -314,6 +361,9 @@ function sceneResume(ext, paquets, bilan, options) {
       [[euros(valeur), "Valeur des cartes"], [bilan.nouvelles.length, "Nouvelles cartes"], ["+" + bilan.pieces + " 🪙", bilan.doublons + " doublon(s)"], [jeu.joueur.pieces + " 🪙", "Votre solde"]].map(([v, l]) =>
         h("div", { class: "dash-tuile" }, h("span", {}, v), h("small", {}, l)))
     ),
+    bilan.debloques && bilan.debloques.length
+      ? h("p", { class: "succes-debloque" }, "🏅 " + bilan.debloques.length + " succès débloqué(s) : ", h("b", {}, bilan.debloques.map((q) => q.titre).slice(0, 3).join(" · ") + (bilan.debloques.length > 3 ? "…" : "")), " — récupérez vos pièces dans l'onglet Succès.")
+      : null,
     meilleure ? h("p", {}, "Meilleure carte : ", h("b", {}, meilleure.name), " (" + (meilleure.rarete || "") + (meilleure.prix != null ? ", " + euros(meilleure.prix) : "") + ")") : null,
     h("div", { class: "jeu-grille" }, affichees.map(tuile)),
     lot && tries.length > 24 ? h("p", { class: "muted" }, "… et " + (tries.length - 24) + " autres cartes (les moins rares).") : null,
@@ -324,11 +374,11 @@ function sceneResume(ext, paquets, bilan, options) {
 // ---------- La vue « Fake Booster » ----------
 
 let courante = null;
-const PAGES = ["ouvrir", "collection", "classement"];
+const PAGES = ["ouvrir", "collection", "succes", "classement"];
 
 export const vueJeu = {
   async monter(conteneur, param) {
-    conteneur.replaceChildren(h("p", { class: "msg" }, "Chargement…"));
+    conteneur.replaceChildren(squelette(8));
     try {
       await chargerJeu();
     } catch (e) {
@@ -344,6 +394,11 @@ export const vueJeu = {
 
     function majSolde() {
       const j = jeu.joueur;
+      const lienSucces = conteneur.querySelector('[data-page="succes"]');
+      if (lienSucces) {
+        const n = succesDisponibles() ? arecuperer(statsCourantes(), j.succes || {}).length : 0;
+        lienSucces.textContent = "🏅 Succès" + (n ? " (" + n + ")" : "");
+      }
       solde.replaceChildren(
         h("span", { class: "pieces" }, "🪙 " + j.pieces),
         h("span", { class: "muted" }, "pièces · " + j.paquets_total + " boosters ouverts · " + jeu.cartes.length + " cartes uniques")
@@ -354,11 +409,11 @@ export const vueJeu = {
       h("div", { class: "jeu-entete" },
         h("div", {}, h("h2", { class: "jeu-titre" }, "🎴 Fake Booster"),
           h("p", { class: "muted" }, "Pack gratuit illimité, une pièce par doublon, et une boutique pour ouvrir les autres extensions. Les taux de drop sont des estimations (non officiels).")),
-        boutonSon
+        h("div", { class: "row-btn" }, boutonSon, h("button", { type: "button", class: "ghost danger", title: "Efface vos cartes, pièces et succès du jeu", onclick: () => essayer(reinitialiserJeu) }, "🗑 Réinitialiser mon jeu"))
       ),
       solde,
-      h("nav", { class: "onglets-jeu" }, [["ouvrir", "🎁 Ouvrir"], ["collection", "🗂 Ma collection de jeu"], ["classement", "🏆 Classement"]].map(([p, t]) =>
-        h("a", { href: "#/jeu/" + (p === "ouvrir" ? "" : p), class: p === page ? "actif" : "" }, t))),
+      h("nav", { class: "onglets-jeu" }, [["ouvrir", "🎁 Ouvrir"], ["collection", "🗂 Ma collection de jeu"], ["succes", "🏅 Succès"], ["classement", "🏆 Classement"]].map(([p, t]) =>
+        h("a", { href: "#/jeu/" + (p === "ouvrir" ? "" : p), class: p === page ? "actif" : "", "data-page": p }, t))),
       corps
     );
 
@@ -366,9 +421,11 @@ export const vueJeu = {
       majSolde();
       if (page === "ouvrir") pageOuvrir(corps);
       else if (page === "collection") pageCollection(corps);
+      else if (page === "succes") pageSucces(corps);
       else pageClassement(corps);
     };
     courante = page === "classement" ? () => majSolde() : dessiner;
+    if (page === "succes") courante = dessiner;
     dessiner();
   },
   rafraichir() {
@@ -504,6 +561,69 @@ function pageCollection(corps) {
   choixTri.addEventListener("change", dessiner);
   corps.replaceChildren(stats, h("div", { class: "filtres" }, recherche, choixExt, choixTri), info, grille);
   dessiner();
+}
+
+// Réinitialisation du jeu (double confirmation : l'opération est définitive)
+async function reinitialiserJeu() {
+  const j = jeu.joueur;
+  if (!confirm("Réinitialiser votre jeu Fake Booster ?\n\nVous perdrez vos " + jeu.cartes.length + " cartes de jeu, vos " + j.pieces + " pièces, vos compteurs et vos succès. Votre vraie collection n'est pas touchée.")) return;
+  const reponse = prompt("Cette action est définitive. Tapez RESET pour confirmer :");
+  if (reponse === null || reponse.trim().toUpperCase() !== "RESET") return message("Réinitialisation annulée.", "");
+  const champs = await jeuStock.reinitialiser(S.moi.id, j.id, succesDisponibles());
+  Object.assign(j, champs);
+  jeu.cartes = [];
+  jeu.possedees = new Set();
+  const corps = document.querySelector(".jeu-corps");
+  if (corps) delete corps.dataset.pret;
+  emettre("jeu");
+  message("✔ Jeu réinitialisé : vous repartez de zéro.", "ok");
+}
+
+// Quêtes et succès : progression et récupération des pièces
+function pageSucces(corps) {
+  if (!succesDisponibles()) {
+    corps.replaceChildren(h("p", { class: "msg ko" }, "Les succès demandent la mise à jour de la base : lancez schema-v7.sql dans Supabase (SQL Editor), puis rechargez la page."));
+    return;
+  }
+  const stats = statsCourantes();
+  const succes = jeu.joueur.succes || {};
+  const aRecuperer = arecuperer(stats, succes);
+  const faites = QUETES.filter((q) => succes[q.id]).length;
+  const categories = [...new Set(QUETES.map((q) => q.categorie))];
+
+  const carte = (q) => {
+    const fini = terminee(q, stats);
+    const pris = !!succes[q.id];
+    const val = progres(q, stats);
+    const barre = h("div", { class: "barre" }, h("div", { class: "barre-rempli", style: "width:" + Math.round((val / q.cible) * 100) + "%" }));
+    return h("div", { class: "quete" + (pris ? " prise" : fini ? " terminee" : "") },
+      h("span", { class: "quete-icone" }, pris ? "✅" : q.icone),
+      h("div", { class: "quete-texte" },
+        h("b", {}, q.titre),
+        barre,
+        h("small", { class: "muted" }, (Number.isInteger(val) ? val : val.toFixed(2)) + " / " + q.cible + q.unite)
+      ),
+      pris
+        ? h("span", { class: "muted" }, "+" + q.recompense + " 🪙 reçues")
+        : h("button", {
+            type: "button", disabled: !fini,
+            onclick: () => essayer(async () => { await reclamer([q]); son("bon"); message("🪙 +" + q.recompense + " pièces : " + q.titre, "ok"); }),
+          }, fini ? "Récupérer +" + q.recompense + " 🪙" : "+" + q.recompense + " 🪙")
+    );
+  };
+
+  corps.replaceChildren(
+    h("div", { class: "row tools" },
+      h("p", {}, h("b", {}, faites + " / " + QUETES.length), " succès obtenus"),
+      aRecuperer.length
+        ? h("button", { type: "button", class: "gros", onclick: () => essayer(async () => { const g = await reclamer(aRecuperer); son("hit"); message("🪙 +" + g + " pièces récupérées.", "ok"); }) }, "🎉 Tout récupérer (+" + aRecuperer.reduce((s, q) => s + q.recompense, 0) + " 🪙)")
+        : null
+    ),
+    ...categories.map((cat) => h("section", { class: "panneau" },
+      h("h3", {}, cat),
+      h("div", { class: "quetes" }, QUETES.filter((q) => q.categorie === cat).map(carte))
+    ))
+  );
 }
 
 // Classement entre les joueurs

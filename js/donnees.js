@@ -2,10 +2,12 @@
 // (remplaçable pour les tests) puis met à jour l'état local et prévient les vues.
 import { db, detailCarte, prixDe, message, euros } from "./api.js";
 import { S, emettre } from "./etat.js";
+import * as HL from "./horsligne.js";
 
 const PAGE = 1000;
 
-export const stockage = {
+// Écritures réelles sur le serveur
+const reseau = {
   async lister(table, userId, tri) {
     const tout = [];
     for (let debut = 0; ; debut += PAGE) {
@@ -33,6 +35,62 @@ export const stockage = {
   },
 };
 
+// Rejoue les modifications faites hors-ligne (voir horsligne.js)
+export const synchroniserFile = () => HL.synchroniser(reseau);
+
+// Pour les tables de la collection : sans réseau, les lectures viennent de la copie locale et les écritures
+// sont mises en attente ; les autres tables (jeu…) passent toujours par le serveur.
+export const stockage = {
+  async lister(table, userId, tri) {
+    if (!HL.TABLES_FILE.has(table)) return reseau.lister(table, userId, tri);
+    if (HL.taille() && HL.enLigne()) await synchroniserFile().catch(() => {});
+    try {
+      if (!HL.enLigne()) throw new TypeError("Failed to fetch");
+      const lignes = await reseau.lister(table, userId, tri);
+      HL.sauverListe(table, userId, lignes);
+      return HL.taille() ? HL.appliquerFile(table, lignes, tri) : lignes;
+    } catch (e) {
+      if (!HL.estReseau(e)) throw e;
+      const copie = await HL.lireListe(table, userId);
+      if (!copie) throw new Error("Pas de connexion et aucune copie locale de vos données : ouvrez l'application une fois en ligne.");
+      return HL.appliquerFile(table, copie, tri);
+    }
+  },
+  async inserer(table, lignes) {
+    const liste = Array.isArray(lignes) ? lignes : [lignes];
+    if (!HL.TABLES_FILE.has(table)) return reseau.inserer(table, lignes);
+    if (HL.enLigne()) {
+      try {
+        return await reseau.inserer(table, lignes);
+      } catch (e) {
+        if (!HL.estReseau(e)) throw e;
+      }
+    }
+    return liste.map((l) => HL.enfilerInsertion(table, l));
+  },
+  async maj(table, id, champs) {
+    if (!HL.TABLES_FILE.has(table)) return reseau.maj(table, id, champs);
+    if (HL.enLigne() && !HL.estTemporaire(id)) {
+      try {
+        return await reseau.maj(table, id, champs);
+      } catch (e) {
+        if (!HL.estReseau(e)) throw e;
+      }
+    }
+    HL.enfilerMaj(table, id, champs);
+  },
+  async supprimer(table, id) {
+    if (!HL.TABLES_FILE.has(table)) return reseau.supprimer(table, id);
+    if (HL.enLigne() && !HL.estTemporaire(id)) {
+      try {
+        return await reseau.supprimer(table, id);
+      } catch (e) {
+        if (!HL.estReseau(e)) throw e;
+      }
+    }
+    HL.enfilerSuppression(table, id);
+  },
+};
 const ecriture = () => {
   if (S.lectureSeule) throw new Error("Cette collection est en lecture seule.");
 };
@@ -222,7 +280,7 @@ export async function retirerSouhait(ligne) {
 let completionEnCours = false;
 
 export async function completerDetails(lignes = S.collection.filter((c) => !c.complet)) {
-  if (S.lectureSeule || completionEnCours || !lignes.length) return;
+  if (S.lectureSeule || completionEnCours || !lignes.length || !navigator.onLine) return;
   completionEnCours = true;
   const file = [...lignes];
   const total = file.length;
@@ -291,6 +349,7 @@ export function planifierInstantane() {
 
 export async function actualiserPrix() {
   ecriture();
+  if (!navigator.onLine) return message("Actualiser les prix demande une connexion.", "ko");
   const ids = [...new Set(S.collection.map((c) => c.carte_id))];
   if (!ids.length) return message("Aucune carte dans la collection : rien à actualiser.", "ko");
   if (!confirm("Actualiser le prix de " + ids.length + " carte(s) ?")) return;

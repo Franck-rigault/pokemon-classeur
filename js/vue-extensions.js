@@ -1,8 +1,9 @@
 // Vue « Extensions » : liste des extensions par série avec progression, puis grille des cartes d'une extension.
-import { $, h, boutonCardmarket, normalise, cartesDExtension, detailsExtension, lireCacheExtension, detailCarte, lienCardmarket, imageCarte, essayer, message, annee, euros } from "./api.js";
+import { $, h, boutonCardmarket, normalise, cartesDExtension, detailsExtension, lireCacheExtension, detailCarte, lienCardmarket, imageCarte, essayer, message, annee, euros, squelette } from "./api.js";
 import { S } from "./etat.js";
 import * as D from "./donnees.js";
 import { ouvrirCarte } from "./dialogue-carte.js";
+import { creerAlbum } from "./album.js";
 
 let redessiner = null;
 
@@ -110,7 +111,7 @@ const ABREGE = { Normale: "N", Reverse: "R", Holo: "H", "1re édition": "1ʳᵉ"
 
 async function monterDetail(conteneur, setId) {
   const ext = S.extParId.get(setId);
-  conteneur.replaceChildren(h("p", { class: "msg" }, "Chargement de l'extension…"));
+  conteneur.replaceChildren(squelette(18, "Chargement de l'extension…"));
   let donnees;
   try {
     donnees = await cartesDExtension(setId);
@@ -139,6 +140,12 @@ async function monterDetail(conteneur, setId) {
   const panneauCout = h("section", { class: "panneau" });
   panneauCout.hidden = true;
   const grille = h("div", { class: "cartes-grille" });
+  const album = creerAlbum();
+  let modeAlbum = false;
+  try { modeAlbum = localStorage.getItem("classeur:affichage") === "album"; } catch {}
+  const choixAffichage = h("select", { "aria-label": "Affichage", onchange: () => { modeAlbum = choixAffichage.value === "album"; try { localStorage.setItem("classeur:affichage", choixAffichage.value); } catch {} dessiner(); } },
+    h("option", { value: "grille" }, "▦ Grille"), h("option", { value: "album" }, "📖 Album (pages 3×3)"));
+  choixAffichage.value = modeAlbum ? "album" : "grille";
   const nbEl = h("p", { class: "muted" });
   const infoDetails = h("p", { class: "muted" });
 
@@ -244,7 +251,10 @@ async function monterDetail(conteneur, setId) {
       return true;
     });
 
-    grille.replaceChildren(...affichees.map((k) => tuile(k, quantites.get(k.id) || 0, voeux.has(k.id), estPrincipale(k), details && details.get(k.id), master, variantesPossedees.get(k.id))));
+    grille.hidden = modeAlbum;
+    album.element.hidden = !modeAlbum;
+    if (modeAlbum) album.maj(affichees, { quantites, voeux });
+    else grille.replaceChildren(...affichees.map((k) => tuile(k, quantites.get(k.id) || 0, voeux.has(k.id), estPrincipale(k), details && details.get(k.id), master, variantesPossedees.get(k.id))));
     nbEl.textContent = affichees.length + " carte(s) affichée(s).";
   }
 
@@ -322,11 +332,12 @@ async function monterDetail(conteneur, setId) {
     ),
     progression,
     panneauCout,
-    h("div", { class: "filtres" }, recherche, choixVue, choixRarete),
+    h("div", { class: "filtres" }, recherche, choixVue, choixRarete, choixAffichage),
     h("div", { class: "row tools" }, boutonDetails, h("label", { class: "case" }, caseMaster, " 🏆 Mode master set"), boutonAchat),
     infoDetails,
     nbEl,
-    grille
+    grille,
+    album.element
   );
   recherche.addEventListener("input", dessiner);
   choixVue.addEventListener("change", dessiner);

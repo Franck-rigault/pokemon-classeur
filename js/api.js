@@ -63,6 +63,14 @@ export function message(texte, type = "") {
   el.className = "msg " + type;
 }
 
+// Pendant un chargement : rectangles qui brillent doucement à la place d'un texte « Chargement… »
+export function squelette(n = 12, texte = "Chargement…") {
+  return h("div", { class: "squelette-zone", role: "status", "aria-label": texte },
+    h("div", { class: "squelette-barre" }),
+    h("div", { class: "squelette-grille" }, Array.from({ length: n }, () => h("div", { class: "squelette-carte" })))
+  );
+}
+
 // ---------- Référentiels (fichiers statiques) ----------
 
 export async function chargerReferentiels() {

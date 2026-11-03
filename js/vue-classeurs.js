@@ -1,5 +1,5 @@
 // Vue « Mes classeurs » : classeurs virtuels à pages de cases (3×3 par défaut), où l'on range ses cartes.
-import { $, h, normalise, euros, essayer, message, imageCarte, libelleExt } from "./api.js";
+import { $, h, normalise, euros, essayer, message, imageCarte, libelleExt, squelette } from "./api.js";
 import { S } from "./etat.js";
 import { chargerExtra, ajouterLigne, majLigne, supprimerLigne, caseDe, poserCarte, deplacerCase } from "./donnees-extra.js";
 import { ouvrirCarte } from "./dialogue-carte.js";
@@ -9,7 +9,7 @@ const pageCourante = new Map(); // id de classeur -> page affichée
 
 export const vueClasseurs = {
   async monter(conteneur, param) {
-    conteneur.replaceChildren(h("p", { class: "msg" }, "Chargement…"));
+    conteneur.replaceChildren(squelette(6));
     try {
       await chargerExtra();
     } catch (e) {

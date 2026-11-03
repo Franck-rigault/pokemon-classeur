@@ -1,6 +1,7 @@
 // Point d'entrée : connexion, comptes, navigation par onglets, choix de la collection affichée.
 import { $, db, h, chargerReferentiels, message, essayer } from "./api.js";
-import { S, evenements } from "./etat.js";
+import { S, evenements, emettre } from "./etat.js";
+import * as HL from "./horsligne.js";
 import * as D from "./donnees.js";
 import { vueExtensions } from "./vue-extensions.js";
 import { vueRecherche } from "./vue-recherche.js";
@@ -16,6 +17,8 @@ import "./dialogue-carte.js";
 import { ouvrirScan } from "./scan.js";
 import { ouvrirPartage } from "./partage.js";
 import { exporterCsv } from "./export.js";
+import { appliquerTheme, basculerTheme, libelleTheme } from "./theme.js";
+import { ouvrirSauvegarde } from "./sauvegarde.js";
 
 const JETON_PARTAGE = new URLSearchParams(location.search).get("partage");
 const VUES = {
@@ -81,6 +84,10 @@ async function afficherVue() {
     param = undefined;
   }
   vueCourante = VUES[nom];
+  if (!HL.enLigne() && (nom === "jeu" || nom === "classeur")) {
+    document.querySelectorAll("#onglets a").forEach((a) => a.classList.toggle("actif", a.dataset.vue === nom));
+    return $("vue").replaceChildren(h("p", { class: "msg ko" }, "📴 Cette section demande une connexion. La collection, la wishlist, les scellés et les classeurs virtuels restent utilisables hors-ligne."));
+  }
   document.querySelectorAll("#onglets a").forEach((a) => a.classList.toggle("actif", a.dataset.vue === nom));
   window.scrollTo(0, 0);
   await essayer(() => vueCourante.monter($("vue"), param));
@@ -88,8 +95,21 @@ async function afficherVue() {
 
 window.addEventListener("hashchange", () => { if (!$("app").hidden) afficherVue(); });
 
+// Copie locale (pour ouvrir l'appli sans réseau) : l'état de mes listes est mémorisé peu après chaque changement
+const MEMO = { collection: "collection", souhaits: "souhaits", produits: "produits", classeurs: "classeurs", classeur_cases: "cases" };
+const aMemoriser = new Set();
+let minuteurMemo = null;
+function memoriser(nom) {
+  if (S.lectureSeule || S.partage || !S.moi) return;
+  if (nom !== "collection" && nom !== "souhaits" && !S.extraCharge) return;
+  aMemoriser.add(nom);
+  clearTimeout(minuteurMemo);
+  minuteurMemo = setTimeout(() => { for (const n of aMemoriser) if (Array.isArray(S[MEMO[n]])) HL.sauverListe(n, S.moi.id, S[MEMO[n]]); aMemoriser.clear(); }, 1500);
+}
+
 for (const nom of ["collection", "souhaits", "produits", "classeurs", "classeur_cases"]) {
   evenements.addEventListener(nom, () => {
+    memoriser(nom);
     if (vueCourante && vueCourante.rafraichir) vueCourante.rafraichir();
     if (!S.lectureSeule && !S.partage) D.planifierInstantane();
   });
@@ -122,9 +142,18 @@ async function choisirCible(id) {
 
 async function initialiserCompte(session) {
   S.moi = { id: session.user.id, email: session.user.email };
-  const { data, error } = await db.from("profils").select("*");
-  S.profils = error ? [] : data;
+  let profils = null;
+  try {
+    const rep = await db.from("profils").select("*");
+    if (!rep.error) profils = rep.data;
+    else if (!HL.estReseau(rep.error)) profils = [];
+  } catch (e) {
+    if (!HL.estReseau(e)) profils = [];
+  }
+  const memorise = HL.lireCompte();
+  S.profils = profils || (memorise && memorise.moi.id === S.moi.id ? memorise.profils : []);
   S.profil = S.profils.find((p) => p.user_id === S.moi.id) || { user_id: S.moi.id, nom: S.moi.email.split("@")[0], classeur_actif: false };
+  if (profils) HL.sauverCompte({ moi: S.moi, profils: S.profils });
 
   const choix = $("cible-select");
   choix.replaceChildren(
@@ -157,7 +186,11 @@ $("login-form").addEventListener("submit", async (e) => {
   }
 });
 
-$("logout").addEventListener("click", () => db.auth.signOut());
+$("logout").addEventListener("click", async () => {
+  if (HL.taille() && !confirm(HL.taille() + " modification(s) faites hors-ligne ne sont pas encore envoyées. Se déconnecter quand même ? (elles seront envoyées à votre prochaine connexion)")) return;
+  HL.oublierCopieLocale();
+  db.auth.signOut();
+});
 
 // ---------- Menu et actions ----------
 
@@ -166,6 +199,10 @@ $("btn-prix").addEventListener("click", () => { $("menu").open = false; essayer(
 $("btn-partage").addEventListener("click", () => { $("menu").open = false; ouvrirPartage(); });
 $("btn-export").addEventListener("click", () => { $("menu").open = false; exporterCsv(); });
 $("btn-import").addEventListener("click", () => { $("menu").open = false; ouvrirImport(); });
+$("btn-sauvegarde").addEventListener("click", () => { $("menu").open = false; ouvrirSauvegarde(); });
+appliquerTheme();
+$("btn-theme").textContent = libelleTheme();
+$("btn-theme").addEventListener("click", () => { basculerTheme(); $("btn-theme").textContent = libelleTheme(); });
 
 // Toutes les fenêtres : bouton ✕ et clic sur le fond
 document.querySelectorAll("dialog.modal").forEach((d) => {
@@ -176,6 +213,50 @@ document.querySelectorAll("dialog.modal").forEach((d) => {
 // Les en-têtes de tableau collants se placent juste sous l'en-tête de la page
 const entete = document.querySelector(".top");
 new ResizeObserver(() => document.documentElement.style.setProperty("--top-h", entete.offsetHeight + "px")).observe(entete);
+
+// ---------- Hors-ligne : bandeau et synchronisation ----------
+
+function majBandeauHorsLigne() {
+  const n = HL.taille();
+  const el = $("hors-ligne");
+  if (S.partage) return (el.hidden = true);
+  if (!HL.enLigne()) {
+    el.textContent = "📴 Hors-ligne : vous pouvez consulter et modifier votre collection" + (n ? " · " + n + " modification(s) en attente" : "");
+    el.className = "lecture-banner hors-ligne";
+    el.hidden = false;
+  } else if (n) {
+    el.textContent = "🔄 " + n + " modification(s) en attente de synchronisation…";
+    el.className = "lecture-banner hors-ligne sync";
+    el.hidden = false;
+  } else {
+    el.hidden = true;
+  }
+}
+
+let synchroEnCours = false;
+async function envoyerFile() {
+  if (synchroEnCours || S.partage || !S.moi || !HL.enLigne() || !HL.taille()) return;
+  synchroEnCours = true;
+  try {
+    try { await db.auth.getSession(); } catch { /* le jeton se renouvelle ici s'il avait expiré hors-ligne */ }
+    const bilan = await D.synchroniserFile();
+    majBandeauHorsLigne();
+    if (bilan.abandonnees.length) message(bilan.abandonnees.length + " modification(s) refusée(s) par le serveur : " + bilan.abandonnees[0].raison, "ko");
+    if (bilan.faites) {
+      if (!bilan.restantes && !S.lectureSeule) await D.chargerDonnees(S.moi.id); // on repart de l'état exact du serveur
+      for (const nom of ["collection", "souhaits", "produits", "classeurs", "classeur_cases"]) emettre(nom);
+      if (!bilan.abandonnees.length) message("✔ " + bilan.faites + " modification(s) faite(s) hors-ligne synchronisée(s).", "ok");
+    }
+  } finally {
+    synchroEnCours = false;
+  }
+}
+
+HL.surChangement(majBandeauHorsLigne);
+window.addEventListener("offline", () => { majBandeauHorsLigne(); message("📴 Connexion perdue : vos modifications seront envoyées au retour du réseau.", ""); });
+window.addEventListener("online", () => { majBandeauHorsLigne(); envoyerFile(); });
+setInterval(envoyerFile, 20000);
+majBandeauHorsLigne();
 
 // ---------- Démarrage ----------
 
@@ -203,6 +284,25 @@ async function demarrerPartage() {
   await afficherVue();
 }
 
+// Ouvre l'appli sans réseau avec le compte mémorisé lors de la dernière connexion
+async function ouvrirHorsLigne() {
+  if (HL.enLigne()) return false;
+  const compte = HL.lireCompte();
+  if (!compte) return false;
+  $("login").hidden = true;
+  $("app").hidden = false;
+  demarre = true;
+  db.auth.onAuthStateChange(surAuth);
+  await initialiserCompte({ user: { id: compte.moi.id, email: compte.moi.email } });
+  return true;
+}
+
+function surAuth(evt, session) {
+  if (evt === "SIGNED_IN" && S.moi && session && session.user.id === S.moi.id) { envoyerFile(); return; } // simple rafraîchissement du jeton
+  if (evt === "SIGNED_OUT" && !HL.enLigne()) return; // pas de déconnexion fantôme quand le réseau est coupé
+  afficherSession(session);
+}
+
 async function demarrer() {
   await chargerReferentiels();
 
@@ -214,12 +314,11 @@ async function demarrer() {
       db.auth.getSession(),
       new Promise((_, rejet) => setTimeout(() => rejet(new Error("délai dépassé")), 6000)),
     ]);
+    if (!data.session && (await ouvrirHorsLigne())) return;
     await afficherSession(data.session);
-    db.auth.onAuthStateChange((evt, session) => {
-      if (evt === "SIGNED_IN" && S.moi && session && session.user.id === S.moi.id) return; // simple rafraîchissement du jeton
-      afficherSession(session);
-    });
+    db.auth.onAuthStateChange(surAuth);
   } catch (err) {
+    if (await ouvrirHorsLigne()) return;
     erreurAffichee("Session illisible (" + err.message + "). Reconnectez-vous.");
     try { await db.auth.signOut({ scope: "local" }); } catch {}
     db.auth.onAuthStateChange((_evt, session) => afficherSession(session));

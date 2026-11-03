@@ -1,5 +1,5 @@
 // Vue « Classeur » (réservée aux comptes qui l'ont activé) : une ligne par Pokémon, reliée à la collection.
-import { h, $, db, normalise, euros, essayer, message, ARTWORK_URL, imageCarte, detailCarte, cartesParNom, prixDe, libelleExt, fermerAuFond } from "./api.js";
+import { h, $, db, normalise, euros, essayer, message, ARTWORK_URL, imageCarte, detailCarte, cartesParNom, prixDe, libelleExt, fermerAuFond, squelette } from "./api.js";
 import { S } from "./etat.js";
 import { ajouterCarte } from "./donnees.js";
 
@@ -143,7 +143,7 @@ async function ouvrirSelecteur(ligne) {
 
 export const vueClasseur = {
   async monter(conteneur) {
-    conteneur.replaceChildren(h("p", { class: "msg" }, "Chargement du classeur…"));
+    conteneur.replaceChildren(squelette(10));
     try {
       if (!charge) await charger();
     } catch (e) {

@@ -1,8 +1,9 @@
 // Fenêtre de détail d'une carte : image, prix, exemplaires possédés (rangement, gradation),
 // ajout (quantité, état, variante), wishlist.
-import { $, h, boutonCardmarket, detailCarte, imageCarte, variantesDe, euros, essayer, message, ETATS, lienCardmarket, libelleExt } from "./api.js";
+import { $, h, boutonCardmarket, detailCarte, imageCarte, variantesDe, euros, essayer, message, ETATS, lienCardmarket, libelleExt, squelette } from "./api.js";
 import { S, evenements } from "./etat.js";
 import * as D from "./donnees.js";
+import { carte3D, couleurType } from "./carte3d.js";
 
 const SOCIETES = ["PSA", "CGC", "BGS", "PCA", "Autre"];
 
@@ -24,7 +25,7 @@ export async function ouvrirCarte(id) {
   const dlg = $("carte");
   idCourant = id;
   detail = null;
-  $("carte-contenu").replaceChildren(h("p", { class: "msg" }, "Chargement…"));
+  $("carte-contenu").replaceChildren(squelette(1, "Chargement de la carte…"));
   if (!dlg.open) dlg.showModal();
   try {
     detail = await detailCarte(id);
@@ -153,9 +154,9 @@ function dessiner() {
   }
 
   $("carte-contenu").replaceChildren(
-    h("div", { class: "carte-detail" },
+    h("div", { class: "carte-detail", style: "--type:" + (couleurType(d.types) || "#8d96c9") },
       h("div", { class: "carte-visuel" },
-        d.image ? h("img", { src: imageCarte(d.image, "high"), alt: d.name }) : h("div", { class: "sans-image" }, "Pas d'image")
+        d.image ? carte3D(h("img", { src: imageCarte(d.image, "high"), alt: d.name, draggable: "false" })) : h("div", { class: "sans-image" }, "Pas d'image")
       ),
       infos
     )

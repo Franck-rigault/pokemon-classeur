@@ -1,5 +1,5 @@
 // Vue « Scellés » : boosters, displays, coffrets… avec prix d'achat et valeur.
-import { h, euros, essayer, message, libelleExt, annee } from "./api.js";
+import { h, euros, essayer, message, libelleExt, annee, squelette } from "./api.js";
 import { S } from "./etat.js";
 import { chargerExtra, ajouterLigne, majLigne, supprimerLigne } from "./donnees-extra.js";
 
@@ -9,7 +9,7 @@ let redessiner = null;
 
 export const vueProduits = {
   async monter(conteneur) {
-    conteneur.replaceChildren(h("p", { class: "msg" }, "Chargement…"));
+    conteneur.replaceChildren(squelette(6));
     try {
       await chargerExtra();
     } catch (e) {

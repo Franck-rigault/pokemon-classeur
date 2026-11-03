@@ -13,6 +13,7 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="jeu.css">
+  <script>try { if (localStorage.getItem("classeur:theme") === "light") document.documentElement.dataset.theme = "light"; } catch (e) {}</script>
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -56,12 +57,15 @@
               <button id="btn-partage" type="button" class="ghost edit-only hors-partage">🔗 Partager ma collection</button>
               <button id="btn-import" type="button" class="ghost edit-only">⬆ Importer un CSV</button>
               <button id="btn-export" type="button" class="ghost">⬇ Exporter (CSV)</button>
+              <button id="btn-sauvegarde" type="button" class="ghost edit-only hors-partage">💾 Sauvegarde complète…</button>
+              <button id="btn-theme" type="button" class="ghost"></button>
               <button id="logout" type="button" class="ghost hors-partage">Déconnexion</button>
             </div>
           </details>
         </div>
       </div>
       <p id="bandeau" class="lecture-banner" hidden></p>
+      <p id="hors-ligne" class="lecture-banner hors-ligne" hidden></p>
       <nav id="onglets" class="onglets" aria-label="Sections"></nav>
       <p id="msg" class="msg"></p>
     </header>
@@ -134,6 +138,12 @@
   <dialog id="choix-case" class="modal">
     <div class="picker-head"><span></span><button type="button" class="ghost" data-fermer aria-label="Fermer">✕</button></div>
     <div id="choix-case-contenu" class="dash-contenu"></div>
+  </dialog>
+
+  <!-- Sauvegarde / restauration -->
+  <dialog id="sauvegarde" class="modal petit">
+    <div class="picker-head"><h2>Sauvegarde complète</h2><button type="button" class="ghost" data-fermer aria-label="Fermer">✕</button></div>
+    <div id="sauvegarde-contenu" class="dash-contenu"></div>
   </dialog>
 
   <!-- Import d'un fichier CSV -->
