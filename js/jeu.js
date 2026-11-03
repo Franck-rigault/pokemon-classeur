@@ -169,6 +169,29 @@ function logoExtension(ext, classe = "ext-logo") {
     : code();
 }
 
+// Images des vrais boosters (data/boosters.json : extension -> adresse). Absente ou illisible : on garde le paquet dessiné.
+let imagesBoosters = null;
+async function imageBooster(ext) {
+  if (!imagesBoosters) {
+    try {
+      const rep = await fetch("data/boosters.json", { cache: "no-cache" });
+      imagesBoosters = rep.ok ? await rep.json() : {};
+    } catch {
+      imagesBoosters = {};
+    }
+  }
+  const url = imagesBoosters[ext.id];
+  if (!url || !navigator.onLine) return null;
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.referrerPolicy = "no-referrer";
+    const t = setTimeout(() => resolve(null), 5000);
+    img.onload = () => { clearTimeout(t); resolve(url); };
+    img.onerror = () => { clearTimeout(t); resolve(null); };
+    img.src = url;
+  });
+}
+
 // n boosters de l'extension ; `gratuit` : pack de l'extension la plus récente, sans limite et sans coût
 let ouvertureEnCours = false;
 async function ouvrir(ext, n = 1, rapide = false, gratuit = false) {
@@ -192,7 +215,7 @@ async function ouvrir(ext, n = 1, rapide = false, gratuit = false) {
     bilan.debloques = succesDisponibles() ? arecuperer(statsCourantes(), jeu.joueur.succes || {}).filter((q) => !avant.has(q.id)) : []; // enregistré avant l'animation : fermer la fenêtre ne permet pas de « tricher »
     emettre("jeu");
 
-    const options = { gratuit };
+    const options = { gratuit, imagePaquet: n === 1 && !rapide ? await imageBooster(ext) : null };
     if (n === 1 && !rapide) scenePaquet(ext, paquets[0], bilan, options);
     else sceneResume(ext, paquets, bilan, options);
   } catch (e) {
@@ -207,21 +230,31 @@ async function ouvrir(ext, n = 1, rapide = false, gratuit = false) {
 function scenePaquet(ext, booster, bilan, options) {
   const teinte = [...ext.id].reduce((s, c) => s + c.charCodeAt(0), 0) % 360;
   let ouvert = false;
-  const paquet = h("button", {
-    type: "button", class: "paquet", style: "--teinte:" + teinte, "aria-label": "Ouvrir le booster",
-    onclick: () => {
-      if (ouvert) return;
-      ouvert = true;
-      paquet.classList.add("ouvre");
-      son("dechirure");
-      vibrer(60);
-      setTimeout(() => sceneCartes(ext, booster, bilan, options), 950);
-    },
-  },
-    h("div", { class: "paquet-haut" }),
-    h("div", { class: "paquet-corps" }, logoExtension(ext, "ext-logo grand"), h("b", {}, ext.nom), h("span", { class: "fake-logo" }, "FAKE BOOSTER")),
-    h("div", { class: "paquet-bas" })
-  );
+  const ouvrirPaquet = () => {
+    if (ouvert) return;
+    ouvert = true;
+    paquet.classList.add("ouvre");
+    son("dechirure");
+    vibrer(60);
+    setTimeout(() => sceneCartes(ext, booster, bilan, options), 950);
+  };
+  // Avec l'image du vrai booster (si on en a une) ; sinon le paquet dessiné aux couleurs de l'extension
+  const paquet = options.imagePaquet
+    ? h("button", { type: "button", class: "paquet avec-image", "aria-label": "Ouvrir le booster", onclick: ouvrirPaquet },
+        h("div", { class: "paquet-cadre" },
+          h("img", {
+            class: "paquet-photo", src: options.imagePaquet, alt: "Booster " + ext.nom, referrerpolicy: "no-referrer", draggable: "false",
+            // photo carrée (paquet petit au milieu d'un fond uni) : on zoome sur le paquet
+            onload: (e) => { const i = e.target; if (i.naturalWidth / i.naturalHeight > 0.85) i.classList.add("carre"); },
+          })),
+        h("span", { class: "fake-logo" }, "FAKE BOOSTER"))
+    : h("button", {
+        type: "button", class: "paquet", style: "--teinte:" + teinte, "aria-label": "Ouvrir le booster", onclick: ouvrirPaquet,
+      },
+        h("div", { class: "paquet-haut" }),
+        h("div", { class: "paquet-corps" }, logoExtension(ext, "ext-logo grand"), h("b", {}, ext.nom), h("span", { class: "fake-logo" }, "FAKE BOOSTER")),
+        h("div", { class: "paquet-bas" })
+      );
   scene().replaceChildren(h("div", { class: "jeu-paquet" }, paquet, h("p", { class: "jeu-aide" }, "Touchez le paquet pour le déchirer")));
 }
 

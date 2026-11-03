@@ -1,0 +1,17 @@
+{
+  "_aide": "Extension (identifiant de extensions.json) -> adresse de l'image du booster. Les extensions absentes gardent le paquet dessine par l'application.",
+  "sv01": "https://cdn.cultura.com/cdn-cgi/image/width=480/media/pim/0820650556456.jpg",
+  "sv02": "https://cdn.cultura.com/cdn-cgi/image/width=480/media/pim/0_10016427_1_10_FR.jpg",
+  "sv03": "https://cdn.cultura.com/cdn-cgi/image/width=480/media/pim/0820650556715.jpg",
+  "sv04": "https://cdn.cultura.com/cdn-cgi/image/width=480/media/pim/0820650556845.png",
+  "sv06": "https://cdn.cultura.com/cdn-cgi/image/width=480/media/pim/0820650558351.jpg",
+  "sv08": "https://cdn.cultura.com/cdn-cgi/image/width=480/media/mkp/4354c4e3d684406dbe52c83151321cbd_24acb",
+  "sv09": "https://cdn.cultura.com/cdn-cgi/image/width=480/media/pim/0196214107984_0.jpg",
+  "sv10": "https://cdn.cultura.com/cdn-cgi/image/width=480/media/pim/0196214111028.jpg",
+  "me03": "https://cdn.cultura.com/cdn-cgi/image/width=480/media/pim/12768545_14526713",
+  "me04": "https://cdn.cultura.com/cdn-cgi/image/width=480/media/pim/12914906_1br7qfju_1",
+  "me05": "https://cdn.cultura.com/cdn-cgi/image/width=480/media/mkp/7d248e23e2884d75b7d0ae6c5471913d_c3c25",
+  "swsh10": "https://cdn.cultura.com/cdn-cgi/image/width=480/media/pim/0820650554421.jpg",
+  "swsh11": "https://cdn.cultura.com/cdn-cgi/image/width=480/media/pim/0820650554544.jpg",
+  "swsh12": "https://cdn.cultura.com/cdn-cgi/image/width=480/media/pim/27_12435445_1_10_FR.jpg"
+}
