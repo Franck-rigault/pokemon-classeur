@@ -1,5 +1,15 @@
 [
   {
+    "id": "me06",
+    "nom": "Règne Delta",
+    "code": "DLR",
+    "date": "2026-11-06",
+    "serie": "Méga-Évolution",
+    "officiel": 103,
+    "total": 141,
+    "logo": null
+  },
+  {
     "id": "30th",
     "nom": "30ᵉ Anniversaire",
     "code": "30C",
@@ -70,16 +80,6 @@
     "logo": "https://assets.tcgdex.net/fr/me/me02/logo"
   },
   {
-    "id": "me01",
-    "nom": "Méga-Évolution",
-    "code": "MEG",
-    "date": "2025-09-26",
-    "serie": "Méga-Évolution",
-    "officiel": 132,
-    "total": 188,
-    "logo": "https://assets.tcgdex.net/fr/me/me01/logo"
-  },
-  {
     "id": "mep",
     "nom": "MEP Black Star Promos",
     "code": "MEP",
@@ -88,6 +88,16 @@
     "officiel": 0,
     "total": 108,
     "logo": null
+  },
+  {
+    "id": "me01",
+    "nom": "Méga-Évolution",
+    "code": "MEG",
+    "date": "2025-09-26",
+    "serie": "Méga-Évolution",
+    "officiel": 132,
+    "total": 188,
+    "logo": "https://assets.tcgdex.net/fr/me/me01/logo"
   },
   {
     "id": "mee",
@@ -100,16 +110,6 @@
     "logo": null
   },
   {
-    "id": "sv10.5b",
-    "nom": "Foudre Noire",
-    "code": "BLK",
-    "date": "2025-07-17",
-    "serie": "Écarlate et Violet",
-    "officiel": 86,
-    "total": 172,
-    "logo": "https://assets.tcgdex.net/fr/sv/sv10.5b/logo"
-  },
-  {
     "id": "sv10.5w",
     "nom": "Flamme Blanche",
     "code": "WHT",
@@ -118,6 +118,16 @@
     "officiel": 86,
     "total": 173,
     "logo": "https://assets.tcgdex.net/fr/sv/sv10.5w/logo"
+  },
+  {
+    "id": "sv10.5b",
+    "nom": "Foudre Noire",
+    "code": "BLK",
+    "date": "2025-07-17",
+    "serie": "Écarlate et Violet",
+    "officiel": 86,
+    "total": 172,
+    "logo": "https://assets.tcgdex.net/fr/sv/sv10.5b/logo"
   },
   {
     "id": "sv10",
@@ -280,16 +290,6 @@
     "logo": "https://assets.tcgdex.net/fr/sv/sv01/logo"
   },
   {
-    "id": "sve",
-    "nom": "Écarlate et Violet Énergie",
-    "code": "SVE",
-    "date": "2023-03-31",
-    "serie": "Écarlate et Violet",
-    "officiel": 24,
-    "total": 24,
-    "logo": null
-  },
-  {
     "id": "svp",
     "nom": "SVP Black Star Promos",
     "code": "SVP",
@@ -297,6 +297,16 @@
     "serie": "Écarlate et Violet",
     "officiel": 225,
     "total": 225,
+    "logo": null
+  },
+  {
+    "id": "sve",
+    "nom": "Écarlate et Violet Énergie",
+    "code": "SVE",
+    "date": "2023-03-31",
+    "serie": "Écarlate et Violet",
+    "officiel": 24,
+    "total": 24,
     "logo": null
   },
   {
@@ -480,16 +490,6 @@
     "logo": "https://assets.tcgdex.net/fr/swsh/swsh5/logo"
   },
   {
-    "id": "swsh4.5",
-    "nom": "Destinées Radieuses",
-    "code": "SHF",
-    "date": "2021-02-19",
-    "serie": "Épée et Bouclier",
-    "officiel": 72,
-    "total": 73,
-    "logo": "https://assets.tcgdex.net/fr/swsh/swsh4.5/logo"
-  },
-  {
     "id": "swsh4.5sv",
     "nom": "Destinées Radieuses Coffre Étincelant",
     "code": "SHF:SV",
@@ -498,6 +498,16 @@
     "officiel": 122,
     "total": 122,
     "logo": null
+  },
+  {
+    "id": "swsh4.5",
+    "nom": "Destinées Radieuses",
+    "code": "SHF",
+    "date": "2021-02-19",
+    "serie": "Épée et Bouclier",
+    "officiel": 72,
+    "total": 73,
+    "logo": "https://assets.tcgdex.net/fr/swsh/swsh4.5/logo"
   },
   {
     "id": "2021swsh",
@@ -590,16 +600,6 @@
     "logo": null
   },
   {
-    "id": "sm115",
-    "nom": "Destinées Occultes",
-    "code": "HIF",
-    "date": "2019-08-23",
-    "serie": "Soleil et Lune",
-    "officiel": 68,
-    "total": 69,
-    "logo": "https://assets.tcgdex.net/fr/sm/sm115/logo"
-  },
-  {
     "id": "sma",
     "nom": "Destinées Occultes Coffre Étincelant",
     "code": null,
@@ -608,6 +608,16 @@
     "officiel": 94,
     "total": 94,
     "logo": null
+  },
+  {
+    "id": "sm115",
+    "nom": "Destinées Occultes",
+    "code": "HIF",
+    "date": "2019-08-23",
+    "serie": "Soleil et Lune",
+    "officiel": 68,
+    "total": 69,
+    "logo": "https://assets.tcgdex.net/fr/sm/sm115/logo"
   },
   {
     "id": "sm11",
@@ -760,16 +770,6 @@
     "logo": "https://assets.tcgdex.net/fr/sm/sm2/logo"
   },
   {
-    "id": "tk-sm-r",
-    "nom": "SM Kit du dresseur (Raichu d'Alola)",
-    "code": "TK10A",
-    "date": "2017-04-21",
-    "serie": "Kits du dresseur",
-    "officiel": 30,
-    "total": 30,
-    "logo": null
-  },
-  {
     "id": "tk-sm-l",
     "nom": "SM Kit du dresseur (Lougarox)",
     "code": "TK10L",
@@ -780,13 +780,13 @@
     "logo": null
   },
   {
-    "id": "smp",
-    "nom": "Promo SM",
-    "code": "SMP",
-    "date": "2017-02-03",
-    "serie": "Soleil et Lune",
-    "officiel": 248,
-    "total": 248,
+    "id": "tk-sm-r",
+    "nom": "SM Kit du dresseur (Raichu d'Alola)",
+    "code": "TK10A",
+    "date": "2017-04-21",
+    "serie": "Kits du dresseur",
+    "officiel": 30,
+    "total": 30,
     "logo": null
   },
   {
@@ -798,6 +798,16 @@
     "officiel": 149,
     "total": 163,
     "logo": "https://assets.tcgdex.net/fr/sm/sm1/logo"
+  },
+  {
+    "id": "smp",
+    "nom": "Promo SM",
+    "code": "SMP",
+    "date": "2017-02-03",
+    "serie": "Soleil et Lune",
+    "officiel": 248,
+    "total": 248,
+    "logo": null
   },
   {
     "id": "xy12",
@@ -920,9 +930,9 @@
     "logo": "https://assets.tcgdex.net/fr/xy/xy6/logo"
   },
   {
-    "id": "tk-xy-latia",
-    "nom": "XY Kit du dresseur (Latias)",
-    "code": "TK8A",
+    "id": "tk-xy-latio",
+    "nom": "XY Kit du dresseur (Latios)",
+    "code": "TK8O",
     "date": "2015-04-29",
     "serie": "Kits du dresseur",
     "officiel": 30,
@@ -930,9 +940,9 @@
     "logo": null
   },
   {
-    "id": "tk-xy-latio",
-    "nom": "XY Kit du dresseur (Latios)",
-    "code": "TK8O",
+    "id": "tk-xy-latia",
+    "nom": "XY Kit du dresseur (Latias)",
+    "code": "TK8A",
     "date": "2015-04-29",
     "serie": "Kits du dresseur",
     "officiel": 30,
@@ -1020,9 +1030,9 @@
     "logo": "https://assets.tcgdex.net/fr/xy/xy2/logo"
   },
   {
-    "id": "tk-xy-sy",
-    "nom": "XY Kit du dresseur (Nymphali)",
-    "code": "TK6S",
+    "id": "tk-xy-n",
+    "nom": "XY Kit du dresseur (Bruyverne)",
+    "code": "TK6N",
     "date": "2014-03-12",
     "serie": "Kits du dresseur",
     "officiel": 30,
@@ -1030,9 +1040,9 @@
     "logo": null
   },
   {
-    "id": "tk-xy-n",
-    "nom": "XY Kit du dresseur (Bruyverne)",
-    "code": "TK6N",
+    "id": "tk-xy-sy",
+    "nom": "XY Kit du dresseur (Nymphali)",
+    "code": "TK6S",
     "date": "2014-03-12",
     "serie": "Kits du dresseur",
     "officiel": 30,
@@ -1300,9 +1310,9 @@
     "logo": "https://assets.tcgdex.net/fr/hgss/hgss2/logo"
   },
   {
-    "id": "tk-hs-g",
-    "nom": "HS Kit du dresseur (Léviator)",
-    "code": "TK4G",
+    "id": "tk-hs-r",
+    "nom": "HS Kit du dresseur (Raichu)",
+    "code": "TK4R",
     "date": "2010-05-01",
     "serie": "Kits du dresseur",
     "officiel": 30,
@@ -1310,9 +1320,9 @@
     "logo": null
   },
   {
-    "id": "tk-hs-r",
-    "nom": "HS Kit du dresseur (Raichu)",
-    "code": "TK4R",
+    "id": "tk-hs-g",
+    "nom": "HS Kit du dresseur (Léviator)",
+    "code": "TK4G",
     "date": "2010-05-01",
     "serie": "Kits du dresseur",
     "officiel": 30,
@@ -1590,16 +1600,6 @@
     "logo": "https://assets.tcgdex.net/fr/ex/ex11/logo"
   },
   {
-    "id": "ex10",
-    "nom": "EX Forces Cachées",
-    "code": "UF",
-    "date": "2005-08-22",
-    "serie": "EX",
-    "officiel": 115,
-    "total": 117,
-    "logo": "https://assets.tcgdex.net/fr/ex/ex10/logo"
-  },
-  {
     "id": "exu",
     "nom": "EX Forces Cachées Collection Zarbi",
     "code": null,
@@ -1608,6 +1608,16 @@
     "officiel": 28,
     "total": 28,
     "logo": null
+  },
+  {
+    "id": "ex10",
+    "nom": "EX Forces Cachées",
+    "code": "UF",
+    "date": "2005-08-22",
+    "serie": "EX",
+    "officiel": 115,
+    "total": 117,
+    "logo": "https://assets.tcgdex.net/fr/ex/ex10/logo"
   },
   {
     "id": "pop2",
@@ -1640,16 +1650,6 @@
     "logo": "https://assets.tcgdex.net/fr/ex/ex8/logo"
   },
   {
-    "id": "ex6",
-    "nom": "EX Rouge Feu & Vert Feuille",
-    "code": "RG",
-    "date": "2004-09-01",
-    "serie": "EX",
-    "officiel": 112,
-    "total": 116,
-    "logo": "https://assets.tcgdex.net/fr/ex/ex6/logo"
-  },
-  {
     "id": "pop1",
     "nom": "POP Série 1",
     "code": "P1",
@@ -1660,9 +1660,19 @@
     "logo": null
   },
   {
-    "id": "tk-ex-latia",
-    "nom": "EX Kit dresseur (Latias)",
-    "code": "TK1A",
+    "id": "ex6",
+    "nom": "EX Rouge Feu & Vert Feuille",
+    "code": "RG",
+    "date": "2004-09-01",
+    "serie": "EX",
+    "officiel": 112,
+    "total": 116,
+    "logo": "https://assets.tcgdex.net/fr/ex/ex6/logo"
+  },
+  {
+    "id": "tk-ex-latio",
+    "nom": "EX Kit dresseur (Latios)",
+    "code": "TK1O",
     "date": "2004-07-01",
     "serie": "Kits du dresseur",
     "officiel": 10,
@@ -1670,9 +1680,9 @@
     "logo": null
   },
   {
-    "id": "tk-ex-latio",
-    "nom": "EX Kit dresseur (Latios)",
-    "code": "TK1O",
+    "id": "tk-ex-latia",
+    "nom": "EX Kit dresseur (Latias)",
+    "code": "TK1A",
     "date": "2004-07-01",
     "serie": "Kits du dresseur",
     "officiel": 10,
