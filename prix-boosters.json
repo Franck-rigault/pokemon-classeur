@@ -1,0 +1,596 @@
+{
+ "date": "2026-11-14",
+ "genere": "2026-11-14T10:45:57.320Z",
+ "boosters": {
+  "me06": {
+   "valeur": 0.72,
+   "cartes": 141,
+   "avecPrix": 130
+  },
+  "me05": {
+   "valeur": 3.89,
+   "cartes": 120,
+   "avecPrix": 120
+  },
+  "me04": {
+   "valeur": 3.23,
+   "cartes": 122,
+   "avecPrix": 122
+  },
+  "me03": {
+   "valeur": 3.34,
+   "cartes": 124,
+   "avecPrix": 124
+  },
+  "me02.5": {
+   "valeur": 10.52,
+   "cartes": 295,
+   "avecPrix": 295
+  },
+  "me02": {
+   "valeur": 7.45,
+   "cartes": 130,
+   "avecPrix": 130
+  },
+  "me01": {
+   "valeur": 5.08,
+   "cartes": 188,
+   "avecPrix": 188
+  },
+  "sv10.5w": {
+   "valeur": 66.36,
+   "cartes": 173,
+   "avecPrix": 173
+  },
+  "sv10.5b": {
+   "valeur": 70.1,
+   "cartes": 172,
+   "avecPrix": 172
+  },
+  "sv10": {
+   "valeur": 5.2,
+   "cartes": 244,
+   "avecPrix": 244
+  },
+  "sv09": {
+   "valeur": 2.89,
+   "cartes": 190,
+   "avecPrix": 190
+  },
+  "sv08.5": {
+   "valeur": 4.8,
+   "cartes": 180,
+   "avecPrix": 180
+  },
+  "sv08": {
+   "valeur": 5.89,
+   "cartes": 252,
+   "avecPrix": 252
+  },
+  "sv07": {
+   "valeur": 2.99,
+   "cartes": 175,
+   "avecPrix": 175
+  },
+  "sv06.5": {
+   "valeur": 3.22,
+   "cartes": 99,
+   "avecPrix": 94
+  },
+  "sv06": {
+   "valeur": 3.93,
+   "cartes": 226,
+   "avecPrix": 226
+  },
+  "sv05": {
+   "valeur": 4.27,
+   "cartes": 218,
+   "avecPrix": 218
+  },
+  "sv04.5": {
+   "valeur": 4.92,
+   "cartes": 245,
+   "avecPrix": 245
+  },
+  "sv04": {
+   "valeur": 2.34,
+   "cartes": 266,
+   "avecPrix": 266
+  },
+  "sv03.5": {
+   "valeur": 10.06,
+   "cartes": 207,
+   "avecPrix": 207
+  },
+  "sv03": {
+   "valeur": 2.37,
+   "cartes": 230,
+   "avecPrix": 230
+  },
+  "sv02": {
+   "valeur": 3.15,
+   "cartes": 279,
+   "avecPrix": 279
+  },
+  "sv01": {
+   "valeur": 2.34,
+   "cartes": 258,
+   "avecPrix": 258
+  },
+  "swsh12.5": {
+   "valeur": 4.02,
+   "cartes": 160,
+   "avecPrix": 160
+  },
+  "swsh12": {
+   "valeur": 3.48,
+   "cartes": 215,
+   "avecPrix": 215
+  },
+  "swsh11": {
+   "valeur": 4.2,
+   "cartes": 217,
+   "avecPrix": 217
+  },
+  "swsh10.5": {
+   "valeur": 3.64,
+   "cartes": 88,
+   "avecPrix": 88
+  },
+  "swsh10": {
+   "valeur": 5.7,
+   "cartes": 216,
+   "avecPrix": 216
+  },
+  "swsh9": {
+   "valeur": 1.88,
+   "cartes": 186,
+   "avecPrix": 186
+  },
+  "swsh8": {
+   "valeur": 5.13,
+   "cartes": 284,
+   "avecPrix": 284
+  },
+  "swsh7": {
+   "valeur": 16.18,
+   "cartes": 237,
+   "avecPrix": 237
+  },
+  "swsh6": {
+   "valeur": 7.89,
+   "cartes": 233,
+   "avecPrix": 233
+  },
+  "swsh5": {
+   "valeur": 3.76,
+   "cartes": 183,
+   "avecPrix": 183
+  },
+  "swsh4.5": {
+   "valeur": 0.83,
+   "cartes": 73,
+   "avecPrix": 73
+  },
+  "swsh4": {
+   "valeur": 1.78,
+   "cartes": 203,
+   "avecPrix": 203
+  },
+  "swsh3.5": {
+   "valeur": 1.4,
+   "cartes": 80,
+   "avecPrix": 79
+  },
+  "swsh3": {
+   "valeur": 2.95,
+   "cartes": 201,
+   "avecPrix": 201
+  },
+  "swsh2": {
+   "valeur": 3.03,
+   "cartes": 209,
+   "avecPrix": 209
+  },
+  "swsh1": {
+   "valeur": 4.48,
+   "cartes": 216,
+   "avecPrix": 213
+  },
+  "sm12": {
+   "valeur": 40.03,
+   "cartes": 271,
+   "avecPrix": 261
+  },
+  "sm115": {
+   "valeur": 12.12,
+   "cartes": 69,
+   "avecPrix": 54
+  },
+  "sm11": {
+   "valeur": 15.48,
+   "cartes": 258,
+   "avecPrix": 254
+  },
+  "sm10": {
+   "valeur": 12.2,
+   "cartes": 234,
+   "avecPrix": 225
+  },
+  "sm9": {
+   "valeur": 32.78,
+   "cartes": 196,
+   "avecPrix": 185
+  },
+  "sm8": {
+   "valeur": 9.78,
+   "cartes": 236,
+   "avecPrix": 230
+  },
+  "sm7.5": {
+   "valeur": 12.66,
+   "cartes": 78,
+   "avecPrix": 75
+  },
+  "sm7": {
+   "valeur": 22.83,
+   "cartes": 183,
+   "avecPrix": 179
+  },
+  "sm6": {
+   "valeur": 9.77,
+   "cartes": 146,
+   "avecPrix": 143
+  },
+  "sm5": {
+   "valeur": 8.53,
+   "cartes": 173,
+   "avecPrix": 168
+  },
+  "sm4": {
+   "valeur": 8.97,
+   "cartes": 125,
+   "avecPrix": 124
+  },
+  "sm3.5": {
+   "valeur": 9.09,
+   "cartes": 78,
+   "avecPrix": 78
+  },
+  "sm3": {
+   "valeur": 31.76,
+   "cartes": 169,
+   "avecPrix": 169
+  },
+  "sm2": {
+   "valeur": 17.19,
+   "cartes": 169,
+   "avecPrix": 169
+  },
+  "sm1": {
+   "valeur": 9.13,
+   "cartes": 163,
+   "avecPrix": 163
+  },
+  "xy12": {
+   "valeur": 13.19,
+   "cartes": 113,
+   "avecPrix": 102
+  },
+  "xy11": {
+   "valeur": 4.01,
+   "cartes": 116,
+   "avecPrix": 111
+  },
+  "xy10": {
+   "valeur": 8.71,
+   "cartes": 129,
+   "avecPrix": 124
+  },
+  "g1": {
+   "valeur": 25.82,
+   "cartes": 117,
+   "avecPrix": 112
+  },
+  "xy9": {
+   "valeur": 8.96,
+   "cartes": 126,
+   "avecPrix": 122
+  },
+  "xy8": {
+   "valeur": 9.55,
+   "cartes": 165,
+   "avecPrix": 157
+  },
+  "xy7": {
+   "valeur": 12.31,
+   "cartes": 101,
+   "avecPrix": 101
+  },
+  "xy6": {
+   "valeur": 13.36,
+   "cartes": 112,
+   "avecPrix": 105
+  },
+  "dc1": {
+   "valeur": 115.06,
+   "cartes": 34,
+   "avecPrix": 34
+  },
+  "xy5": {
+   "valeur": 7.03,
+   "cartes": 164,
+   "avecPrix": 159
+  },
+  "xy4": {
+   "valeur": 10.25,
+   "cartes": 124,
+   "avecPrix": 119
+  },
+  "xy3": {
+   "valeur": 7.35,
+   "cartes": 114,
+   "avecPrix": 109
+  },
+  "xy2": {
+   "valeur": 3.76,
+   "cartes": 110,
+   "avecPrix": 104
+  },
+  "xy1": {
+   "valeur": 5.63,
+   "cartes": 146,
+   "avecPrix": 144
+  },
+  "bw10": {
+   "valeur": 4.67,
+   "cartes": 105,
+   "avecPrix": 94
+  },
+  "bw9": {
+   "valeur": 16.11,
+   "cartes": 122,
+   "avecPrix": 108
+  },
+  "bw8": {
+   "valeur": 5.53,
+   "cartes": 138,
+   "avecPrix": 126
+  },
+  "bw7": {
+   "valeur": 19.17,
+   "cartes": 153,
+   "avecPrix": 153
+  },
+  "bw6": {
+   "valeur": 30.99,
+   "cartes": 128,
+   "avecPrix": 128
+  },
+  "bw5": {
+   "valeur": 25.4,
+   "cartes": 111,
+   "avecPrix": 111
+  },
+  "bw4": {
+   "valeur": 15.53,
+   "cartes": 103,
+   "avecPrix": 103
+  },
+  "bw3": {
+   "valeur": 10.78,
+   "cartes": 102,
+   "avecPrix": 102
+  },
+  "bw2": {
+   "valeur": 4.03,
+   "cartes": 98,
+   "avecPrix": 98
+  },
+  "bw1": {
+   "valeur": 19.87,
+   "cartes": 115,
+   "avecPrix": 115
+  },
+  "col1": {
+   "valeur": 98.61,
+   "cartes": 106,
+   "avecPrix": 106
+  },
+  "hgss4": {
+   "valeur": 18.21,
+   "cartes": 103,
+   "avecPrix": 101
+  },
+  "hgss3": {
+   "valeur": 24.37,
+   "cartes": 91,
+   "avecPrix": 90
+  },
+  "hgss2": {
+   "valeur": 10.99,
+   "cartes": 96,
+   "avecPrix": 96
+  },
+  "hgss1": {
+   "valeur": 15.47,
+   "cartes": 124,
+   "avecPrix": 121
+  },
+  "pl3": {
+   "valeur": 44.83,
+   "cartes": 162,
+   "avecPrix": 162
+  },
+  "pl2": {
+   "valeur": 22.26,
+   "cartes": 120,
+   "avecPrix": 120
+  },
+  "pl1": {
+   "valeur": 36.49,
+   "cartes": 133,
+   "avecPrix": 132
+  },
+  "dp7": {
+   "valeur": 44.69,
+   "cartes": 106,
+   "avecPrix": 106
+  },
+  "dp6": {
+   "valeur": 18.8,
+   "cartes": 146,
+   "avecPrix": 137
+  },
+  "dp5": {
+   "valeur": 32.83,
+   "cartes": 100,
+   "avecPrix": 98
+  },
+  "dp4": {
+   "valeur": 19.18,
+   "cartes": 106,
+   "avecPrix": 102
+  },
+  "dp3": {
+   "valeur": 18.03,
+   "cartes": 132,
+   "avecPrix": 125
+  },
+  "dp2": {
+   "valeur": 16.47,
+   "cartes": 124,
+   "avecPrix": 119
+  },
+  "dp1": {
+   "valeur": 12.01,
+   "cartes": 130,
+   "avecPrix": 126
+  },
+  "ex16": {
+   "valeur": 31.74,
+   "cartes": 108,
+   "avecPrix": 105
+  },
+  "ex15": {
+   "valeur": 49.37,
+   "cartes": 101,
+   "avecPrix": 96
+  },
+  "ex14": {
+   "valeur": 50.98,
+   "cartes": 100,
+   "avecPrix": 98
+  },
+  "ex13": {
+   "valeur": 64.88,
+   "cartes": 111,
+   "avecPrix": 109
+  },
+  "ex12": {
+   "valeur": 48.66,
+   "cartes": 93,
+   "avecPrix": 90
+  },
+  "ex11": {
+   "valeur": 89.69,
+   "cartes": 114,
+   "avecPrix": 111
+  },
+  "ex10": {
+   "valeur": 94.74,
+   "cartes": 117,
+   "avecPrix": 114
+  },
+  "ex9": {
+   "valeur": 64.32,
+   "cartes": 107,
+   "avecPrix": 107
+  },
+  "ex8": {
+   "valeur": 58.19,
+   "cartes": 108,
+   "avecPrix": 106
+  },
+  "ex6": {
+   "valeur": 103.67,
+   "cartes": 116,
+   "avecPrix": 116
+  },
+  "ex5": {
+   "valeur": 65.6,
+   "cartes": 102,
+   "avecPrix": 102
+  },
+  "ex4": {
+   "valeur": 64.86,
+   "cartes": 97,
+   "avecPrix": 97
+  },
+  "ex3": {
+   "valeur": 101.08,
+   "cartes": 100,
+   "avecPrix": 100
+  },
+  "ex2": {
+   "valeur": 53.27,
+   "cartes": 100,
+   "avecPrix": 100
+  },
+  "ex1": {
+   "valeur": 46.76,
+   "cartes": 109,
+   "avecPrix": 109
+  },
+  "ecard2": {
+   "valeur": 199.61,
+   "cartes": 186,
+   "avecPrix": 186
+  },
+  "ecard1": {
+   "valeur": 238.92,
+   "cartes": 165,
+   "avecPrix": 165
+  },
+  "neo4": {
+   "valeur": 235,
+   "cartes": 113,
+   "avecPrix": 112
+  },
+  "neo3": {
+   "valeur": 148.47,
+   "cartes": 66,
+   "avecPrix": 66
+  },
+  "neo2": {
+   "valeur": 134.85,
+   "cartes": 75,
+   "avecPrix": 75
+  },
+  "neo1": {
+   "valeur": 75.95,
+   "cartes": 111,
+   "avecPrix": 111
+  },
+  "base5": {
+   "valeur": 81.89,
+   "cartes": 83,
+   "avecPrix": 83
+  },
+  "base3": {
+   "valeur": 50.98,
+   "cartes": 62,
+   "avecPrix": 62
+  },
+  "base2": {
+   "valeur": 33.92,
+   "cartes": 64,
+   "avecPrix": 64
+  },
+  "base1": {
+   "valeur": 62.77,
+   "cartes": 102,
+   "avecPrix": 102
+  }
+ }
+}
